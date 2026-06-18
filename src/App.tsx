@@ -1,66 +1,148 @@
 import { useState } from 'react'
 import { MessageType, type OutgoingMessage, type ServerMessage } from './types/socket'
 import type { GameState } from './types/game'
+import { TrickPhase } from './types/game'
 import type { Card } from './types/card'
 import { useSocket } from './hooks/useSocket'
 import { GameBoard } from './components/GameBoard'
+import { MainMenu } from './components/MainMenu'
+import { useLocalGame } from './hooks/useLocalGame'
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? 'ws://localhost:8080'
 
+type Mode = null | 'local' | 'online'
+
 export default function App() {
+  const [mode, setMode] = useState<Mode>(null)
   const [playerName, setPlayerName] = useState('')
-  const [game, setGame] = useState<GameState | null>(null)
+
+  const [onlineGame, setOnlineGame] = useState<GameState | null>(null)
   const [playerId, setPlayerId] = useState('')
-  const [error, setError] = useState('')
+  void setPlayerId
 
   const { send, onMessage } = useSocket(WS_URL)
 
   onMessage((msg: ServerMessage) => {
-    setError('')
-    if (msg.type === MessageType.Error) {
-      setError((msg.payload as { message: string }).message)
-    } else if (msg.type === MessageType.GameState) {
-      const gs = msg.payload as GameState
-      setGame(gs)
+    if (msg.type === MessageType.GameState) {
+      setOnlineGame(msg.payload as GameState)
     }
   })
 
-  function joinGame() {
-    if (!playerName.trim()) return
-    const id = crypto.randomUUID()
-    setPlayerId(id)
-    send({
-      type: MessageType.JoinGame,
-      payload: { playerName: playerName.trim(), gameId: id },
-    } as OutgoingMessage)
+  const localGame = useLocalGame(playerName)
+
+  function handleSelectMode(selectedMode: Mode, name: string) {
+    setPlayerName(name)
+    setMode(selectedMode)
   }
 
-  function playCard(card: Card) {
-    if (!game) return
+  function playOnlineCard(card: Card) {
+    if (!onlineGame) return
     send({
       type: MessageType.PlayCard,
       payload: { card },
     } as OutgoingMessage)
   }
 
-  if (!game) {
+  if (!mode) {
+    return <MainMenu onSelectMode={handleSelectMode} />
+  }
+
+  if (mode === 'local') {
+    if (!localGame.game) {
+      return (
+        <div style={{ textAlign: 'center', marginTop: 60 }}>
+          <h2>بازی با ۳ ربات</h2>
+          <p style={{ color: '#aaa', marginBottom: 20 }}>
+            بازیکن: {playerName}
+          </p>
+          <button
+            onClick={localGame.startGame}
+            style={{
+              padding: '14px 40px',
+              fontSize: 18,
+              borderRadius: 8,
+              border: 'none',
+              background: '#2d8a3e',
+              color: '#fff',
+              cursor: 'pointer',
+            }}
+          >
+            شروع بازی
+          </button>
+        </div>
+      )
+    }
+
+    if (localGame.game.phase === TrickPhase.Finished) {
+      const nsWins = localGame.game.matchWinner === 'ns'
+      return (
+        <div style={{ textAlign: 'center', marginTop: 60 }}>
+          <h2>بازی تمام شد!</h2>
+          <p style={{ color: '#aaa', marginBottom: 10 }}>
+            {nsWins ? 'شما بردید!' : 'ربات‌ها بردند.'}
+          </p>
+          <p style={{ color: '#888', marginBottom: 20 }}>
+            ست‌ها: {localGame.game.roundNumber - 1}
+          </p>
+          <button
+            onClick={localGame.startGame}
+            style={{
+              padding: '14px 40px',
+              fontSize: 18,
+              borderRadius: 8,
+              border: 'none',
+              background: '#2d8a3e',
+              color: '#fff',
+              cursor: 'pointer',
+            }}
+          >
+            بازی دوباره
+          </button>
+        </div>
+      )
+    }
+
+    const isMyTurn = localGame.game.turn === localGame.game.playerPosition
+
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, marginTop: 100 }}>
-        <h1>سلطان حکم</h1>
-        <input
-          placeholder="نام خود را وارد کنید"
-          value={playerName}
-          onChange={(e) => setPlayerName(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && joinGame()}
-          style={{ padding: '8px 16px', fontSize: 16, borderRadius: 6, border: 'none' }}
+      <div>
+        <div style={{ textAlign: 'center', padding: 10, color: '#aaa', minHeight: 40 }}>
+          {localGame.isThinking && 'در حال فکر...'}
+          {!localGame.isThinking && isMyTurn && localGame.game.phase === TrickPhase.ChoosingHokm && (
+            <p>نوبت شما: حکم را انتخاب کنید</p>
+          )}
+          {!localGame.isThinking && isMyTurn && localGame.game.phase === TrickPhase.Playing && (
+            <p>نوبت شما: کارت بزنید</p>
+          )}
+        </div>
+        <GameBoard
+          game={{
+            id: localGame.game.gameId,
+            phase: localGame.game.phase,
+            players: localGame.game.players,
+            hokmSuit: localGame.game.hokmSuit,
+            currentTrick: localGame.game.currentTrick,
+            northSouthScore: localGame.game.northSouthScore,
+            eastWestScore: localGame.game.eastWestScore,
+            turn: localGame.game.turn,
+          }}
+          playerId={localGame.game.playerPosition}
+          onPlayCard={localGame.playCard}
+          onChooseHokm={localGame.chooseHokm}
         />
-        <button onClick={joinGame} style={{ padding: '8px 24px', fontSize: 16, borderRadius: 6, border: 'none', background: '#2d8a3e', color: '#fff', cursor: 'pointer' }}>
-          ورود به بازی
-        </button>
-        {error && <p style={{ color: '#e74c3c' }}>{error}</p>}
       </div>
     )
   }
 
-  return <GameBoard game={game} playerId={playerId} onPlayCard={playCard} />
+  if (mode === 'online') {
+    return (
+      <GameBoard
+        game={onlineGame!}
+        playerId={playerId}
+        onPlayCard={playOnlineCard}
+      />
+    )
+  }
+
+  return null
 }
