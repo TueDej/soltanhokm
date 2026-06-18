@@ -4,6 +4,7 @@ import { Suit } from '../types/card'
 import type { Card } from '../types/card'
 import { Hand } from './Hand'
 import { Table } from './Table'
+import { useLanguage } from '../context/LanguageContext'
 
 interface GameBoardProps {
   game: GameState
@@ -12,33 +13,34 @@ interface GameBoardProps {
   onChooseHokm?: (suit: Suit) => void
 }
 
-const PHASE_LABEL: Record<TrickPhase, string> = {
-  [TrickPhase.WaitingForPlayers]: 'منتظر سایر بازیکنان...',
-  [TrickPhase.ChoosingHokm]: 'انتخاب حکم',
-  [TrickPhase.ChoosingTeam]: 'انتخاب هم‌تیمی',
-  [TrickPhase.Playing]: 'در حال بازی',
-  [TrickPhase.Finished]: 'پایان بازی',
-}
-
 export function GameBoard({ game, playerId, onPlayCard, onChooseHokm }: GameBoardProps) {
+  const { t } = useLanguage()
   const me = game.players.find((p) => p.id === playerId)
   const isMyTurn = me && game.turn === me.position
+
+  const PHASE_LABEL: Record<TrickPhase, string> = {
+    [TrickPhase.WaitingForPlayers]: t('thinking'),
+    [TrickPhase.ChoosingHokm]: t('selectingHokm'),
+    [TrickPhase.ChoosingTeam]: t('choosingTeam'),
+    [TrickPhase.Playing]: t('playing'),
+    [TrickPhase.Finished]: t('finished'),
+  }
 
   return (
     <div style={{ textAlign: 'center', padding: 20 }}>
       <h2>{PHASE_LABEL[game.phase]}</h2>
-      {game.hokmSuit && <p>حکم: {game.hokmSuit}</p>}
+      {game.hokmSuit && <p>{t('hokmIs')}: {game.hokmSuit}</p>}
 
       <div style={{ display: 'flex', justifyContent: 'space-between', margin: '10px 0' }}>
-        <span>شمال-جنوب: {game.northSouthScore}</span>
-        <span>شرق-غرب: {game.eastWestScore}</span>
+        <span>{t('northSouth')}: {game.northSouthScore}</span>
+        <span>{t('eastWest')}: {game.eastWestScore}</span>
       </div>
 
       <Table trick={game.currentTrick} />
 
       {game.phase === TrickPhase.ChoosingHokm && game.turn === playerId && onChooseHokm && (
         <div style={{ marginTop: 20 }}>
-          <p>حکم را انتخاب کنید:</p>
+          <p>{t('pickTrump')}</p>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 8 }}>
             {[Suit.Hearts, Suit.Diamonds, Suit.Clubs, Suit.Spades].map((suit) => (
               <button
@@ -63,7 +65,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm }: GameBoar
 
       {me && (
         <div style={{ marginTop: 20 }}>
-          <p>دست شما ({me.position}):</p>
+          <p>{t('yourHand')} ({me.position}):</p>
           <Hand
             cards={me.hand}
             onPlayCard={onPlayCard}

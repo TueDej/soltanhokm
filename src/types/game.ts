@@ -55,4 +55,5 @@ export interface LocalGameState {
   turn: PlayerPosition
   roundNumber: number
   matchWinner?: 'ns' | 'ew'
+  remainingDeck: Card[]
 }

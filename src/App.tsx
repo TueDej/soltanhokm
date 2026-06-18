@@ -7,6 +7,8 @@ import { useSocket } from './hooks/useSocket'
 import { GameBoard } from './components/GameBoard'
 import { MainMenu } from './components/MainMenu'
 import { useLocalGame } from './hooks/useLocalGame'
+import { LanguageToggle } from './components/LanguageToggle'
+import { useLanguage } from './context/LanguageContext'
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? 'ws://localhost:8080'
 
@@ -15,6 +17,7 @@ type Mode = null | 'local' | 'online'
 export default function App() {
   const [mode, setMode] = useState<Mode>(null)
   const [playerName, setPlayerName] = useState('')
+  const { t } = useLanguage()
 
   const [onlineGame, setOnlineGame] = useState<GameState | null>(null)
   const [playerId, setPlayerId] = useState('')
@@ -44,103 +47,120 @@ export default function App() {
   }
 
   if (!mode) {
-    return <MainMenu onSelectMode={handleSelectMode} />
+    return (
+      <>
+        <LanguageToggle />
+        <MainMenu onSelectMode={handleSelectMode} />
+      </>
+    )
   }
 
   if (mode === 'local') {
     if (!localGame.game) {
       return (
-        <div style={{ textAlign: 'center', marginTop: 60 }}>
-          <h2>بازی با ۳ ربات</h2>
-          <p style={{ color: '#aaa', marginBottom: 20 }}>
-            بازیکن: {playerName}
-          </p>
-          <button
-            onClick={localGame.startGame}
-            style={{
-              padding: '14px 40px',
-              fontSize: 18,
-              borderRadius: 8,
-              border: 'none',
-              background: '#2d8a3e',
-              color: '#fff',
-              cursor: 'pointer',
-            }}
-          >
-            شروع بازی
-          </button>
-        </div>
+        <>
+          <LanguageToggle />
+          <div style={{ textAlign: 'center', marginTop: 60 }}>
+            <h2>{t('playVs3Bots')}</h2>
+            <p style={{ color: '#aaa', marginBottom: 20 }}>
+              {t('playingWith')}: {playerName}
+            </p>
+            <button
+              onClick={localGame.startGame}
+              style={{
+                padding: '14px 40px',
+                fontSize: 18,
+                borderRadius: 8,
+                border: 'none',
+                background: '#2d8a3e',
+                color: '#fff',
+                cursor: 'pointer',
+              }}
+            >
+              {t('startGame')}
+            </button>
+          </div>
+        </>
       )
     }
 
     if (localGame.game.phase === TrickPhase.Finished) {
       const nsWins = localGame.game.matchWinner === 'ns'
       return (
-        <div style={{ textAlign: 'center', marginTop: 60 }}>
-          <h2>بازی تمام شد!</h2>
-          <p style={{ color: '#aaa', marginBottom: 10 }}>
-            {nsWins ? 'شما بردید!' : 'ربات‌ها بردند.'}
-          </p>
-          <p style={{ color: '#888', marginBottom: 20 }}>
-            ست‌ها: {localGame.game.roundNumber - 1}
-          </p>
-          <button
-            onClick={localGame.startGame}
-            style={{
-              padding: '14px 40px',
-              fontSize: 18,
-              borderRadius: 8,
-              border: 'none',
-              background: '#2d8a3e',
-              color: '#fff',
-              cursor: 'pointer',
-            }}
-          >
-            بازی دوباره
-          </button>
-        </div>
+        <>
+          <LanguageToggle />
+          <div style={{ textAlign: 'center', marginTop: 60 }}>
+            <h2>{t('gameFinished')}</h2>
+            <p style={{ color: '#aaa', marginBottom: 10 }}>
+              {nsWins ? t('youWon') : t('botsWon')}
+            </p>
+            <p style={{ color: '#888', marginBottom: 20 }}>
+              {t('rounds')}: {localGame.game.roundNumber - 1}
+            </p>
+            <button
+              onClick={localGame.startGame}
+              style={{
+                padding: '14px 40px',
+                fontSize: 18,
+                borderRadius: 8,
+                border: 'none',
+                background: '#2d8a3e',
+                color: '#fff',
+                cursor: 'pointer',
+              }}
+            >
+              {t('playAgain')}
+            </button>
+          </div>
+        </>
       )
     }
 
     const isMyTurn = localGame.game.turn === localGame.game.playerPosition
 
     return (
-      <div>
-        <div style={{ textAlign: 'center', padding: 10, color: '#aaa', minHeight: 40 }}>
-          {localGame.isThinking && 'در حال فکر...'}
-          {!localGame.isThinking && isMyTurn && localGame.game.phase === TrickPhase.ChoosingHokm && (
-            <p>نوبت شما: حکم را انتخاب کنید</p>
-          )}
-          {!localGame.isThinking && isMyTurn && localGame.game.phase === TrickPhase.Playing && (
-            <p>نوبت شما: کارت بزنید</p>
-          )}
+      <>
+        <LanguageToggle />
+        <div>
+          <div style={{ textAlign: 'center', padding: 10, color: '#aaa', minHeight: 40 }}>
+            {localGame.isThinking && t('thinking')}
+            {!localGame.isThinking && isMyTurn && localGame.game.phase === TrickPhase.ChoosingHokm && (
+              <p>{t('chooseHokm')}</p>
+            )}
+            {!localGame.isThinking && isMyTurn && localGame.game.phase === TrickPhase.Playing && (
+              <p>{t('yourTurn')}</p>
+            )}
+          </div>
+          <GameBoard
+            game={{
+              id: localGame.game.gameId,
+              phase: localGame.game.phase,
+              players: localGame.game.players,
+              hokmSuit: localGame.game.hokmSuit,
+              currentTrick: localGame.game.currentTrick,
+              northSouthScore: localGame.game.northSouthScore,
+              eastWestScore: localGame.game.eastWestScore,
+              turn: localGame.game.turn,
+            }}
+            playerId={localGame.game.playerPosition}
+            onPlayCard={localGame.playCard}
+            onChooseHokm={localGame.chooseHokm}
+          />
         </div>
-        <GameBoard
-          game={{
-            id: localGame.game.gameId,
-            phase: localGame.game.phase,
-            players: localGame.game.players,
-            hokmSuit: localGame.game.hokmSuit,
-            currentTrick: localGame.game.currentTrick,
-            northSouthScore: localGame.game.northSouthScore,
-            eastWestScore: localGame.game.eastWestScore,
-            turn: localGame.game.turn,
-          }}
-          playerId={localGame.game.playerPosition}
-          onPlayCard={localGame.playCard}
-          onChooseHokm={localGame.chooseHokm}
-        />
-      </div>
+      </>
     )
   }
 
   if (mode === 'online') {
     return (
-      <GameBoard
-        game={onlineGame!}
-        playerId={playerId}
-        onPlayCard={playOnlineCard}
-      />
+      <>
+        <LanguageToggle />
+        <GameBoard
+          game={onlineGame!}
+          playerId={playerId}
+          onPlayCard={playOnlineCard}
+        />
+      </>
     )
   }
 

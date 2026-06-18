@@ -24,12 +24,13 @@ function nextPos(pos: PlayerPosition): PlayerPosition {
 
 export function createLocalGame(playerName: string, playerPosition: PlayerPosition): LocalGameState {
   const deck = shuffleDeck(createDeck())
-  const hands = deal(deck)
+  const initialHands = deal(deck.slice(0, 20))
+  const remainingDeck = deck.slice(20)
   const players: Player[] = POSITIONS.map((pos) => ({
     id: pos,
     name: pos === playerPosition ? playerName : `Bot ${pos}`,
     position: pos,
-    hand: hands[pos],
+    hand: initialHands[pos],
     tricksWon: 0,
   }))
   const hokmPlayerIndex = Math.floor(Math.random() * 4)
@@ -44,16 +45,24 @@ export function createLocalGame(playerName: string, playerPosition: PlayerPositi
     eastWestScore: 0,
     turn: POSITIONS[hokmPlayerIndex],
     roundNumber: 1,
+    remainingDeck,
   }
 }
 
 export function chooseHokm(state: LocalGameState, suit: Suit): LocalGameState {
   if (state.phase !== TrickPhase.ChoosingHokm) return state
+  const extraHands = deal(state.remainingDeck)
+  const newPlayers = state.players.map((p) => ({
+    ...p,
+    hand: [...p.hand, ...extraHands[p.position]],
+  }))
   return {
     ...state,
     hokmSuit: suit,
     phase: TrickPhase.Playing,
     turn: state.currentTrick.leader,
+    players: newPlayers,
+    remainingDeck: [],
   }
 }
 
@@ -107,10 +116,11 @@ function resolveTrick(
       }
     }
     const deck = shuffleDeck(createDeck())
-    const hands = deal(deck)
+    const initialHands = deal(deck.slice(0, 20))
+    const remainingDeck = deck.slice(20)
     const resetPlayers: Player[] = newPlayers.map((p) => ({
       ...p,
-      hand: hands[p.position],
+      hand: initialHands[p.position],
       tricksWon: 0,
     }))
     const nextHokmIndex = POSITIONS.indexOf(trickWinner)
@@ -125,6 +135,7 @@ function resolveTrick(
       hokmSuit: undefined,
       currentTrick: { cards: {}, leader: POSITIONS[(nextHokmIndex + 1) % 4] },
       turn: POSITIONS[nextHokmIndex],
+      remainingDeck,
     }
   }
   return {

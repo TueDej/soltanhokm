@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLanguage } from '../context/LanguageContext'
 
 interface MainMenuProps {
   onSelectMode: (mode: 'local' | 'online', playerName: string) => void
@@ -6,6 +7,7 @@ interface MainMenuProps {
 
 export function MainMenu({ onSelectMode }: MainMenuProps) {
   const [playerName, setPlayerName] = useState('')
+  const { t } = useLanguage()
 
   return (
     <div
@@ -17,11 +19,11 @@ export function MainMenu({ onSelectMode }: MainMenuProps) {
         marginTop: 100,
       }}
     >
-      <h1 style={{ fontSize: 48, marginBottom: 10 }}>سلطان حکم</h1>
-      <p style={{ color: '#aaa' }}>Hokm Card Game</p>
+      <h1 style={{ fontSize: 48, marginBottom: 10 }}>{t('title')}</h1>
+      <p style={{ color: '#aaa' }}>{t('subtitle')}</p>
 
       <input
-        placeholder="نام خود را وارد کنید"
+        placeholder={t('enterName')}
         value={playerName}
         onChange={(e) => setPlayerName(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && playerName.trim() && onSelectMode('local', playerName.trim())}
@@ -51,12 +53,12 @@ export function MainMenu({ onSelectMode }: MainMenuProps) {
           width: 320,
         }}
       >
-        بازی با ۳ ربات
+        {t('playVs3Bots')}
       </button>
 
       <button
         disabled
-        title="به زودی..."
+        title={t('twoPlayers')}
         style={{
           padding: '14px 40px',
           fontSize: 18,
@@ -68,7 +70,7 @@ export function MainMenu({ onSelectMode }: MainMenuProps) {
           width: 320,
         }}
       >
-        ۲ نفره (به زودی)
+        {t('twoPlayers')}
       </button>
     </div>
   )
