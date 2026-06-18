@@ -1,5 +1,6 @@
 import type { GameState } from '../types/game'
 import { TrickPhase } from '../types/game'
+import { Suit } from '../types/card'
 import type { Card } from '../types/card'
 import { Hand } from './Hand'
 import { Table } from './Table'
@@ -8,6 +9,7 @@ interface GameBoardProps {
   game: GameState
   playerId: string
   onPlayCard: (card: Card) => void
+  onChooseHokm?: (suit: Suit) => void
 }
 
 const PHASE_LABEL: Record<TrickPhase, string> = {
@@ -18,7 +20,7 @@ const PHASE_LABEL: Record<TrickPhase, string> = {
   [TrickPhase.Finished]: 'پایان بازی',
 }
 
-export function GameBoard({ game, playerId, onPlayCard }: GameBoardProps) {
+export function GameBoard({ game, playerId, onPlayCard, onChooseHokm }: GameBoardProps) {
   const me = game.players.find((p) => p.id === playerId)
   const isMyTurn = me && game.turn === me.position
 
@@ -33,6 +35,31 @@ export function GameBoard({ game, playerId, onPlayCard }: GameBoardProps) {
       </div>
 
       <Table trick={game.currentTrick} />
+
+      {game.phase === TrickPhase.ChoosingHokm && game.turn === playerId && onChooseHokm && (
+        <div style={{ marginTop: 20 }}>
+          <p>حکم را انتخاب کنید:</p>
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 8 }}>
+            {[Suit.Hearts, Suit.Diamonds, Suit.Clubs, Suit.Spades].map((suit) => (
+              <button
+                key={suit}
+                onClick={() => onChooseHokm(suit)}
+                style={{
+                  padding: '10px 18px',
+                  borderRadius: 6,
+                  border: '2px solid #444',
+                  background: '#333',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  fontSize: 16,
+                }}
+              >
+                {suit}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {me && (
         <div style={{ marginTop: 20 }}>
