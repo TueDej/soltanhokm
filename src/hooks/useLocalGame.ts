@@ -60,7 +60,15 @@ export function useLocalGame(playerName: string) {
         }
 
         const card = botPlayCard(prev)
-        if (card) return enginePlayCard(prev, card)
+        if (card) {
+          const next = enginePlayCard(prev, card)
+          return next
+        }
+
+        const bot = prev.players.find((p) => p.position === prev.turn)
+        if (bot && bot.hand.length > 0) {
+          return enginePlayCard(prev, bot.hand[0])
+        }
         return prev
       })
     }, 800)

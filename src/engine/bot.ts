@@ -58,7 +58,7 @@ export function botPlayCard(state: LocalGameState): Card | null {
   if (!bot || bot.hand.length === 0) return null
 
   const playable = bot.hand.filter((card) => canBotPlayCard(state, card))
-  if (playable.length === 0) return null
+  if (playable.length === 0) return bot.hand[0]
 
   const trickCards = Object.values(state.currentTrick.cards).filter(Boolean) as Card[]
 

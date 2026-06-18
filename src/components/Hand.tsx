@@ -9,7 +9,7 @@ interface HandProps {
 
 export function Hand({ cards, onPlayCard, disabled }: HandProps) {
   return (
-    <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+    <div style={{ display: 'flex', gap: 4, justifyContent: 'center', flexWrap: 'wrap', maxWidth: '100%', padding: '0 10px' }}>
       {cards.map((card) => (
         <Card
           key={`${card.suit}-${card.rank}`}
