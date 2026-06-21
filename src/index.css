@@ -107,24 +107,24 @@ button, input {
 
 @media (max-width: 480px) {
   .game-card {
-    width: 64px;
-    height: 90px;
-    min-width: 64px;
-    font-size: 14px;
+    width: 72px;
+    height: 100px;
+    min-width: 72px;
+    font-size: 15px;
     border-width: 1.5px;
     border-radius: 8px;
   }
 
   .game-card-rank {
-    font-size: 16px;
+    font-size: 17px;
   }
 
   .game-card-suit {
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .game-card-corner {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .game-card-corner-tl {
@@ -146,8 +146,8 @@ button, input {
   }
 
   .game-table {
-    width: 280px !important;
-    height: 240px !important;
+    width: 240px !important;
+    height: 220px !important;
   }
 
   .score-dots {

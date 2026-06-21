@@ -15,8 +15,8 @@ const R_DESKTOP = 450
 const R_MOBILE = 300
 const CARD_W_DESKTOP = 88
 const CARD_H_DESKTOP = 128
-const CARD_W_MOBILE = 52
-const CARD_H_MOBILE = 80
+const CARD_W_MOBILE = 58
+const CARD_H_MOBILE = 88
 
 export function Hand({ cards, onPlayCard, playableCards, disabled }: HandProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
