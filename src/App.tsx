@@ -144,6 +144,7 @@ export default function App() {
           northSouthScore: localGame.game.northSouthScore,
           eastWestScore: localGame.game.eastWestScore,
           turn: localGame.game.turn,
+          hokmPlayer: localGame.game.hokmPlayer,
         }}
         playerId={localGame.game.playerPosition}
         onPlayCard={localGame.playCard}
