@@ -2,25 +2,28 @@
 set -e
 
 # Soltan Hokm — VPS Installer
-# Run this from the project root after cloning the repo.
-# Usage: sudo bash install.sh
+# Run from the project root: sudo bash install.sh
 
 if [ "$EUID" -ne 0 ]; then
   echo "Error: run with sudo — sudo bash install.sh"
   exit 1
 fi
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR"
+
 echo "=== Soltan Hokm Installer ==="
 
-# --- Build frontend ---
+# --- Build frontend (as original user to avoid npm root issues) ---
 echo "Building frontend..."
-npm run build
+SUDO_USER="${SUDO_USER:-root}"
+sudo -u "$SUDO_USER" npm run build
 
 # --- Build server ---
 echo "Building server..."
 cd server
 go build -o soltanhokm-server .
-cd ..
+cd "$SCRIPT_DIR"
 
 # --- Deploy frontend ---
 echo "Deploying frontend to /var/www/soltanhokm/ ..."
@@ -41,12 +44,21 @@ systemctl daemon-reload
 systemctl enable soltanhokm
 systemctl restart soltanhokm
 
-# --- Install Caddy config ---
-echo "Installing Caddy config..."
-cp Caddyfile /etc/caddy/Caddyfile
-systemctl reload caddy 2>/dev/null || echo "Warning: Caddy reload failed — make sure Caddy is installed and running"
-
 echo ""
-echo "=== Done ==="
-echo "Server status:  systemctl status soltanhokm"
-echo "View logs:      journalctl -u soltanhokm -f"
+echo "=== Installed ==="
+echo ""
+echo "Server is running on port 5566."
+echo ""
+echo "To finish setup, add this to your Caddyfile (/etc/caddy/Caddyfile):"
+echo ""
+echo "  yourdomain.com {"
+echo "      reverse_proxy localhost:5566"
+echo "  }"
+echo ""
+echo "Then reload Caddy:"
+echo ""
+echo "  sudo systemctl reload caddy"
+echo ""
+echo "Useful commands:"
+echo "  systemctl status soltanhokm"
+echo "  journalctl -u soltanhokm -f"
