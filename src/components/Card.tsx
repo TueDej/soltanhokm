@@ -31,11 +31,17 @@ export function Card({ card, onClick, disabled, dimmed }: CardProps) {
       <span className="game-card-corner game-card-corner-tl">
         {card.rank}<br />{SUIT_SYMBOLS[card.suit]}
       </span>
+      <span className="game-card-corner game-card-corner-tr">
+        {card.rank}<br />{SUIT_SYMBOLS[card.suit]}
+      </span>
       <span className="game-card-center">
         <span className="game-card-suit">{SUIT_SYMBOLS[card.suit]}</span>
       </span>
+      <span className="game-card-corner game-card-corner-bl">
+        {card.rank}<br />{SUIT_SYMBOLS[card.suit]}
+      </span>
       <span className="game-card-corner game-card-corner-br">
-        {SUIT_SYMBOLS[card.suit]}<br />{card.rank}
+        {card.rank}<br />{SUIT_SYMBOLS[card.suit]}
       </span>
     </button>
   )
