@@ -1,55 +1,74 @@
-# Deploy guide — Soltan Hokm (Go backend + React frontend)
-#
-# Prerequisites on VPS:
-#   - Go 1.21+ (for building server, or build locally and upload binary)
-#   - Caddy (reverse proxy + static file serving)
-#   - Node.js 18+ only needed for local build
+# Deploying Soltan Hokm
 
-# ============================================
-# 1. BUILD (local machine)
-# ============================================
-npm run build            # creates dist/
-cd server
-go build -o soltanhokm-server .
-cd ..
+## Prerequisites
 
-# ============================================
-# 2. UPLOAD TO VPS
-# ============================================
-scp -r dist/ root@your-vps:/var/www/soltanhokm/
-scp server/soltanhokm-server root@your-vps:/opt/soltanhokm/
+- **Node.js 18+** and **Go 1.21+** (for building)
+- A VPS with **Caddy** and **systemd**
+- SSH access to the VPS
 
-# ============================================
-# 3. CADDY CONFIGURATION
-# ============================================
-# Copy Caddyfile to /etc/caddy/Caddyfile on the VPS.
-# Replace 'yourdomain.com' with your actual domain.
-#
-# The config:
-#   - Serves React frontend from /var/www/soltanhokm
-#   - Proxies WebSocket connections to Go server on port 5566
+## 1. Build
 
-sudo cp Caddyfile /etc/caddy/Caddyfile
-sudo nano /etc/caddy/Caddyfile    # edit domain name
-sudo systemctl reload caddy
+From the project root on your local machine:
 
-# ============================================
-# 4. SYSTEMD SERVICE (Go server)
-# ============================================
-# Copy soltanhokm.service to /etc/systemd/system/
+```bash
+npm run build
+cd server && go build -o soltanhokm-server .
+```
 
-sudo cp soltanhokm.service /etc/systemd/system/
-sudo systemctl daemon-reload
-sudo systemctl enable soltanhokm
-sudo systemctl start soltanhokm
+This produces `dist/` (frontend) and `server/soltanhokm-server` (binary).
 
-# Check status:
-sudo systemctl status soltanhokm
+## 2. Upload
 
-# ============================================
-# 5. VERIFY
-# ============================================
-# - Visit https://yourdomain.com
-# - "Play vs Bots" works (local mode, no server needed)
-# - "Play Online" creates/joins rooms via WebSocket
-# - Open two browser tabs to test multiplayer
+```bash
+# Frontend files
+scp -r dist/ root@YOUR_VPS:/var/www/soltanhokm/
+
+# Server binary
+scp server/soltanhokm-server root@YOUR_VPS:/opt/soltanhokm/
+```
+
+## 3. Server (systemd)
+
+Copy the service file and start it:
+
+```bash
+scp soltanhokm.service root@YOUR_VPS:/etc/systemd/system/
+ssh root@YOUR_VPS "systemctl daemon-reload && systemctl enable --now soltanhokm"
+```
+
+The server runs on port `5566` by default. To change it, edit the `PORT` variable in `soltanhokm.service`.
+
+Verify it's running:
+
+```bash
+ssh root@YOUR_VPS "systemctl status soltanhokm"
+```
+
+## 4. Reverse Proxy (Caddy)
+
+Copy the Caddyfile and edit the domain:
+
+```bash
+scp Caddyfile root@YOUR_VPS:/etc/caddy/Caddyfile
+ssh root@YOUR_VPS "nano /etc/caddy/Caddyfile"  # update domain + certs
+ssh root@YOUR_VPS "systemctl reload caddy"
+```
+
+The Caddyfile proxies all traffic (including WebSocket at `/ws`) to the Go server on `localhost:5566`, and serves static files from `/var/www/soltanhokm`.
+
+## 5. Verify
+
+1. Visit `https://YOUR_DOMAIN`
+2. **Play vs 3 Bots** should work immediately (no server needed)
+3. **Play Online** should create/join rooms via WebSocket
+4. Open two browser tabs to test multiplayer
+
+## Updating
+
+To deploy a new version, repeat steps 1–2 (build + upload), then restart the server:
+
+```bash
+ssh root@YOUR_VPS "systemctl restart soltanhokm"
+```
+
+No Caddy restart is needed unless the Caddyfile changed.
