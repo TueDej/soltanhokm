@@ -15,7 +15,7 @@ import { botChooseHokm, botPlayCard } from '../engine/bot'
 export function useLocalGame(playerName: string) {
   const [game, setGame] = useState<LocalGameState | null>(null)
   const [isThinking, setIsThinking] = useState(false)
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const botTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const trickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const startGame = useCallback(() => {
@@ -41,12 +41,12 @@ export function useLocalGame(playerName: string) {
     })
   }, [])
 
+  // Trick resolution effect
   useEffect(() => {
     if (!game || game.phase === TrickPhase.Finished) return
-    if (!isTrickComplete(game)) return
     if (game.phase !== TrickPhase.Playing) return
+    if (!isTrickComplete(game)) return
 
-    if (trickTimerRef.current) clearTimeout(trickTimerRef.current)
     trickTimerRef.current = setTimeout(() => {
       setGame((prev) => {
         if (!prev || prev.phase === TrickPhase.Finished) return prev
@@ -58,26 +58,35 @@ export function useLocalGame(playerName: string) {
     return () => {
       if (trickTimerRef.current) clearTimeout(trickTimerRef.current)
     }
-  }, [game?.currentTrick, game?.phase])
+  }, [game?.phase, game?.currentTrick])
 
+  // Bot turn effect — always returns a cleanup function
   useEffect(() => {
-    if (!game) return
-    if (game.phase === TrickPhase.Finished) return
-
-    if (game.turn === game.playerPosition) {
-      setIsThinking(false)
-      return
+    // Always clear previous timer on every render
+    if (botTimerRef.current) {
+      clearTimeout(botTimerRef.current)
+      botTimerRef.current = null
     }
 
-    if (isTrickComplete(game)) return
+    if (!game || game.phase === TrickPhase.Finished) return
+
+    // Only schedule if it's the bot's turn
+    if (game.turn === game.playerPosition) {
+      setIsThinking(false)
+      return () => {}
+    }
+
+    // During ChoosingHokm, don't check trick completion
+    if (game.phase === TrickPhase.Playing && isTrickComplete(game)) {
+      return () => {}
+    }
 
     setIsThinking(true)
 
-    timerRef.current = setTimeout(() => {
+    const timer = setTimeout(() => {
       setGame((prev) => {
         if (!prev || prev.phase === TrickPhase.Finished) return prev
         if (prev.turn === prev.playerPosition) return prev
-        if (isTrickComplete(prev)) return prev
 
         if (prev.phase === TrickPhase.ChoosingHokm) {
           const suit = botChooseHokm(prev)
@@ -85,10 +94,10 @@ export function useLocalGame(playerName: string) {
           return prev
         }
 
+        if (isTrickComplete(prev)) return prev
+
         const card = botPlayCard(prev)
-        if (card) {
-          return enginePlayCard(prev, card)
-        }
+        if (card) return enginePlayCard(prev, card)
 
         const bot = prev.players.find((p) => p.position === prev.turn)
         if (bot && bot.hand.length > 0) {
@@ -98,10 +107,17 @@ export function useLocalGame(playerName: string) {
       })
     }, 800)
 
+    botTimerRef.current = timer
+    return () => clearTimeout(timer)
+  }, [game?.turn, game?.phase, game?.playerPosition])
+
+  // Cleanup on unmount
+  useEffect(() => {
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
+      if (botTimerRef.current) clearTimeout(botTimerRef.current)
+      if (trickTimerRef.current) clearTimeout(trickTimerRef.current)
     }
-  }, [game?.turn, game?.phase, game?.playerPosition, game?.currentTrick])
+  }, [])
 
   return {
     game,
