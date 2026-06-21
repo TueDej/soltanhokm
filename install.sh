@@ -17,7 +17,7 @@ echo "=== Soltan Hokm Installer ==="
 # --- Build frontend (as original user to avoid npm root issues) ---
 echo "Building frontend..."
 SUDO_USER="${SUDO_USER:-root}"
-sudo -u "$SUDO_USER" npm run build
+su -l "$SUDO_USER" -c "cd $SCRIPT_DIR && npm run build"
 
 # --- Build server ---
 echo "Building server..."
