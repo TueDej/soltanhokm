@@ -3,3 +3,15 @@ dist
 .env
 .env.local
 *.log
+
+# Server binary
+server/soltanhokm-server
+
+# IDE / tooling
+.vscode
+.idea
+*.swp
+*.swo
+
+# Internal docs
+.mimocode/
