@@ -59,15 +59,28 @@ func (hp *HumanPlayer) SendMessage(msg ServerMessage) {
 }
 
 func (hp *HumanPlayer) ReadPump() {
+	// Save local reference — conn may be replaced by RejoinPlayer
+	myConn := hp.Conn
 	defer func() {
-		if hp.Room != nil {
-			hp.Room.OnDisconnect(hp.ID)
+		// Only mark disconnected if this conn is still the active one
+		// (i.e. player hasn't already reconnected with a new conn)
+		hp.mu.Lock()
+		if hp.Conn == myConn {
+			hp.Conn = nil
+			hp.Disconnected = true
+			hp.DisconnectedAt = 0 // will be set by OnDisconnect
+			hp.mu.Unlock()
+			if hp.Room != nil {
+				hp.Room.OnDisconnect(hp.ID)
+			}
+		} else {
+			hp.mu.Unlock()
 		}
-		hp.Conn.Close()
+		myConn.Close()
 	}()
 
 	for {
-		_, raw, err := hp.Conn.ReadMessage()
+		_, raw, err := myConn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseNormalClosure) {
 				log.Printf("Read error: %v", err)

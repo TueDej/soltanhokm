@@ -406,9 +406,11 @@ func (r *Room) RejoinPlayer(playerID string, conn *websocket.Conn) (*HumanPlayer
 
 	for _, p := range r.Players {
 		if p.ID == playerID {
+			p.mu.Lock()
 			p.Conn = conn
 			p.Disconnected = false
 			p.DisconnectedAt = 0
+			p.mu.Unlock()
 			return p, true
 		}
 	}
