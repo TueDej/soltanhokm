@@ -41,6 +41,7 @@ cp -r dist/* /var/www/soltanhokm/
 
 # --- Deploy server ---
 echo "Deploying server to /opt/soltanhokm/ ..."
+systemctl stop soltanhokm 2>/dev/null || true
 mkdir -p /opt/soltanhokm
 cp server/soltanhokm-server /opt/soltanhokm/
 chmod +x /opt/soltanhokm/soltanhokm-server
