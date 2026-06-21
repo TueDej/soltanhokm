@@ -151,6 +151,55 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request, rm *RoomManager) {
 
 		player.ReadPump()
 
+	case "rejoin_room":
+		var payload RejoinRoomPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			conn.WriteJSON(ServerMessage{
+				Type:    "error",
+				Payload: ErrorPayload{Message: "Invalid rejoin payload"},
+			})
+			conn.Close()
+			return
+		}
+
+		room := rm.GetRoom(payload.RoomCode)
+		if room == nil {
+			conn.WriteJSON(ServerMessage{
+				Type:    "error",
+				Payload: ErrorPayload{Message: "Room not found"},
+			})
+			conn.Close()
+			return
+		}
+
+		player, ok := room.RejoinPlayer(payload.PlayerID, conn)
+		if !ok {
+			conn.WriteJSON(ServerMessage{
+				Type:    "error",
+				Payload: ErrorPayload{Message: "Player not found in room"},
+			})
+			conn.Close()
+			return
+		}
+
+		log.Printf("Player %s rejoined room %s", player.Name, payload.RoomCode)
+
+		player.SendMessage(ServerMessage{
+			Type:    "rejoin_success",
+			Payload: RejoinSuccessPayload{RoomCode: room.Code, PlayerID: player.ID},
+		})
+
+		// Send current game state if game is in progress
+		if room.Game != nil {
+			state := room.Game.GetPublicState(player.Position)
+			player.SendMessage(ServerMessage{
+				Type:    "game_state",
+				Payload: state,
+			})
+		}
+
+		player.ReadPump()
+
 	default:
 		conn.WriteJSON(ServerMessage{
 			Type:    "error",

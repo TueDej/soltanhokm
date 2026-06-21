@@ -10,23 +10,71 @@ import { createSocket } from '../services/socket'
 import type { OutgoingMessage } from '../types/socket'
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`
+const STORAGE_KEY = 'soltanhokm_session'
+const MAX_RECONNECT_DELAY = 30000
+const INITIAL_RECONNECT_DELAY = 1000
 
 type RoomPhase = 'idle' | 'lobby' | 'playing' | 'finished'
 
-type PendingMessage = OutgoingMessage
+interface SavedSession {
+  roomCode: string
+  playerId: string
+  playerName: string
+  roomPhase: RoomPhase
+}
+
+function saveSession(session: SavedSession) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(session))
+  } catch {}
+}
+
+function loadSession(): SavedSession | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}
+
+function clearSession() {
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch {}
+}
 
 export function useOnlineGame() {
   const [roomPhase, setRoomPhase] = useState<RoomPhase>('idle')
   const [roomCode, setRoomCode] = useState<string | null>(null)
   const [playerId, setPlayerId] = useState<string | null>(null)
+  const [playerName, setPlayerName] = useState<string>('')
   const [players, setPlayers] = useState<PlayerInfo[]>([])
   const [game, setGame] = useState<OnlineGameState | null>(null)
   const [connected, setConnected] = useState(false)
+  const [reconnecting, setReconnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const socketRef = useRef<ReturnType<typeof createSocket> | null>(null)
-  const pendingRef = useRef<PendingMessage[]>([])
+  const pendingRef = useRef<OutgoingMessage[]>([])
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const destroyedRef = useRef(false)
+  const reconnectDelayRef = useRef(INITIAL_RECONNECT_DELAY)
+  const savedSessionRef = useRef<SavedSession | null>(null)
+  const manualCloseRef = useRef(false)
+
+  // Check for saved session on mount
+  useEffect(() => {
+    const saved = loadSession()
+    if (saved) {
+      savedSessionRef.current = saved
+      setRoomCode(saved.roomCode)
+      setPlayerId(saved.playerId)
+      setPlayerName(saved.playerName)
+      setRoomPhase(saved.roomPhase)
+      connect()
+    }
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -48,6 +96,7 @@ export function useOnlineGame() {
   const connect = useCallback(() => {
     if (socketRef.current) return
     destroyedRef.current = false
+    manualCloseRef.current = false
 
     const socket = createSocket(WS_URL)
     socketRef.current = socket
@@ -55,21 +104,43 @@ export function useOnlineGame() {
     socket.onOpen(() => {
       setConnected(true)
       setError(null)
-      flushPending()
+      reconnectDelayRef.current = INITIAL_RECONNECT_DELAY
+
+      // If we have a saved session, try to rejoin
+      const saved = savedSessionRef.current
+      if (saved) {
+        setReconnecting(true)
+        socket.send({
+          type: MessageType.RejoinRoom,
+          payload: {
+            roomCode: saved.roomCode,
+            playerId: saved.playerId,
+            playerName: saved.playerName,
+          },
+        })
+      } else {
+        flushPending()
+      }
     })
 
     socket.onClose(() => {
       socketRef.current = null
       setConnected(false)
 
-      if (!destroyedRef.current) {
-        reconnectTimer.current = setTimeout(() => {
-          if (!destroyedRef.current) {
-            reconnectTimer.current = null
-            connect()
-          }
-        }, 2000)
-      }
+      if (manualCloseRef.current || destroyedRef.current) return
+
+      setReconnecting(true)
+
+      // Exponential backoff
+      const delay = reconnectDelayRef.current
+      reconnectDelayRef.current = Math.min(delay * 2, MAX_RECONNECT_DELAY)
+
+      reconnectTimer.current = setTimeout(() => {
+        if (!destroyedRef.current) {
+          reconnectTimer.current = null
+          connect()
+        }
+      }, delay)
     })
 
     socket.onMessage((msg: ServerMessage) => {
@@ -79,6 +150,8 @@ export function useOnlineGame() {
           setRoomCode(payload.roomCode)
           setPlayerId(payload.playerId)
           setRoomPhase('lobby')
+          savedSessionRef.current = { roomCode: payload.roomCode, playerId: payload.playerId, playerName, roomPhase: 'lobby' }
+          saveSession(savedSessionRef.current)
           break
         }
         case MessageType.RoomJoined: {
@@ -86,6 +159,19 @@ export function useOnlineGame() {
           setRoomCode(payload.roomCode)
           setPlayerId(payload.playerId)
           setRoomPhase('lobby')
+          savedSessionRef.current = { roomCode: payload.roomCode, playerId: payload.playerId, playerName, roomPhase: 'lobby' }
+          saveSession(savedSessionRef.current)
+          break
+        }
+        case MessageType.RejoinSuccess: {
+          const payload = msg.payload as { roomCode: string; playerId: string }
+          setRoomCode(payload.roomCode)
+          setPlayerId(payload.playerId)
+          setReconnecting(false)
+          // Restore roomPhase from saved session
+          if (savedSessionRef.current) {
+            setRoomPhase(savedSessionRef.current.roomPhase)
+          }
           break
         }
         case MessageType.PlayerJoined: {
@@ -95,13 +181,20 @@ export function useOnlineGame() {
         }
         case MessageType.GameStarted: {
           setRoomPhase('playing')
+          if (savedSessionRef.current) {
+            savedSessionRef.current.roomPhase = 'playing'
+            saveSession(savedSessionRef.current)
+          }
           break
         }
         case MessageType.GameState: {
           const state = msg.payload as OnlineGameState
           setGame(state)
+          setReconnecting(false)
           if (state.phase === 'Finished') {
             setRoomPhase('finished')
+            clearSession()
+            savedSessionRef.current = null
           }
           break
         }
@@ -109,13 +202,22 @@ export function useOnlineGame() {
           const payload = msg.payload as { message: string }
           setError(payload.message)
           console.error('Server error:', payload.message)
+          // If rejoin failed, clear saved session
+          if (payload.message.includes('not found')) {
+            clearSession()
+            savedSessionRef.current = null
+            setReconnecting(false)
+            setRoomPhase('idle')
+            setRoomCode(null)
+            setPlayerId(null)
+          }
           break
         }
       }
     })
-  }, [flushPending])
+  }, [flushPending, playerName])
 
-  const sendOrQueue = useCallback((msg: PendingMessage) => {
+  const sendOrQueue = useCallback((msg: OutgoingMessage) => {
     if (socketRef.current?.send) {
       socketRef.current.send(msg)
     } else {
@@ -124,17 +226,19 @@ export function useOnlineGame() {
     }
   }, [connect])
 
-  const createRoom = useCallback((playerName: string) => {
+  const createRoom = useCallback((name: string) => {
+    setPlayerName(name)
     sendOrQueue({
       type: MessageType.CreateRoom,
-      payload: { playerName },
+      payload: { playerName: name },
     })
   }, [sendOrQueue])
 
-  const joinRoom = useCallback((playerName: string, code: string) => {
+  const joinRoom = useCallback((name: string, code: string) => {
+    setPlayerName(name)
     sendOrQueue({
       type: MessageType.JoinRoom,
-      payload: { playerName, roomCode: code },
+      payload: { playerName: name, roomCode: code },
     })
   }, [sendOrQueue])
 
@@ -160,6 +264,7 @@ export function useOnlineGame() {
   }, [sendOrQueue])
 
   const reset = useCallback(() => {
+    manualCloseRef.current = true
     if (reconnectTimer.current) {
       clearTimeout(reconnectTimer.current)
       reconnectTimer.current = null
@@ -168,13 +273,18 @@ export function useOnlineGame() {
     socketRef.current?.close()
     socketRef.current = null
     pendingRef.current = []
+    savedSessionRef.current = null
+    clearSession()
     setRoomPhase('idle')
     setRoomCode(null)
     setPlayerId(null)
+    setPlayerName('')
     setPlayers([])
     setGame(null)
     setConnected(false)
+    setReconnecting(false)
     setError(null)
+    reconnectDelayRef.current = INITIAL_RECONNECT_DELAY
   }, [])
 
   const selectTeam = useCallback((team: 'ns' | 'ew') => {
@@ -191,6 +301,7 @@ export function useOnlineGame() {
     players,
     game,
     connected,
+    reconnecting,
     error,
     createRoom,
     joinRoom,

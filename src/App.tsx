@@ -185,6 +185,7 @@ export default function App() {
           onPlayCard={onlineGame.playCard}
           onChooseHokm={onlineGame.chooseHokm}
           mode="online"
+          reconnecting={onlineGame.reconnecting}
         />
       )
     }

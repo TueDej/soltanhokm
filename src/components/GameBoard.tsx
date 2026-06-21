@@ -29,6 +29,7 @@ interface GameBoardProps {
   onPlayCard: (card: Card) => void
   onChooseHokm?: (suit: Suit) => void
   mode: 'local' | 'online'
+  reconnecting?: boolean
 }
 
 const SUIT_SYMBOLS: Record<Suit, string> = {
@@ -106,7 +107,7 @@ const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
   right: { right: 8, top: '50%', transform: 'translateY(-50%)' },
 }
 
-export function GameBoard({ game, playerId, onPlayCard, onChooseHokm }: GameBoardProps) {
+export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecting }: GameBoardProps) {
   const me = game.players.find((p) => p.id === playerId)
   const myPos = getMyPosition(game, playerId)
   const isMyTurn = myPos && game.turn === myPos
@@ -226,6 +227,38 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm }: GameBoar
           </span>
         </div>
       </div>
+
+      {/* Reconnecting overlay */}
+      {reconnecting && (
+        <div style={{
+          position: 'absolute',
+          top: 48,
+          left: 0,
+          right: 0,
+          zIndex: 100,
+          background: 'rgba(212, 114, 106, 0.95)',
+          color: '#fff',
+          textAlign: 'center',
+          padding: '8px 16px',
+          fontSize: '0.85rem',
+          fontWeight: 'bold',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 8,
+          animation: 'pulse 1.5s ease-in-out infinite',
+        }}>
+          <span style={{
+            width: 8,
+            height: 8,
+            borderRadius: '50%',
+            background: '#fff',
+            display: 'inline-block',
+            animation: 'blink 1s ease-in-out infinite',
+          }} />
+          Reconnecting...
+        </div>
+      )}
 
       {/* Center area: bot placeholders + table */}
       <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>

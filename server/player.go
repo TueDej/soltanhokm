@@ -20,10 +20,12 @@ type Player struct {
 
 type HumanPlayer struct {
 	*Player
-	Conn   *websocket.Conn
-	Room   *Room
-	Send   chan []byte
-	mu     sync.Mutex
+	Conn           *websocket.Conn
+	Room           *Room
+	Send           chan []byte
+	mu             sync.Mutex
+	Disconnected   bool
+	DisconnectedAt int64
 }
 
 func NewHumanPlayer(id, name string, conn *websocket.Conn) *HumanPlayer {
@@ -59,7 +61,7 @@ func (hp *HumanPlayer) SendMessage(msg ServerMessage) {
 func (hp *HumanPlayer) ReadPump() {
 	defer func() {
 		if hp.Room != nil {
-			hp.Room.RemovePlayer(hp.ID)
+			hp.Room.OnDisconnect(hp.ID)
 		}
 		hp.Conn.Close()
 	}()

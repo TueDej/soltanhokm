@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 type RoomStatus string
@@ -242,14 +244,23 @@ func (r *Room) GameLoop() {
 			continue
 		}
 
-		// Find if current turn is a bot
+		// Find if current turn is a bot or disconnected player
 		r.mu.Lock()
 		player := r.Game.FindPlayer(turn)
 		isBot := player != nil && player.IsBot
+		isDisconnected := false
+		if !isBot {
+			for _, hp := range r.Players {
+				if hp.Position == turn && hp.Disconnected {
+					isDisconnected = true
+					break
+				}
+			}
+		}
 		isChoosingHokm := phase == PhaseChoosingHokm && turn == r.Game.HokmPlayer
 		r.mu.Unlock()
 
-		if isBot {
+		if isBot || isDisconnected {
 			time.Sleep(800 * time.Millisecond)
 
 			r.mu.Lock()
@@ -358,6 +369,50 @@ func (r *Room) RemovePlayer(id string) {
 	if len(r.Players) == 0 && r.Status != RoomPlaying {
 		r.Status = RoomFinished
 	}
+}
+
+func (r *Room) OnDisconnect(id string) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	// In lobby, just remove the player
+	if r.Status != RoomPlaying {
+		for i, p := range r.Players {
+			if p.ID == id {
+				r.Players = append(r.Players[:i], r.Players[i+1:]...)
+				break
+			}
+		}
+		if len(r.Players) == 0 {
+			r.Status = RoomFinished
+		}
+		return
+	}
+
+	// During active game, mark as disconnected but keep slot
+	for _, p := range r.Players {
+		if p.ID == id {
+			p.Disconnected = true
+			p.DisconnectedAt = time.Now().Unix()
+			p.Conn = nil
+			break
+		}
+	}
+}
+
+func (r *Room) RejoinPlayer(playerID string, conn *websocket.Conn) (*HumanPlayer, bool) {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	for _, p := range r.Players {
+		if p.ID == playerID {
+			p.Conn = conn
+			p.Disconnected = false
+			p.DisconnectedAt = 0
+			return p, true
+		}
+	}
+	return nil, false
 }
 
 // Bot names

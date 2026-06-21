@@ -60,7 +60,6 @@ export function createSocket(url: string): {
       closeHandlers.push(handler)
     },
     close() {
-      closed = true
       ws?.close()
       ws = null
       msgHandlers = []

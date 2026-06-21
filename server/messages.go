@@ -73,6 +73,12 @@ type JoinRoomPayload struct {
 	RoomCode   string `json:"roomCode"`
 }
 
+type RejoinRoomPayload struct {
+	RoomCode   string `json:"roomCode"`
+	PlayerID   string `json:"playerId"`
+	PlayerName string `json:"playerName"`
+}
+
 type ChooseHokmPayload struct {
 	Suit Suit `json:"suit"`
 }
@@ -94,6 +100,11 @@ type RoomCreatedPayload struct {
 }
 
 type RoomJoinedPayload struct {
+	RoomCode string `json:"roomCode"`
+	PlayerID string `json:"playerId"`
+}
+
+type RejoinSuccessPayload struct {
 	RoomCode string `json:"roomCode"`
 	PlayerID string `json:"playerId"`
 }
