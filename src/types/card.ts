@@ -8,6 +8,11 @@ export enum Suit {
 }
 
 export enum Rank {
+  Two = '2',
+  Three = '3',
+  Four = '4',
+  Five = '5',
+  Six = '6',
   Seven = '7',
   Eight = '8',
   Nine = '9',
@@ -31,14 +36,19 @@ export const SUIT_ORDER: Record<Suit, number> = {
 }
 
 export const RANK_ORDER: Record<Rank, number> = {
-  [Rank.Seven]: 0,
-  [Rank.Eight]: 1,
-  [Rank.Nine]: 2,
-  [Rank.Ten]: 3,
-  [Rank.Jack]: 4,
-  [Rank.Queen]: 5,
-  [Rank.King]: 6,
-  [Rank.Ace]: 7,
+  [Rank.Two]: 0,
+  [Rank.Three]: 1,
+  [Rank.Four]: 2,
+  [Rank.Five]: 3,
+  [Rank.Six]: 4,
+  [Rank.Seven]: 5,
+  [Rank.Eight]: 6,
+  [Rank.Nine]: 7,
+  [Rank.Ten]: 8,
+  [Rank.Jack]: 9,
+  [Rank.Queen]: 10,
+  [Rank.King]: 11,
+  [Rank.Ace]: 12,
 }
 
 export function createDeck(): Card[] {
@@ -72,6 +82,14 @@ export function deal(deck: Card[]): Record<PlayerPosition, Card[]> {
     positions[i % 4] && hands[positions[i % 4]!].push(deck[i])
   }
   return hands
+}
+
+export function sortHand(hand: Card[]): Card[] {
+  return [...hand].sort((a, b) => {
+    const suitDiff = SUIT_ORDER[a.suit] - SUIT_ORDER[b.suit]
+    if (suitDiff !== 0) return suitDiff
+    return RANK_ORDER[a.rank] - RANK_ORDER[b.rank]
+  })
 }
 
 export function canBeat(

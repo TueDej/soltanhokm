@@ -16,11 +16,11 @@ export interface Player {
 }
 
 export enum TrickPhase {
-  WaitingForPlayers,
-  ChoosingHokm,
-  ChoosingTeam,
-  Playing,
-  Finished,
+  WaitingForPlayers = 'WaitingForPlayers',
+  ChoosingHokm = 'ChoosingHokm',
+  ChoosingTeam = 'ChoosingTeam',
+  Playing = 'Playing',
+  Finished = 'Finished',
 }
 
 export interface Trick {

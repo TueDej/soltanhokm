@@ -1,13 +1,31 @@
 import { useState } from 'react'
-import { useLanguage } from '../context/LanguageContext'
 
 interface MainMenuProps {
-  onSelectMode: (mode: 'local' | 'online', playerName: string) => void
+  onSelectMode: (mode: 'local' | 'online_create' | 'online_join', playerName: string, roomCode?: string) => void
 }
 
 export function MainMenu({ onSelectMode }: MainMenuProps) {
   const [playerName, setPlayerName] = useState('')
-  const { t } = useLanguage()
+  const [subMode, setSubMode] = useState<'idle' | 'online_options'>('idle')
+  const [joinCode, setJoinCode] = useState('')
+
+  function handleLocal() {
+    if (playerName.trim()) {
+      onSelectMode('local', playerName.trim())
+    }
+  }
+
+  function handleCreate() {
+    if (playerName.trim()) {
+      onSelectMode('online_create', playerName.trim())
+    }
+  }
+
+  function handleJoin() {
+    if (playerName.trim() && joinCode.trim()) {
+      onSelectMode('online_join', playerName.trim(), joinCode.trim().toUpperCase())
+    }
+  }
 
   return (
     <div
@@ -19,14 +37,19 @@ export function MainMenu({ onSelectMode }: MainMenuProps) {
         marginTop: 100,
       }}
     >
-      <h1 style={{ fontSize: 48, marginBottom: 10 }}>{t('title')}</h1>
-      <p style={{ color: '#aaa' }}>{t('subtitle')}</p>
+      <h1 style={{ fontSize: 48, marginBottom: 10 }}>Soltan Hokm</h1>
+      <p style={{ color: '#aaa' }}>Hokm Card Game</p>
 
       <input
-        placeholder={t('enterName')}
+        placeholder="Enter your name"
         value={playerName}
         onChange={(e) => setPlayerName(e.target.value)}
-        onKeyDown={(e) => e.key === 'Enter' && playerName.trim() && onSelectMode('local', playerName.trim())}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && playerName.trim()) {
+            if (subMode === 'idle') handleLocal()
+            else handleCreate()
+          }
+        }}
         style={{
           padding: '12px 20px',
           fontSize: 18,
@@ -39,39 +62,120 @@ export function MainMenu({ onSelectMode }: MainMenuProps) {
         }}
       />
 
-      <button
-        onClick={() => onSelectMode('local', playerName.trim())}
-        disabled={!playerName.trim()}
-        style={{
-          padding: '14px 40px',
-          fontSize: 18,
-          borderRadius: 8,
-          border: 'none',
-          background: playerName.trim() ? '#2d8a3e' : '#444',
-          color: '#fff',
-          cursor: playerName.trim() ? 'pointer' : 'not-allowed',
-          width: 320,
-        }}
-      >
-        {t('playVs3Bots')}
-      </button>
+      {!subMode || subMode === 'idle' ? (
+        <>
+          <button
+            onClick={handleLocal}
+            disabled={!playerName.trim()}
+            style={{
+              padding: '14px 40px',
+              fontSize: 18,
+              borderRadius: 8,
+              border: 'none',
+              background: playerName.trim() ? '#4a9d8f' : '#444',
+              color: '#fff',
+              cursor: playerName.trim() ? 'pointer' : 'not-allowed',
+              width: 320,
+            }}
+          >
+            Play vs 3 Bots
+          </button>
 
-      <button
-        disabled
-        title={t('twoPlayers')}
-        style={{
-          padding: '14px 40px',
-          fontSize: 18,
-          borderRadius: 8,
-          border: 'none',
-          background: '#333',
-          color: '#666',
-          cursor: 'not-allowed',
-          width: 320,
-        }}
-      >
-        {t('twoPlayers')}
-      </button>
+          <button
+            onClick={() => setSubMode('online_options')}
+            disabled={!playerName.trim()}
+            style={{
+              padding: '14px 40px',
+              fontSize: 18,
+              borderRadius: 8,
+              border: 'none',
+              background: playerName.trim() ? '#3a7cbd' : '#444',
+              color: '#fff',
+              cursor: playerName.trim() ? 'pointer' : 'not-allowed',
+              width: 320,
+            }}
+          >
+            Play Online
+          </button>
+        </>
+      ) : (
+        <>
+          <button
+            onClick={handleCreate}
+            disabled={!playerName.trim()}
+            style={{
+              padding: '14px 40px',
+              fontSize: 18,
+              borderRadius: 8,
+              border: 'none',
+              background: playerName.trim() ? '#3a7cbd' : '#444',
+              color: '#fff',
+              cursor: playerName.trim() ? 'pointer' : 'not-allowed',
+              width: 320,
+            }}
+          >
+            Create Room
+          </button>
+
+          <div style={{ display: 'flex', gap: 8, width: 320 }}>
+            <input
+              placeholder="Room code"
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleJoin()
+              }}
+              style={{
+                padding: '12px 16px',
+                fontSize: 18,
+                borderRadius: 8,
+                border: '2px solid #444',
+                background: '#222',
+                color: '#fff',
+                width: 160,
+                textAlign: 'center',
+                letterSpacing: 4,
+                textTransform: 'uppercase',
+                fontFamily: 'monospace',
+              }}
+            />
+            <button
+              onClick={handleJoin}
+              disabled={!playerName.trim() || !joinCode.trim()}
+              style={{
+                padding: '12px 20px',
+                fontSize: 18,
+                borderRadius: 8,
+                border: 'none',
+                background: playerName.trim() && joinCode.trim() ? '#3a7cbd' : '#444',
+                color: '#fff',
+                cursor: playerName.trim() && joinCode.trim() ? 'pointer' : 'not-allowed',
+                flex: 1,
+              }}
+            >
+              Join
+            </button>
+          </div>
+
+          <button
+            onClick={() => {
+              setSubMode('idle')
+              setJoinCode('')
+            }}
+            style={{
+              padding: '8px 16px',
+              fontSize: 14,
+              borderRadius: 6,
+              border: '1px solid #555',
+              background: 'transparent',
+              color: '#aaa',
+              cursor: 'pointer',
+            }}
+          >
+            Back
+          </button>
+        </>
+      )}
     </div>
   )
 }

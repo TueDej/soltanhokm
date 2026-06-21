@@ -1,8 +1,14 @@
 import type { Card, Suit } from '../types/card'
-import { createDeck, shuffleDeck, deal, pickWinner } from '../types/card'
+import { createDeck, shuffleDeck, deal, pickWinner, sortHand } from '../types/card'
 import type { Player } from '../types/game'
 import { TrickPhase, PlayerPosition } from '../types/game'
 import type { LocalGameState } from '../types/game'
+
+const BOT_NAMES = ['Alex', 'Sam', 'Jordan', 'Casey', 'Morgan', 'Taylor', 'Riley', 'Quinn', 'Drew', 'Blake', 'Avery', 'Cameron', 'Dakota', 'Emery', 'Finley', 'Harper', 'Hayden', 'Jamie', 'Kendall', 'Logan']
+
+function getRandomBotName(): string {
+  return BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)]
+}
 
 const POSITIONS: PlayerPosition[] = [
   PlayerPosition.North,
@@ -28,9 +34,9 @@ export function createLocalGame(playerName: string, playerPosition: PlayerPositi
   const remainingDeck = deck.slice(20)
   const players: Player[] = POSITIONS.map((pos) => ({
     id: pos,
-    name: pos === playerPosition ? playerName : `Bot ${pos}`,
+    name: pos === playerPosition ? playerName : getRandomBotName(),
     position: pos,
-    hand: initialHands[pos],
+    hand: sortHand(initialHands[pos]),
     tricksWon: 0,
   }))
   const hokmPlayerIndex = Math.floor(Math.random() * 4)
@@ -40,7 +46,7 @@ export function createLocalGame(playerName: string, playerPosition: PlayerPositi
     playerPosition,
     players,
     hokmPlayer: POSITIONS[hokmPlayerIndex],
-    currentTrick: { cards: {}, leader: POSITIONS[(hokmPlayerIndex + 1) % 4] },
+    currentTrick: { cards: {}, leader: POSITIONS[hokmPlayerIndex] },
     northSouthScore: 0,
     eastWestScore: 0,
     turn: POSITIONS[hokmPlayerIndex],
@@ -54,13 +60,13 @@ export function chooseHokm(state: LocalGameState, suit: Suit): LocalGameState {
   const extraHands = deal(state.remainingDeck)
   const newPlayers = state.players.map((p) => ({
     ...p,
-    hand: [...p.hand, ...extraHands[p.position]],
+    hand: sortHand([...p.hand, ...extraHands[p.position]]),
   }))
   return {
     ...state,
     hokmSuit: suit,
     phase: TrickPhase.Playing,
-    turn: state.currentTrick.leader,
+    turn: state.hokmPlayer!,
     players: newPlayers,
     remainingDeck: [],
   }
@@ -76,20 +82,26 @@ export function playCard(state: LocalGameState, card: Card): LocalGameState {
     p.position === state.turn ? { ...p, hand: newHand } : p
   )
   const newTrickCards = { ...state.currentTrick.cards, [state.turn]: card }
-  const allPlayed = Object.keys(newTrickCards).length === 4
-  if (allPlayed) {
-    const trickWinner = pickWinner(newTrickCards, state.hokmSuit!)
-    return resolveTrick(state, newPlayers, trickWinner)
-  }
+  const trickComplete = Object.keys(newTrickCards).length === 4
   return {
     ...state,
     players: newPlayers,
     currentTrick: { ...state.currentTrick, cards: newTrickCards },
-    turn: nextPos(state.turn),
+    turn: trickComplete ? state.turn : nextPos(state.turn),
   }
 }
 
-function resolveTrick(
+export function isTrickComplete(state: LocalGameState): boolean {
+  return Object.keys(state.currentTrick.cards).length === 4
+}
+
+export function resolveTrick(state: LocalGameState): LocalGameState {
+  if (!isTrickComplete(state)) return state
+  const trickWinner = pickWinner(state.currentTrick.cards, state.hokmSuit!)
+  return resolveTrickInner(state, state.players, trickWinner)
+}
+
+function resolveTrickInner(
   state: LocalGameState,
   players: Player[],
   trickWinner: PlayerPosition,
@@ -120,7 +132,7 @@ function resolveTrick(
     const remainingDeck = deck.slice(20)
     const resetPlayers: Player[] = newPlayers.map((p) => ({
       ...p,
-      hand: initialHands[p.position],
+      hand: sortHand(initialHands[p.position]),
       tricksWon: 0,
     }))
     const nextHokmIndex = POSITIONS.indexOf(trickWinner)
@@ -133,7 +145,7 @@ function resolveTrick(
       phase: TrickPhase.ChoosingHokm,
       hokmPlayer: POSITIONS[nextHokmIndex],
       hokmSuit: undefined,
-      currentTrick: { cards: {}, leader: POSITIONS[(nextHokmIndex + 1) % 4] },
+      currentTrick: { cards: {}, leader: POSITIONS[nextHokmIndex] },
       turn: POSITIONS[nextHokmIndex],
       remainingDeck,
     }
@@ -158,10 +170,6 @@ export function canPlayCard(state: LocalGameState, card: Card): boolean {
   const ledSuit = trickCards[0].suit
   const hasLedSuit = player.hand.some((c) => c.suit === ledSuit)
   if (hasLedSuit && card.suit !== ledSuit) return false
-  if (!hasLedSuit && state.hokmSuit) {
-    const hasHokm = player.hand.some((c) => c.suit === state.hokmSuit)
-    if (hasHokm && card.suit !== state.hokmSuit) return false
-  }
   return true
 }
 

@@ -1,0 +1,15 @@
+[Unit]
+Description=Soltan Hokm Game Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/soltanhokm
+ExecStart=/opt/soltanhokm/soltanhokm-server
+Restart=always
+RestartSec=5
+Environment=PORT=5566
+Environment=DIST_DIR=/var/www/soltanhokm
+
+[Install]
+WantedBy=multi-user.target

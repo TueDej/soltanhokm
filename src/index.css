@@ -9,7 +9,143 @@ html, body, #root {
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #1a5c2a;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: #1a2332;
   color: #fff;
+  overflow-x: hidden;
+}
+
+.game-card {
+  width: 67px;
+  height: 95px;
+  min-width: 67px;
+  background: #fff;
+  border: 2px solid #333;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.game-card:disabled {
+  cursor: default;
+}
+
+.game-card-dimmed {
+  background: #c0c0c0;
+  border-color: #999;
+}
+
+.hand-card:hover .game-card:not(:disabled):not(.game-card-dimmed) {
+  transform: translateY(-20px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+
+.hand-card-selected .game-card:not(:disabled):not(.game-card-dimmed) {
+  transform: translateY(-20px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+}
+
+.game-card-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.game-card-rank {
+  font-weight: bold;
+  line-height: 1;
+  font-size: 18px;
+}
+
+.game-card-suit {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.game-card-corner {
+  position: absolute;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.game-card-corner-tl {
+  top: 4px;
+  left: 5px;
+}
+
+.game-card-corner-br {
+  bottom: 4px;
+  right: 5px;
+  transform: rotate(180deg);
+}
+
+@media (max-width: 480px) {
+  .game-card {
+    width: 52px;
+    height: 73px;
+    min-width: 52px;
+    font-size: 13px;
+    border-width: 1.5px;
+    border-radius: 6px;
+  }
+
+  .game-card-rank {
+    font-size: 14px;
+  }
+
+  .game-card-suit {
+    font-size: 16px;
+  }
+
+  .game-card-corner {
+    font-size: 8px;
+  }
+
+  .game-card-corner-tl {
+    top: 2px;
+    left: 3px;
+  }
+
+  .game-card-corner-br {
+    bottom: 2px;
+    right: 3px;
+  }
+
+  .hand-card:hover .game-card:not(:disabled):not(.game-card-dimmed) {
+    transform: translateY(-14px);
+  }
+
+  .hand-card-selected .game-card:not(:disabled):not(.game-card-dimmed) {
+    transform: translateY(-14px);
+  }
+
+  .game-table {
+    width: 220px !important;
+    height: 160px !important;
+  }
+
+  .score-dots {
+    display: none !important;
+  }
+}
+
+.game-table {
+  position: relative;
+  width: 320px;
+  height: 220px;
+  background: #243447;
+  border-radius: 16px;
+  border: 2px solid #2d4a5e;
+  margin: 0 auto;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
 }

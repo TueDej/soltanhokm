@@ -7,6 +7,8 @@ import {
   chooseHokm as engineChooseHokm,
   playCard as enginePlayCard,
   canPlayCard,
+  isTrickComplete,
+  resolveTrick,
 } from '../engine/gameEngine'
 import { botChooseHokm, botPlayCard } from '../engine/bot'
 
@@ -14,6 +16,7 @@ export function useLocalGame(playerName: string) {
   const [game, setGame] = useState<LocalGameState | null>(null)
   const [isThinking, setIsThinking] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const trickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const startGame = useCallback(() => {
     setGame(createLocalGame(playerName, PlayerPosition.South))
@@ -32,10 +35,30 @@ export function useLocalGame(playerName: string) {
     setGame((prev) => {
       if (!prev || prev.phase !== TrickPhase.Playing) return prev
       if (prev.turn !== prev.playerPosition) return prev
+      if (isTrickComplete(prev)) return prev
       if (!canPlayCard(prev, card)) return prev
       return enginePlayCard(prev, card)
     })
   }, [])
+
+  useEffect(() => {
+    if (!game || game.phase === TrickPhase.Finished) return
+    if (!isTrickComplete(game)) return
+    if (game.phase !== TrickPhase.Playing) return
+
+    if (trickTimerRef.current) clearTimeout(trickTimerRef.current)
+    trickTimerRef.current = setTimeout(() => {
+      setGame((prev) => {
+        if (!prev || prev.phase === TrickPhase.Finished) return prev
+        if (!isTrickComplete(prev)) return prev
+        return resolveTrick(prev)
+      })
+    }, 1500)
+
+    return () => {
+      if (trickTimerRef.current) clearTimeout(trickTimerRef.current)
+    }
+  }, [game?.currentTrick, game?.phase])
 
   useEffect(() => {
     if (!game) return
@@ -46,12 +69,15 @@ export function useLocalGame(playerName: string) {
       return
     }
 
+    if (isTrickComplete(game)) return
+
     setIsThinking(true)
 
     timerRef.current = setTimeout(() => {
       setGame((prev) => {
         if (!prev || prev.phase === TrickPhase.Finished) return prev
         if (prev.turn === prev.playerPosition) return prev
+        if (isTrickComplete(prev)) return prev
 
         if (prev.phase === TrickPhase.ChoosingHokm) {
           const suit = botChooseHokm(prev)
@@ -61,8 +87,7 @@ export function useLocalGame(playerName: string) {
 
         const card = botPlayCard(prev)
         if (card) {
-          const next = enginePlayCard(prev, card)
-          return next
+          return enginePlayCard(prev, card)
         }
 
         const bot = prev.players.find((p) => p.position === prev.turn)
@@ -76,7 +101,7 @@ export function useLocalGame(playerName: string) {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
     }
-  }, [game?.turn, game?.phase, game?.playerPosition])
+  }, [game?.turn, game?.phase, game?.playerPosition, game?.currentTrick])
 
   return {
     game,

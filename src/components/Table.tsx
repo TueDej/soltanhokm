@@ -3,35 +3,43 @@ import { PlayerPosition } from '../types/game'
 import type { Card as CardType } from '../types/card'
 import { Card } from './Card'
 
-const POSITION_STYLE: Record<PlayerPosition, React.CSSProperties> = {
-  [PlayerPosition.North]: { top: 0, left: '50%', transform: 'translateX(-50%)' },
-  [PlayerPosition.South]: { bottom: 0, left: '50%', transform: 'translateX(-50%)' },
-  [PlayerPosition.East]: { right: 0, top: '50%', transform: 'translateY(-50%)' },
-  [PlayerPosition.West]: { left: 0, top: '50%', transform: 'translateY(-50%)' },
+const POSITIONS_ORDER: PlayerPosition[] = [PlayerPosition.North, PlayerPosition.East, PlayerPosition.South, PlayerPosition.West]
+
+const TABLE_POSITIONS: Record<string, React.CSSProperties> = {
+  bottom: { bottom: 4, left: '50%', transform: 'translateX(-50%)' },
+  top: { top: 4, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: 4, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: 4, top: '50%', transform: 'translateY(-50%)' },
+}
+
+function getRelativePosition(myPos: PlayerPosition | undefined, otherPos: PlayerPosition): string {
+  if (!myPos) return 'top'
+  if (otherPos === myPos) return 'bottom'
+  const myIdx = POSITIONS_ORDER.indexOf(myPos)
+  const otherIdx = POSITIONS_ORDER.indexOf(otherPos)
+  const diff = (otherIdx - myIdx + 4) % 4
+  if (diff === 2) return 'top'
+  if (diff === 1) return 'right'
+  return 'left'
 }
 
 interface TableProps {
   trick: Trick
+  myPosition?: PlayerPosition
 }
 
-export function Table({ trick }: TableProps) {
+export function Table({ trick, myPosition }: TableProps) {
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: 300,
-        height: 300,
-        background: '#0d4f1a',
-        borderRadius: '50%',
-        border: '2px solid #2d8a3e',
-        margin: '0 auto',
-      }}
-    >
-      {Object.entries(trick.cards).map(([pos, card]) => (
-        <div key={pos} style={{ position: 'absolute', ...POSITION_STYLE[pos as PlayerPosition] }}>
-          <Card card={card as CardType} disabled />
-        </div>
-      ))}
+    <div className="game-table">
+      {Object.entries(trick.cards).map(([pos, card]) => {
+        const relPos = getRelativePosition(myPosition, pos as PlayerPosition)
+        const style = TABLE_POSITIONS[relPos]
+        return (
+          <div key={pos} style={{ position: 'absolute', ...style }}>
+            <Card card={card as CardType} disabled />
+          </div>
+        )
+      })}
     </div>
   )
 }

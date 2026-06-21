@@ -13,10 +13,6 @@ function canBotPlayCard(state: LocalGameState, card: Card): boolean {
   const ledSuit = trickCards[0].suit
   const hasLedSuit = bot.hand.some((c) => c.suit === ledSuit)
   if (hasLedSuit && card.suit !== ledSuit) return false
-  if (!hasLedSuit && state.hokmSuit) {
-    const hasHokm = bot.hand.some((c) => c.suit === state.hokmSuit)
-    if (hasHokm && card.suit !== state.hokmSuit) return false
-  }
   return true
 }
 
