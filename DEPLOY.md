@@ -1,5 +1,15 @@
 # Deploying Soltan Hokm
 
+## Quick Install
+
+```bash
+git clone https://github.com/TueDej/soltanhokm.git
+cd soltanhokm
+sudo bash install.sh
+```
+
+The script builds the frontend and server, deploys to `/var/www/soltanhokm/` and `/opt/soltanhokm/`, installs the systemd service, and starts it. It will print Caddy configuration steps at the end.
+
 ## Prerequisites
 
 - **Node.js 18+** and **Go 1.21+** (for building)

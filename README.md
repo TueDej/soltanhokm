@@ -75,4 +75,12 @@ soltanhokm/
 
 ## Deploy
 
-See [DEPLOY.md](DEPLOY.md) for VPS deployment instructions.
+```bash
+git clone https://github.com/TueDej/soltanhokm.git
+cd soltanhokm
+sudo bash install.sh
+```
+
+The installer builds everything, deploys files, and starts the service. It will print Caddy configuration steps at the end.
+
+See [DEPLOY.md](DEPLOY.md) for detailed instructions.
