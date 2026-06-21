@@ -14,10 +14,18 @@ cd "$SCRIPT_DIR"
 
 echo "=== Soltan Hokm Installer ==="
 
+# --- Check requirements ---
+for cmd in node npm go; do
+  if ! command -v "$cmd" &>/dev/null; then
+    echo "Error: $cmd is not installed."
+    exit 1
+  fi
+done
+
 # --- Build frontend (as original user to avoid npm root issues) ---
 echo "Building frontend..."
 SUDO_USER="${SUDO_USER:-root}"
-su -l "$SUDO_USER" -c "cd $SCRIPT_DIR && npm run build"
+su -l "$SUDO_USER" -c "cd $SCRIPT_DIR && npm install && npm run build"
 
 # --- Build server ---
 echo "Building server..."
