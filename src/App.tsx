@@ -28,8 +28,13 @@ export default function App() {
     }
   }
 
+  function handleResumeGame(name: string) {
+    setPlayerName(name)
+    setMode('online')
+  }
+
   if (!mode) {
-    return <MainMenu onSelectMode={handleSelectMode} />
+    return <MainMenu onSelectMode={handleSelectMode} onResumeGame={handleResumeGame} />
   }
 
   // --- Local mode ---

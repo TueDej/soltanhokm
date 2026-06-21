@@ -1,13 +1,39 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+const STORAGE_KEY = 'soltanhokm_session'
+
+interface SavedSession {
+  roomCode: string
+  playerId: string
+  playerName: string
+  roomPhase: string
+}
 
 interface MainMenuProps {
   onSelectMode: (mode: 'local' | 'online_create' | 'online_join', playerName: string, roomCode?: string) => void
+  onResumeGame: (playerName: string) => void
 }
 
-export function MainMenu({ onSelectMode }: MainMenuProps) {
+function loadSession(): SavedSession | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return null
+    return JSON.parse(raw)
+  } catch {
+    return null
+  }
+}
+
+export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
   const [playerName, setPlayerName] = useState('')
   const [subMode, setSubMode] = useState<'idle' | 'online_options'>('idle')
   const [joinCode, setJoinCode] = useState('')
+  const [savedSession, setSavedSession] = useState<SavedSession | null>(null)
+
+  useEffect(() => {
+    const session = loadSession()
+    if (session) setSavedSession(session)
+  }, [])
 
   function handleLocal() {
     if (playerName.trim()) {
@@ -39,6 +65,29 @@ export function MainMenu({ onSelectMode }: MainMenuProps) {
     >
       <h1 style={{ fontSize: 48, marginBottom: 10 }}>Soltan Hokm</h1>
       <p style={{ color: '#aaa' }}>Hokm Card Game</p>
+
+      {savedSession && (
+        <button
+          onClick={() => onResumeGame(savedSession.playerName)}
+          style={{
+            padding: '14px 40px',
+            fontSize: 18,
+            borderRadius: 8,
+            border: 'none',
+            background: '#d4726a',
+            color: '#fff',
+            cursor: 'pointer',
+            width: 320,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+          }}
+        >
+          <span style={{ fontSize: 20 }}>&#9654;</span>
+          Resume Game
+        </button>
+      )}
 
       <input
         placeholder="Enter your name"
