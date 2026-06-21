@@ -10,7 +10,8 @@ function canBotPlayCard(state: LocalGameState, card: Card): boolean {
   if (!bot.hand.some((c) => c.suit === card.suit && c.rank === card.rank)) return false
   const trickCards = Object.values(state.currentTrick.cards).filter(Boolean) as Card[]
   if (trickCards.length === 0) return true
-  const ledSuit = trickCards[0].suit
+  const leaderCard = state.currentTrick.cards[state.currentTrick.leader]
+  const ledSuit = leaderCard ? leaderCard.suit : trickCards[0].suit
   const hasLedSuit = bot.hand.some((c) => c.suit === ledSuit)
   if (hasLedSuit && card.suit !== ledSuit) return false
   return true
@@ -62,11 +63,12 @@ export function botPlayCard(state: LocalGameState): Card | null {
     return leadCard(state, bot.hand)
   }
 
-  const ledSuit = trickCards[0].suit
+  const leaderCard = state.currentTrick.cards[state.currentTrick.leader]
+  const ledSuit = leaderCard ? leaderCard.suit : trickCards[0].suit
   const hasLedSuit = bot.hand.some((c) => c.suit === ledSuit)
 
   if (hasLedSuit) {
-    return followSuit(state, bot.hand, trickCards)
+    return followSuit(state, bot.hand, trickCards, ledSuit)
   }
 
   const hasHokm = state.hokmSuit && bot.hand.some((c) => c.suit === state.hokmSuit)
@@ -98,7 +100,7 @@ function leadCard(state: LocalGameState, hand: Card[]): Card {
   return hand.sort((a, b) => RANK_ORDER[b.rank] - RANK_ORDER[a.rank])[0]
 }
 
-function followSuit(state: LocalGameState, hand: Card[], trickCards: Card[]): Card {
+function followSuit(state: LocalGameState, hand: Card[], trickCards: Card[], ledSuit: Suit): Card {
   const hokmSuit = state.hokmSuit!
   const currentWinner = trickCards.reduce((best, card) => {
     if (!best) return card
@@ -110,7 +112,6 @@ function followSuit(state: LocalGameState, hand: Card[], trickCards: Card[]): Ca
     return RANK_ORDER[card.rank] > RANK_ORDER[best.rank] ? card : best
   }, undefined as Card | undefined)!
 
-  const ledSuit = trickCards[0].suit
   const sameCards = hand.filter((c) => c.suit === ledSuit)
 
   const winning = sameCards.filter(

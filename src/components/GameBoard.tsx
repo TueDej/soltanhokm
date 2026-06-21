@@ -74,7 +74,8 @@ function getPlayableCards(game: LocalGameView | OnlineGameState, playerId: strin
     return playable
   }
 
-  const ledSuit = trickCards[0].suit
+  const leaderCard = game.currentTrick.cards[game.currentTrick.leader]
+  const ledSuit = leaderCard ? leaderCard.suit : trickCards[0].suit
   const hasLedSuit = hand.some((c) => c.suit === ledSuit)
 
   for (const card of hand) {

@@ -376,25 +376,23 @@ func CanPlayCard(state *GameState, pos PlayerPosition, card Card) bool {
 		return true
 	}
 
-	// Find led suit
-	var ledSuit Suit
-	for _, c := range trickCards {
-		if c != nil {
-			ledSuit = c.Suit
-			break
-		}
+	// Find led suit using the leader field (map iteration order is random)
+	ledSuit := state.CurrentTrick.Cards[state.CurrentTrick.Leader]
+	if ledSuit == nil {
+		return true
 	}
+	ledSuitValue := ledSuit.Suit
 
 	hasLedSuit := false
 	for _, c := range player.Hand {
-		if c.Suit == ledSuit {
+		if c.Suit == ledSuitValue {
 			hasLedSuit = true
 			break
 		}
 	}
 
 	if hasLedSuit {
-		return card.Suit == ledSuit
+		return card.Suit == ledSuitValue
 	}
 
 	return true

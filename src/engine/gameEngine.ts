@@ -167,7 +167,8 @@ export function canPlayCard(state: LocalGameState, card: Card): boolean {
   if (!player.hand.some((c) => c.suit === card.suit && c.rank === card.rank)) return false
   const trickCards = Object.values(state.currentTrick.cards).filter(Boolean) as Card[]
   if (trickCards.length === 0) return true
-  const ledSuit = trickCards[0].suit
+  const leaderCard = state.currentTrick.cards[state.currentTrick.leader]
+  const ledSuit = leaderCard ? leaderCard.suit : trickCards[0].suit
   const hasLedSuit = player.hand.some((c) => c.suit === ledSuit)
   if (hasLedSuit && card.suit !== ledSuit) return false
   return true
