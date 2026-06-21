@@ -164,8 +164,8 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               background: 'rgba(201,168,76,0.1)',
               border: '1px solid rgba(201,168,76,0.2)',
             }}>
-              <span style={{ fontSize: '0.7rem', color: 'rgba(201,168,76,0.6)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: 1 }}>
-                Trump
+              <span style={{ fontSize: '0.8rem', color: 'rgba(201,168,76,0.6)', fontWeight: 600, fontFamily: "'Estedad', sans-serif" }}>
+                حکم
               </span>
               <span style={{
                 fontSize: '1.1rem',
