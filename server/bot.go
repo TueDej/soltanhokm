@@ -53,13 +53,10 @@ func BotPlayCard(state *GameState, pos PlayerPosition) *Card {
 		return leadCard(state, player.Hand)
 	}
 
-	// Find led suit
+	// Find led suit using the leader field
 	var ledSuit Suit
-	for _, c := range trickCards {
-		if c != nil {
-			ledSuit = c.Suit
-			break
-		}
+	if leaderCard, ok := trickCards[state.CurrentTrick.Leader]; ok && leaderCard != nil {
+		ledSuit = leaderCard.Suit
 	}
 
 	hasLedSuit := false
@@ -164,13 +161,10 @@ func followSuit(state *GameState, hand []Card, trickCards map[PlayerPosition]*Ca
 		}
 	}
 
-	// Find led suit
+	// Find led suit using the leader field
 	var ledSuit Suit
-	for _, c := range trickCards {
-		if c != nil {
-			ledSuit = c.Suit
-			break
-		}
+	if leaderCard, ok := trickCards[state.CurrentTrick.Leader]; ok && leaderCard != nil {
+		ledSuit = leaderCard.Suit
 	}
 
 	var sameCards []Card
