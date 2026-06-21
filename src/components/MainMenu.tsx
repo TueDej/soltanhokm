@@ -74,7 +74,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             fontSize: 18,
             borderRadius: 8,
             border: 'none',
-            background: '#d4726a',
+            background: '#4a9d8f',
             color: '#fff',
             cursor: 'pointer',
             width: 320,
