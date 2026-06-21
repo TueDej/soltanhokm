@@ -83,17 +83,6 @@ body {
   left: 6px;
 }
 
-.game-card-corner-tr {
-  top: 5px;
-  right: 6px;
-}
-
-.game-card-corner-bl {
-  bottom: 5px;
-  left: 6px;
-  transform: rotate(180deg);
-}
-
 .game-card-corner-br {
   bottom: 5px;
   right: 6px;
@@ -119,21 +108,11 @@ body {
   }
 
   .game-card-corner {
-    font-size: 11px;
+    font-size: 13px;
   }
 
   .game-card-corner-tl {
     top: 3px;
-    left: 4px;
-  }
-
-  .game-card-corner-tr {
-    top: 3px;
-    right: 4px;
-  }
-
-  .game-card-corner-bl {
-    bottom: 3px;
     left: 4px;
   }
 
