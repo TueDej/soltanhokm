@@ -63,18 +63,8 @@ export function useOnlineGame() {
   const savedSessionRef = useRef<SavedSession | null>(null)
   const manualCloseRef = useRef(false)
 
-  // Check for saved session on mount
-  useEffect(() => {
-    const saved = loadSession()
-    if (saved) {
-      savedSessionRef.current = saved
-      setRoomCode(saved.roomCode)
-      setPlayerId(saved.playerId)
-      setPlayerName(saved.playerName)
-      setRoomPhase(saved.roomPhase)
-      connect()
-    }
-  }, [])
+  // Expose saved session for MainMenu to read, but don't auto-reconnect
+  const getSavedSession = useCallback(() => loadSession(), [])
 
   useEffect(() => {
     return () => {
@@ -217,6 +207,17 @@ export function useOnlineGame() {
     })
   }, [flushPending, playerName])
 
+  const reconnectToSavedSession = useCallback((name: string) => {
+    const saved = loadSession()
+    if (!saved) return
+    savedSessionRef.current = saved
+    setRoomCode(saved.roomCode)
+    setPlayerId(saved.playerId)
+    setPlayerName(name || saved.playerName)
+    setRoomPhase(saved.roomPhase)
+    connect()
+  }, [connect])
+
   const sendOrQueue = useCallback((msg: OutgoingMessage) => {
     if (socketRef.current?.send) {
       socketRef.current.send(msg)
@@ -228,6 +229,8 @@ export function useOnlineGame() {
 
   const createRoom = useCallback((name: string) => {
     setPlayerName(name)
+    clearSession()
+    savedSessionRef.current = null
     sendOrQueue({
       type: MessageType.CreateRoom,
       payload: { playerName: name },
@@ -310,5 +313,7 @@ export function useOnlineGame() {
     playCard,
     selectTeam,
     reset,
+    getSavedSession,
+    reconnectToSavedSession,
   }
 }

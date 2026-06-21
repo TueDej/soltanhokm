@@ -58,6 +58,7 @@ export default function App() {
   function handleResumeGame(name: string) {
     setPlayerName(name)
     setMode('online')
+    onlineGame.reconnectToSavedSession(name)
   }
 
   if (!mode) {
