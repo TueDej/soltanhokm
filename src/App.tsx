@@ -8,6 +8,33 @@ import { useOnlineGame } from './hooks/useOnlineGame'
 
 type Mode = null | 'local' | 'online'
 
+const btnStyle: React.CSSProperties = {
+  padding: '14px 40px',
+  fontSize: 17,
+  fontWeight: 600,
+  borderRadius: 12,
+  border: 'none',
+  color: '#fff',
+  cursor: 'pointer',
+  fontFamily: "'Outfit', sans-serif",
+  letterSpacing: 0.3,
+  transition: 'all 0.2s',
+}
+
+const screenStyle: React.CSSProperties = {
+  textAlign: 'center',
+  marginTop: '12vh',
+  animation: 'fadeIn 0.5s ease',
+}
+
+const titleStyle: React.CSSProperties = {
+  fontFamily: "'Playfair Display', serif",
+  fontSize: 42,
+  fontWeight: 800,
+  marginBottom: 12,
+  color: '#e8e6e1',
+}
+
 export default function App() {
   const [mode, setMode] = useState<Mode>(null)
   const [playerName, setPlayerName] = useState('')
@@ -41,21 +68,25 @@ export default function App() {
   if (mode === 'local') {
     if (!localGame.game) {
       return (
-        <div style={{ textAlign: 'center', marginTop: 60 }}>
-          <h2>Play vs 3 Bots</h2>
-          <p style={{ color: '#aaa', marginBottom: 20 }}>
-            Playing with: {playerName}
+        <div style={screenStyle}>
+          <h2 style={titleStyle}>Play vs 3 Bots</h2>
+          <p style={{ color: 'rgba(232,230,225,0.4)', marginBottom: 28, fontWeight: 400 }}>
+            Playing as: <span style={{ color: '#c9a84c', fontWeight: 500 }}>{playerName}</span>
           </p>
           <button
             onClick={localGame.startGame}
             style={{
-              padding: '14px 40px',
-              fontSize: 18,
-              borderRadius: 8,
-              border: 'none',
-              background: '#4a9d8f',
-              color: '#fff',
-              cursor: 'pointer',
+              ...btnStyle,
+              background: 'linear-gradient(135deg, #c9a84c, #b8943f)',
+              boxShadow: '0 4px 16px rgba(201,168,76,0.25)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(201,168,76,0.25)'
             }}
           >
             Start Game
@@ -67,24 +98,33 @@ export default function App() {
     if (localGame.game.phase === TrickPhase.Finished) {
       const nsWins = localGame.game.matchWinner === 'ns'
       return (
-        <div style={{ textAlign: 'center', marginTop: 60 }}>
-          <h2>Game Over!</h2>
-          <p style={{ color: '#aaa', marginBottom: 10 }}>
+        <div style={screenStyle}>
+          <h2 style={titleStyle}>Game Over</h2>
+          <p style={{
+            color: nsWins ? '#2ecc71' : '#e07060',
+            fontSize: '1.1rem',
+            fontWeight: 600,
+            marginBottom: 8,
+          }}>
             {nsWins ? 'You won!' : 'Bots won.'}
           </p>
-          <p style={{ color: '#888', marginBottom: 20 }}>
+          <p style={{ color: 'rgba(232,230,225,0.3)', marginBottom: 28, fontWeight: 400 }}>
             Rounds: {localGame.game.roundNumber - 1}
           </p>
           <button
             onClick={localGame.startGame}
             style={{
-              padding: '14px 40px',
-              fontSize: 18,
-              borderRadius: 8,
-              border: 'none',
-              background: '#4a9d8f',
-              color: '#fff',
-              cursor: 'pointer',
+              ...btnStyle,
+              background: 'linear-gradient(135deg, #c9a84c, #b8943f)',
+              boxShadow: '0 4px 16px rgba(201,168,76,0.25)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)'
+              e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = '0 4px 16px rgba(201,168,76,0.25)'
             }}
           >
             Play Again
@@ -115,7 +155,6 @@ export default function App() {
 
   // --- Online mode ---
   if (mode === 'online') {
-    // Lobby
     if (onlineGame.roomPhase === 'lobby') {
       return (
         <RoomLobby
@@ -132,14 +171,18 @@ export default function App() {
       )
     }
 
-    // Playing or finished
     if (onlineGame.game) {
       if (onlineGame.roomPhase === 'finished' || onlineGame.game.phase === 'Finished') {
         const nsWins = onlineGame.game.matchWinner === 'ns'
         return (
-          <div style={{ textAlign: 'center', marginTop: 60 }}>
-            <h2>Game Over!</h2>
-            <p style={{ color: '#aaa', marginBottom: 10 }}>
+          <div style={screenStyle}>
+            <h2 style={titleStyle}>Game Over</h2>
+            <p style={{
+              color: nsWins ? '#2ecc71' : '#e07060',
+              fontSize: '1.1rem',
+              fontWeight: 600,
+              marginBottom: 24,
+            }}>
               {nsWins ? 'North-South won!' : 'East-West won!'}
             </p>
             <button
@@ -148,13 +191,17 @@ export default function App() {
                 setMode(null)
               }}
               style={{
-                padding: '14px 40px',
-                fontSize: 18,
-                borderRadius: 8,
-                border: 'none',
-                background: '#4a9d8f',
-                color: '#fff',
-                cursor: 'pointer',
+                ...btnStyle,
+                background: 'linear-gradient(135deg, #c9a84c, #b8943f)',
+                boxShadow: '0 4px 16px rgba(201,168,76,0.25)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = '0 4px 16px rgba(201,168,76,0.25)'
               }}
             >
               Play Again
@@ -195,32 +242,33 @@ export default function App() {
       )
     }
 
-    // Waiting for game to start
     return (
-      <div style={{ textAlign: 'center', marginTop: 60, color: '#aaa' }}>
+      <div style={{
+        ...screenStyle,
+        color: 'rgba(232,230,225,0.4)',
+      }}>
         {onlineGame.error ? (
           <>
-            <p style={{ color: '#d4726a', marginBottom: 12 }}>{onlineGame.error}</p>
+            <p style={{ color: '#e07060', marginBottom: 16, fontWeight: 500 }}>{onlineGame.error}</p>
             <button
               onClick={() => {
                 onlineGame.reset()
                 setMode(null)
               }}
               style={{
-                padding: '10px 24px',
-                fontSize: 16,
-                borderRadius: 8,
-                border: '1px solid rgba(255,255,255,0.2)',
-                background: 'rgba(255,255,255,0.1)',
-                color: '#fff',
-                cursor: 'pointer',
+                ...btnStyle,
+                padding: '12px 28px',
+                fontSize: 15,
+                background: 'transparent',
+                border: '1.5px solid rgba(255,255,255,0.12)',
+                color: 'rgba(232,230,225,0.6)',
               }}
             >
               Go Back
             </button>
           </>
         ) : (
-          <p>Connecting to server...</p>
+          <p style={{ fontWeight: 400 }}>Connecting to server...</p>
         )}
       </div>
     )

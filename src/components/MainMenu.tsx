@@ -24,6 +24,33 @@ function loadSession(): SavedSession | null {
   }
 }
 
+const btnBase: React.CSSProperties = {
+  padding: '14px 40px',
+  fontSize: 17,
+  fontWeight: 600,
+  borderRadius: 12,
+  border: 'none',
+  color: '#fff',
+  width: 320,
+  cursor: 'pointer',
+  transition: 'all 0.2s ease',
+  letterSpacing: 0.3,
+}
+
+const inputStyle: React.CSSProperties = {
+  padding: '14px 20px',
+  fontSize: 17,
+  borderRadius: 12,
+  border: '2px solid rgba(255,255,255,0.1)',
+  background: 'rgba(255,255,255,0.06)',
+  color: '#e8e6e1',
+  width: 320,
+  textAlign: 'center',
+  fontFamily: "'Outfit', sans-serif",
+  outline: 'none',
+  transition: 'border-color 0.2s, background 0.2s',
+}
+
 export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
   const [playerName, setPlayerName] = useState('')
   const [subMode, setSubMode] = useState<'idle' | 'online_options'>('idle')
@@ -53,42 +80,71 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
     }
   }
 
-  return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: 20,
-        marginTop: 100,
-      }}
-    >
-      <h1 style={{ fontSize: 48, marginBottom: 10 }}>Soltan Hokm</h1>
-      <p style={{ color: '#aaa' }}>Hokm Card Game</p>
+  const enabled = playerName.trim()
 
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      gap: 22,
+      marginTop: '12vh',
+      animation: 'fadeIn 0.5s ease',
+    }}>
+      {/* Title */}
+      <div style={{ textAlign: 'center', marginBottom: 8 }}>
+        <h1 style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: 56,
+          fontWeight: 900,
+          background: 'linear-gradient(135deg, #c9a84c, #f0d78c, #c9a84c)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          letterSpacing: 1,
+          lineHeight: 1.1,
+        }}>
+          Soltan Hokm
+        </h1>
+        <p style={{
+          color: 'rgba(232,230,225,0.4)',
+          fontSize: '0.9rem',
+          fontWeight: 300,
+          marginTop: 6,
+          letterSpacing: 3,
+          textTransform: 'uppercase',
+        }}>
+          Card Game
+        </p>
+      </div>
+
+      {/* Resume */}
       {savedSession && (
         <button
           onClick={() => onResumeGame(savedSession.playerName)}
           style={{
-            padding: '14px 40px',
-            fontSize: 18,
-            borderRadius: 8,
-            border: 'none',
-            background: '#4a9d8f',
-            color: '#fff',
-            cursor: 'pointer',
-            width: 320,
+            ...btnBase,
+            background: 'linear-gradient(135deg, #2ecc71, #27ae60)',
+            boxShadow: '0 4px 16px rgba(46,204,113,0.3)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 8,
+            gap: 10,
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.boxShadow = '0 6px 24px rgba(46,204,113,0.4)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)'
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(46,204,113,0.3)'
           }}
         >
-          <span style={{ fontSize: 20 }}>&#9654;</span>
+          <span style={{ fontSize: 18 }}>&#9654;</span>
           Resume Game
         </button>
       )}
 
+      {/* Name input */}
       <input
         placeholder="Enter your name"
         value={playerName}
@@ -99,15 +155,14 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             else handleCreate()
           }
         }}
-        style={{
-          padding: '12px 20px',
-          fontSize: 18,
-          borderRadius: 8,
-          border: '2px solid #444',
-          background: '#222',
-          color: '#fff',
-          width: 280,
-          textAlign: 'center',
+        style={inputStyle}
+        onFocus={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'
+          e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+        }}
+        onBlur={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+          e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
         }}
       />
 
@@ -115,16 +170,25 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         <>
           <button
             onClick={handleLocal}
-            disabled={!playerName.trim()}
+            disabled={!enabled}
             style={{
-              padding: '14px 40px',
-              fontSize: 18,
-              borderRadius: 8,
-              border: 'none',
-              background: playerName.trim() ? '#4a9d8f' : '#444',
-              color: '#fff',
-              cursor: playerName.trim() ? 'pointer' : 'not-allowed',
-              width: 320,
+              ...btnBase,
+              background: enabled
+                ? 'linear-gradient(135deg, #c9a84c, #b8943f)'
+                : 'rgba(255,255,255,0.08)',
+              boxShadow: enabled ? '0 4px 16px rgba(201,168,76,0.25)' : 'none',
+              cursor: enabled ? 'pointer' : 'not-allowed',
+              opacity: enabled ? 1 : 0.5,
+            }}
+            onMouseEnter={(e) => {
+              if (enabled) {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = enabled ? '0 4px 16px rgba(201,168,76,0.25)' : 'none'
             }}
           >
             Play vs 3 Bots
@@ -132,16 +196,25 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
 
           <button
             onClick={() => setSubMode('online_options')}
-            disabled={!playerName.trim()}
+            disabled={!enabled}
             style={{
-              padding: '14px 40px',
-              fontSize: 18,
-              borderRadius: 8,
-              border: 'none',
-              background: playerName.trim() ? '#3a7cbd' : '#444',
-              color: '#fff',
-              cursor: playerName.trim() ? 'pointer' : 'not-allowed',
-              width: 320,
+              ...btnBase,
+              background: enabled
+                ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
+                : 'rgba(255,255,255,0.08)',
+              boxShadow: enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
+              cursor: enabled ? 'pointer' : 'not-allowed',
+              opacity: enabled ? 1 : 0.5,
+            }}
+            onMouseEnter={(e) => {
+              if (enabled) {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 6px 24px rgba(58,124,189,0.35)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none'
             }}
           >
             Play Online
@@ -151,55 +224,69 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         <>
           <button
             onClick={handleCreate}
-            disabled={!playerName.trim()}
+            disabled={!enabled}
             style={{
-              padding: '14px 40px',
-              fontSize: 18,
-              borderRadius: 8,
-              border: 'none',
-              background: playerName.trim() ? '#3a7cbd' : '#444',
-              color: '#fff',
-              cursor: playerName.trim() ? 'pointer' : 'not-allowed',
-              width: 320,
+              ...btnBase,
+              background: enabled
+                ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
+                : 'rgba(255,255,255,0.08)',
+              boxShadow: enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
+              cursor: enabled ? 'pointer' : 'not-allowed',
+              opacity: enabled ? 1 : 0.5,
+            }}
+            onMouseEnter={(e) => {
+              if (enabled) {
+                e.currentTarget.style.transform = 'translateY(-2px)'
+                e.currentTarget.style.boxShadow = '0 6px 24px rgba(58,124,189,0.35)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)'
+              e.currentTarget.style.boxShadow = enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none'
             }}
           >
             Create Room
           </button>
 
-          <div style={{ display: 'flex', gap: 8, width: 320 }}>
+          <div style={{ display: 'flex', gap: 10, width: 320 }}>
             <input
-              placeholder="Room code"
+              placeholder="Code"
               value={joinCode}
               onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleJoin()
               }}
               style={{
-                padding: '12px 16px',
-                fontSize: 18,
-                borderRadius: 8,
-                border: '2px solid #444',
-                background: '#222',
-                color: '#fff',
+                ...inputStyle,
                 width: 160,
-                textAlign: 'center',
-                letterSpacing: 4,
+                letterSpacing: 6,
                 textTransform: 'uppercase',
-                fontFamily: 'monospace',
+                fontFamily: "'Outfit', monospace",
+                fontWeight: 600,
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'
+                e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+              }}
+              onBlur={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+                e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
               }}
             />
             <button
               onClick={handleJoin}
-              disabled={!playerName.trim() || !joinCode.trim()}
+              disabled={!enabled || !joinCode.trim()}
               style={{
-                padding: '12px 20px',
-                fontSize: 18,
-                borderRadius: 8,
-                border: 'none',
-                background: playerName.trim() && joinCode.trim() ? '#3a7cbd' : '#444',
-                color: '#fff',
-                cursor: playerName.trim() && joinCode.trim() ? 'pointer' : 'not-allowed',
+                ...btnBase,
+                width: 'auto',
                 flex: 1,
+                padding: '14px 20px',
+                background: enabled && joinCode.trim()
+                  ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
+                  : 'rgba(255,255,255,0.08)',
+                boxShadow: enabled && joinCode.trim() ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
+                cursor: enabled && joinCode.trim() ? 'pointer' : 'not-allowed',
+                opacity: enabled && joinCode.trim() ? 1 : 0.5,
               }}
             >
               Join
@@ -212,13 +299,23 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
               setJoinCode('')
             }}
             style={{
-              padding: '8px 16px',
+              padding: '10px 20px',
               fontSize: 14,
-              borderRadius: 6,
-              border: '1px solid #555',
+              fontWeight: 500,
+              borderRadius: 10,
+              border: '1px solid rgba(255,255,255,0.12)',
               background: 'transparent',
-              color: '#aaa',
+              color: 'rgba(232,230,225,0.5)',
               cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'
+              e.currentTarget.style.color = 'rgba(232,230,225,0.8)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
+              e.currentTarget.style.color = 'rgba(232,230,225,0.5)'
             }}
           >
             Back
