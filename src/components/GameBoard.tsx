@@ -167,9 +167,13 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 حکم
               </span>
               <span style={{
-                fontSize: '1.1rem',
+                fontSize: '1.3rem',
                 fontWeight: 'bold',
+                fontFamily: "'Noto Sans Symbols 2', sans-serif",
                 color: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds ? '#e07060' : '#c9a84c',
+                textShadow: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds
+                  ? '0 0 8px rgba(224,112,96,0.6), 0 0 16px rgba(224,112,96,0.3)'
+                  : '0 0 8px rgba(201,168,76,0.6), 0 0 16px rgba(201,168,76,0.3)',
               }}>
                 {SUIT_SYMBOLS[game.hokmSuit]}
               </span>
