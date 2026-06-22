@@ -121,17 +121,27 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
 
   const [trickWinner, setTrickWinner] = useState<PlayerPosition | null>(null)
   const prevScoreRef = useRef({ ns: game.northSouthScore, ew: game.eastWestScore })
+  const trickWinnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const ns = game.northSouthScore
     const ew = game.eastWestScore
     if (ns + ew > prevScoreRef.current.ns + prevScoreRef.current.ew) {
+      if (trickWinnerTimerRef.current) clearTimeout(trickWinnerTimerRef.current)
       setTrickWinner(game.turn)
-      const timer = setTimeout(() => setTrickWinner(null), 800)
-      return () => clearTimeout(timer)
+      trickWinnerTimerRef.current = setTimeout(() => {
+        setTrickWinner(null)
+        trickWinnerTimerRef.current = null
+      }, 800)
     }
     prevScoreRef.current = { ns, ew }
-  }, [game.northSouthScore, game.eastWestScore, game.turn])
+
+    return () => {
+      if (trickWinnerTimerRef.current) {
+        clearTimeout(trickWinnerTimerRef.current)
+      }
+    }
+  }, [game.northSouthScore, game.eastWestScore])
 
   function getCardCount(p: typeof game.players[0]): number {
     if ('cardCount' in p && p.cardCount !== undefined) {
