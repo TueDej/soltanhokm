@@ -117,19 +117,28 @@ func CanBeat(card, currentWinner Card, hokmSuit Suit) bool {
 	return RANK_ORDER[card.Rank] > RANK_ORDER[currentWinner.Rank]
 }
 
-func PickWinner(cards map[PlayerPosition]*Card, hokmSuit Suit) PlayerPosition {
-	var winnerPos PlayerPosition
-	var winnerCard *Card
+func PickWinner(cards map[PlayerPosition]*Card, hokmSuit Suit, leader PlayerPosition) PlayerPosition {
+	leaderCard := cards[leader]
+	if leaderCard == nil {
+		// fallback: shouldn't happen
+		for pos, card := range cards {
+			if card != nil {
+				return pos
+			}
+		}
+		return leader
+	}
+
+	winnerPos := leader
+	winnerCard := *leaderCard
+
 	for pos, card := range cards {
-		if card == nil {
+		if card == nil || pos == leader {
 			continue
 		}
-		if winnerCard == nil {
+		if CanBeat(*card, winnerCard, hokmSuit) {
 			winnerPos = pos
-			winnerCard = card
-		} else if CanBeat(*card, *winnerCard, hokmSuit) {
-			winnerPos = pos
-			winnerCard = card
+			winnerCard = *card
 		}
 	}
 	return winnerPos
@@ -222,7 +231,7 @@ func (g *GameState) IsTrickComplete() bool {
 }
 
 func (g *GameState) ResolveTrick() {
-	trickWinner := PickWinner(g.CurrentTrick.Cards, *g.HokmSuit)
+	trickWinner := PickWinner(g.CurrentTrick.Cards, *g.HokmSuit, g.CurrentTrick.Leader)
 	winnerIsNS := IsNS(trickWinner)
 
 	if winnerIsNS {
