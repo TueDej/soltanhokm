@@ -80,17 +80,23 @@ button, input {
 }
 
 .game-card-suit {
-  font-size: 32px;
+  font-family: 'Noto Sans Symbols 2', sans-serif;
+  font-size: 36px;
   line-height: 1;
 }
 
 .game-card-corner {
   position: absolute;
-  font-size: 15px;
+  font-size: 17px;
   font-weight: 600;
   line-height: 1.1;
   text-align: center;
   opacity: 0.85;
+}
+
+.game-card-corner .game-card-suit-symbol {
+  font-family: 'Noto Sans Symbols 2', sans-serif;
+  font-size: 20px;
 }
 
 .game-card-corner-tl {
@@ -121,11 +127,15 @@ button, input {
   }
 
   .game-card-suit {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .game-card-corner {
-    font-size: 14px;
+    font-size: 15px;
+  }
+
+  .game-card-corner .game-card-suit-symbol {
+    font-size: 17px;
   }
 
   .game-card-corner-tl {

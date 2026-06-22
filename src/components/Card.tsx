@@ -29,13 +29,13 @@ export function Card({ card, onClick, disabled, dimmed }: CardProps) {
       style={{ color }}
     >
       <span className="game-card-corner game-card-corner-tl">
-        {card.rank}<br />{SUIT_SYMBOLS[card.suit]}
+        {card.rank}<br /><span className="game-card-suit-symbol">{SUIT_SYMBOLS[card.suit]}</span>
       </span>
       <span className="game-card-center">
         <span className="game-card-suit">{SUIT_SYMBOLS[card.suit]}</span>
       </span>
       <span className="game-card-corner game-card-corner-br">
-        {SUIT_SYMBOLS[card.suit]}<br />{card.rank}
+        <span className="game-card-suit-symbol">{SUIT_SYMBOLS[card.suit]}</span><br />{card.rank}
       </span>
     </button>
   )

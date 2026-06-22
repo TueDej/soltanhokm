@@ -30,8 +30,8 @@ export interface Card {
 
 export const SUIT_ORDER: Record<Suit, number> = {
   [Suit.Hearts]: 0,
-  [Suit.Diamonds]: 1,
-  [Suit.Clubs]: 2,
+  [Suit.Clubs]: 1,
+  [Suit.Diamonds]: 2,
   [Suit.Spades]: 3,
 }
 
