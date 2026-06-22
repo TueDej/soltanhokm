@@ -8,18 +8,25 @@ import { Card } from './Card'
 
 const POSITIONS_ORDER: PlayerPosition[] = [PlayerPosition.North, PlayerPosition.East, PlayerPosition.South, PlayerPosition.West]
 
-const TABLE_POSITIONS: Record<string, { style: React.CSSProperties; animation: string }> = {
-  bottom: { style: { bottom: 8, left: '50%', transform: 'translateX(-50%)' }, animation: 'cardPlayBottom 0.3s ease-out' },
-  top: { style: { top: 8, left: '50%', transform: 'translateX(-50%)' }, animation: 'cardPlayTop 0.3s ease-out' },
-  left: { style: { left: 8, top: '50%', transform: 'translateY(-50%)' }, animation: 'cardPlayLeft 0.3s ease-out' },
-  right: { style: { right: 8, top: '50%', transform: 'translateY(-50%)' }, animation: 'cardPlayRight 0.3s ease-out' },
+const TABLE_POSITIONS: Record<string, React.CSSProperties> = {
+  bottom: { bottom: 8, left: '50%', transform: 'translateX(-50%)' },
+  top: { top: 8, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: 8, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: 8, top: '50%', transform: 'translateY(-50%)' },
 }
 
-const COLLECT_TARGETS: Record<string, React.CSSProperties> = {
-  bottom: { bottom: -40, left: '50%', transform: 'translateX(-50%)' },
-  top: { top: -40, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: -40, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: -40, top: '50%', transform: 'translateY(-50%)' },
+const COLLECT_POSITIONS: Record<string, React.CSSProperties> = {
+  bottom: { bottom: -50, left: '50%', transform: 'translateX(-50%)' },
+  top: { top: -50, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: -50, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: -50, top: '50%', transform: 'translateY(-50%)' },
+}
+
+const PLAY_ANIMATIONS: Record<string, string> = {
+  bottom: 'cardPlayBottom 0.3s ease-out',
+  top: 'cardPlayTop 0.3s ease-out',
+  left: 'cardPlayLeft 0.3s ease-out',
+  right: 'cardPlayRight 0.3s ease-out',
 }
 
 function getRelativePosition(myPos: PlayerPosition | undefined, otherPos: PlayerPosition): string {
@@ -40,49 +47,54 @@ interface TableProps {
 }
 
 export function Table({ trick, myPosition, hokmSuit }: TableProps) {
-  const [collecting, setCollecting] = useState(false)
+  const [phase, setPhase] = useState<'playing' | 'waiting' | 'collecting'>('playing')
   const [collectTarget, setCollectTarget] = useState<string | null>(null)
-  const trickCountRef = useRef(Object.keys(trick.cards).length)
+  const prevCardCountRef = useRef(Object.keys(trick.cards).length)
 
   const cardCount = Object.keys(trick.cards).length
 
   useEffect(() => {
-    if (cardCount === 4 && trickCountRef.current < 4 && hokmSuit) {
+    if (cardCount === 4 && prevCardCountRef.current < 4 && hokmSuit) {
       const winner = pickWinner(trick.cards, hokmSuit, trick.leader)
       const relWinner = getRelativePosition(myPosition, winner)
       setCollectTarget(relWinner)
-      setCollecting(true)
-      const timer = setTimeout(() => {
-        setCollecting(false)
-        setCollectTarget(null)
-      }, 600)
-      return () => clearTimeout(timer)
+      setPhase('waiting')
+
+      const waitTimer = setTimeout(() => {
+        setPhase('collecting')
+        const collectTimer = setTimeout(() => {
+          setPhase('playing')
+          setCollectTarget(null)
+        }, 500)
+        return () => clearTimeout(collectTimer)
+      }, 800)
+
+      return () => clearTimeout(waitTimer)
     }
-    if (cardCount < trickCountRef.current) {
-      setCollecting(false)
+
+    if (cardCount < prevCardCountRef.current) {
+      setPhase('playing')
       setCollectTarget(null)
     }
-    trickCountRef.current = cardCount
+
+    prevCardCountRef.current = cardCount
   }, [cardCount, trick.cards, trick.leader, myPosition, hokmSuit])
 
   return (
     <div className="game-table">
       {Object.entries(trick.cards).map(([pos, card]) => {
         const relPos = getRelativePosition(myPosition, pos as PlayerPosition)
-        const isCollecting = collecting && collectTarget !== null
-        const targetStyle = isCollecting ? COLLECT_TARGETS[collectTarget] : undefined
-        const posData = TABLE_POSITIONS[relPos]
+        const isCollecting = phase === 'collecting' && collectTarget !== null
+        const style = isCollecting ? COLLECT_POSITIONS[collectTarget!] : TABLE_POSITIONS[relPos]
         return (
           <div
             key={pos}
             style={{
               position: 'absolute',
-              ...(isCollecting && targetStyle ? targetStyle : posData.style),
-              animation: isCollecting
-                ? 'trickCollect 0.5s ease-in forwards'
-                : posData.animation,
+              ...style,
+              animation: isCollecting ? undefined : PLAY_ANIMATIONS[relPos],
+              transition: isCollecting ? 'all 0.5s ease-in' : undefined,
               opacity: isCollecting ? 0 : 1,
-              transition: 'all 0.5s ease-in',
             }}
           >
             <Card card={card as CardType} disabled />
