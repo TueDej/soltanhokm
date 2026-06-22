@@ -16,10 +16,10 @@ const TABLE_POSITIONS: Record<string, React.CSSProperties> = {
 }
 
 const COLLECT_POSITIONS: Record<string, React.CSSProperties> = {
-  bottom: { bottom: -50, left: '50%', transform: 'translateX(-50%)' },
-  top: { top: -50, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: -50, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: -50, top: '50%', transform: 'translateY(-50%)' },
+  bottom: { bottom: -60, left: '50%', transform: 'translateX(-50%)' },
+  top: { top: -60, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: -60, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: -60, top: '50%', transform: 'translateY(-50%)' },
 }
 
 const PLAY_ANIMATIONS: Record<string, string> = {
@@ -47,8 +47,8 @@ interface TableProps {
 }
 
 export function Table({ trick, myPosition, hokmSuit }: TableProps) {
-  const [phase, setPhase] = useState<'playing' | 'waiting' | 'collecting' | 'done'>('playing')
   const [collectTarget, setCollectTarget] = useState<string | null>(null)
+  const [hidden, setHidden] = useState(false)
   const prevCardCountRef = useRef(Object.keys(trick.cards).length)
 
   const cardCount = Object.keys(trick.cards).length
@@ -57,13 +57,11 @@ export function Table({ trick, myPosition, hokmSuit }: TableProps) {
     if (cardCount === 4 && prevCardCountRef.current < 4 && hokmSuit) {
       const winner = pickWinner(trick.cards, hokmSuit, trick.leader)
       const relWinner = getRelativePosition(myPosition, winner)
-      setCollectTarget(relWinner)
-      setPhase('waiting')
 
       const waitTimer = setTimeout(() => {
-        setPhase('collecting')
+        setCollectTarget(relWinner)
         const collectTimer = setTimeout(() => {
-          setPhase('done')
+          setHidden(true)
         }, 500)
         return () => clearTimeout(collectTimer)
       }, 800)
@@ -72,14 +70,14 @@ export function Table({ trick, myPosition, hokmSuit }: TableProps) {
     }
 
     if (cardCount < prevCardCountRef.current) {
-      setPhase('playing')
       setCollectTarget(null)
+      setHidden(false)
     }
 
     prevCardCountRef.current = cardCount
   }, [cardCount, trick.cards, trick.leader, myPosition, hokmSuit])
 
-  if (phase === 'done') {
+  if (hidden) {
     return <div className="game-table" />
   }
 
@@ -87,7 +85,7 @@ export function Table({ trick, myPosition, hokmSuit }: TableProps) {
     <div className="game-table">
       {Object.entries(trick.cards).map(([pos, card]) => {
         const relPos = getRelativePosition(myPosition, pos as PlayerPosition)
-        const isCollecting = phase === 'collecting' && collectTarget !== null
+        const isCollecting = collectTarget !== null
         const style = isCollecting ? COLLECT_POSITIONS[collectTarget!] : TABLE_POSITIONS[relPos]
         return (
           <div
@@ -95,7 +93,7 @@ export function Table({ trick, myPosition, hokmSuit }: TableProps) {
             style={{
               position: 'absolute',
               ...style,
-              animation: isCollecting ? undefined : PLAY_ANIMATIONS[relPos],
+              animation: isCollecting ? 'none' : PLAY_ANIMATIONS[relPos],
               transition: isCollecting ? 'all 0.5s ease-in' : undefined,
               opacity: isCollecting ? 0 : 1,
             }}
