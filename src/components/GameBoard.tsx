@@ -28,7 +28,6 @@ interface GameBoardProps {
   playerId: string
   onPlayCard: (card: Card) => void
   onChooseHokm?: (suit: Suit) => void
-  mode: 'local' | 'online'
   reconnecting?: boolean
 }
 

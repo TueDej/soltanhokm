@@ -4,8 +4,7 @@ A multiplayer Hokm (Persian trick-taking card game) built with React + TypeScrip
 
 ## Play
 
-- **Local mode** — Play vs 3 AI bots, no server needed
-- **Online mode** — Create/join rooms, play with friends via WebSocket
+- **Online mode** — Create/join rooms, play with friends or vs bots via WebSocket
 
 ## Tech Stack
 
@@ -47,8 +46,7 @@ cd server && go build -o soltanhokm-server .
 soltanhokm/
 ├── src/
 │   ├── components/    # React UI (GameBoard, Card, Hand, Table, MainMenu)
-│   ├── engine/        # Local game logic (gameEngine, bot AI)
-│   ├── hooks/         # React hooks (useLocalGame, useOnlineGame)
+│   ├── hooks/         # React hooks (useOnlineGame)
 │   ├── services/      # WebSocket client
 │   ├── types/         # TypeScript types (card, game, socket)
 │   └── index.css      # Global styles
@@ -67,8 +65,8 @@ soltanhokm/
 
 - 4-player Hokm with trump selection
 - Follow-suit rules enforcement
-- Bot AI with strategic play
 - Online multiplayer with room system
+- Bot AI fills empty seats in rooms
 - Reconnection support with session persistence
 - Mobile-friendly card fan layout
 - Responsive design

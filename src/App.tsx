@@ -3,10 +3,9 @@ import { TrickPhase } from './types/game'
 import { GameBoard } from './components/GameBoard'
 import { MainMenu } from './components/MainMenu'
 import { RoomLobby } from './components/RoomLobby'
-import { useLocalGame } from './hooks/useLocalGame'
 import { useOnlineGame } from './hooks/useOnlineGame'
 
-type Mode = null | 'local' | 'online'
+type Mode = null | 'online'
 
 const btnStyle: React.CSSProperties = {
   padding: '14px 40px',
@@ -37,16 +36,11 @@ const titleStyle: React.CSSProperties = {
 
 export default function App() {
   const [mode, setMode] = useState<Mode>(null)
-  const [playerName, setPlayerName] = useState('')
 
-  const localGame = useLocalGame(playerName)
   const onlineGame = useOnlineGame()
 
   function handleSelectMode(selectedMode: string, name: string, roomCode?: string) {
-    setPlayerName(name)
-    if (selectedMode === 'local') {
-      setMode('local')
-    } else if (selectedMode === 'online_create') {
+    if (selectedMode === 'online_create') {
       setMode('online')
       onlineGame.createRoom(name)
     } else if (selectedMode === 'online_join' && roomCode) {
@@ -56,103 +50,12 @@ export default function App() {
   }
 
   function handleResumeGame(name: string) {
-    setPlayerName(name)
     setMode('online')
     onlineGame.reconnectToSavedSession(name)
   }
 
   if (!mode) {
     return <MainMenu onSelectMode={handleSelectMode} onResumeGame={handleResumeGame} />
-  }
-
-  // --- Local mode ---
-  if (mode === 'local') {
-    if (!localGame.game) {
-      return (
-        <div style={screenStyle}>
-          <h2 style={titleStyle}>Play vs 3 Bots</h2>
-          <p style={{ color: 'rgba(232,230,225,0.4)', marginBottom: 28, fontWeight: 400 }}>
-            Playing as: <span style={{ color: '#c9a84c', fontWeight: 500 }}>{playerName}</span>
-          </p>
-          <button
-            onClick={localGame.startGame}
-            style={{
-              ...btnStyle,
-              background: 'linear-gradient(135deg, #c9a84c, #b8943f)',
-              boxShadow: '0 4px 16px rgba(201,168,76,0.25)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(201,168,76,0.25)'
-            }}
-          >
-            Start Game
-          </button>
-        </div>
-      )
-    }
-
-    if (localGame.game.phase === TrickPhase.Finished) {
-      const nsWins = localGame.game.matchWinner === 'ns'
-      return (
-        <div style={screenStyle}>
-          <h2 style={titleStyle}>Game Over</h2>
-          <p style={{
-            color: nsWins ? '#2ecc71' : '#e07060',
-            fontSize: '1.1rem',
-            fontWeight: 600,
-            marginBottom: 8,
-          }}>
-            {nsWins ? 'You won!' : 'Bots won.'}
-          </p>
-          <p style={{ color: 'rgba(232,230,225,0.3)', marginBottom: 28, fontWeight: 400 }}>
-            Rounds: {localGame.game.roundNumber - 1}
-          </p>
-          <button
-            onClick={localGame.startGame}
-            style={{
-              ...btnStyle,
-              background: 'linear-gradient(135deg, #c9a84c, #b8943f)',
-              boxShadow: '0 4px 16px rgba(201,168,76,0.25)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(201,168,76,0.25)'
-            }}
-          >
-            Play Again
-          </button>
-        </div>
-      )
-    }
-
-    return (
-      <GameBoard
-        game={{
-          id: localGame.game.gameId,
-          phase: localGame.game.phase,
-          players: localGame.game.players,
-          hokmSuit: localGame.game.hokmSuit,
-          currentTrick: localGame.game.currentTrick,
-          northSouthScore: localGame.game.northSouthScore,
-          eastWestScore: localGame.game.eastWestScore,
-          turn: localGame.game.turn,
-          hokmPlayer: localGame.game.hokmPlayer,
-        }}
-        playerId={localGame.game.playerPosition}
-        onPlayCard={localGame.playCard}
-        onChooseHokm={localGame.chooseHokm}
-        mode="local"
-      />
-    )
   }
 
   // --- Online mode ---
@@ -238,7 +141,6 @@ export default function App() {
           playerId={onlineGame.playerId || ''}
           onPlayCard={onlineGame.playCard}
           onChooseHokm={onlineGame.chooseHokm}
-          mode="online"
           reconnecting={onlineGame.reconnecting}
         />
       )

@@ -41,19 +41,3 @@ export interface GameState {
   eastWestScore: number
   turn: PlayerPosition
 }
-
-export interface LocalGameState {
-  gameId: string
-  phase: TrickPhase
-  playerPosition: PlayerPosition
-  players: Player[]
-  hokmSuit?: Suit
-  hokmPlayer?: PlayerPosition
-  currentTrick: Trick
-  northSouthScore: number
-  eastWestScore: number
-  turn: PlayerPosition
-  roundNumber: number
-  matchWinner?: 'ns' | 'ew'
-  remainingDeck: Card[]
-}

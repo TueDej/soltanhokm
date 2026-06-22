@@ -10,7 +10,7 @@ interface SavedSession {
 }
 
 interface MainMenuProps {
-  onSelectMode: (mode: 'local' | 'online_create' | 'online_join', playerName: string, roomCode?: string) => void
+  onSelectMode: (mode: 'online_create' | 'online_join', playerName: string, roomCode?: string) => void
   onResumeGame: (playerName: string) => void
 }
 
@@ -53,7 +53,6 @@ const inputStyle: React.CSSProperties = {
 
 export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
   const [playerName, setPlayerName] = useState('')
-  const [subMode, setSubMode] = useState<'idle' | 'online_options'>('idle')
   const [joinCode, setJoinCode] = useState('')
   const [savedSession, setSavedSession] = useState<SavedSession | null>(null)
 
@@ -61,12 +60,6 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
     const session = loadSession()
     if (session) setSavedSession(session)
   }, [])
-
-  function handleLocal() {
-    if (playerName.trim()) {
-      onSelectMode('local', playerName.trim())
-    }
-  }
 
   function handleCreate() {
     if (playerName.trim()) {
@@ -151,8 +144,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         onChange={(e) => setPlayerName(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && playerName.trim()) {
-            if (subMode === 'idle') handleLocal()
-            else handleCreate()
+            handleCreate()
           }
         }}
         style={inputStyle}
@@ -166,162 +158,76 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         }}
       />
 
-      {!subMode || subMode === 'idle' ? (
-        <>
-          <button
-            onClick={handleLocal}
-            disabled={!enabled}
-            style={{
-              ...btnBase,
-              background: enabled
-                ? 'linear-gradient(135deg, #c9a84c, #b8943f)'
-                : 'rgba(255,255,255,0.08)',
-              boxShadow: enabled ? '0 4px 16px rgba(201,168,76,0.25)' : 'none',
-              cursor: enabled ? 'pointer' : 'not-allowed',
-              opacity: enabled ? 1 : 0.5,
-            }}
-            onMouseEnter={(e) => {
-              if (enabled) {
-                e.currentTarget.style.transform = 'translateY(-2px)'
-                e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = enabled ? '0 4px 16px rgba(201,168,76,0.25)' : 'none'
-            }}
-          >
-            Play vs 3 Bots
-          </button>
+      <button
+        onClick={handleCreate}
+        disabled={!enabled}
+        style={{
+          ...btnBase,
+          background: enabled
+            ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
+            : 'rgba(255,255,255,0.08)',
+          boxShadow: enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
+          cursor: enabled ? 'pointer' : 'not-allowed',
+          opacity: enabled ? 1 : 0.5,
+        }}
+        onMouseEnter={(e) => {
+          if (enabled) {
+            e.currentTarget.style.transform = 'translateY(-2px)'
+            e.currentTarget.style.boxShadow = '0 6px 24px rgba(58,124,189,0.35)'
+          }
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(0)'
+          e.currentTarget.style.boxShadow = enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none'
+        }}
+      >
+        Create Room
+      </button>
 
-          <button
-            onClick={() => setSubMode('online_options')}
-            disabled={!enabled}
-            style={{
-              ...btnBase,
-              background: enabled
-                ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
-                : 'rgba(255,255,255,0.08)',
-              boxShadow: enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
-              cursor: enabled ? 'pointer' : 'not-allowed',
-              opacity: enabled ? 1 : 0.5,
-            }}
-            onMouseEnter={(e) => {
-              if (enabled) {
-                e.currentTarget.style.transform = 'translateY(-2px)'
-                e.currentTarget.style.boxShadow = '0 6px 24px rgba(58,124,189,0.35)'
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none'
-            }}
-          >
-            Play Online
-          </button>
-        </>
-      ) : (
-        <>
-          <button
-            onClick={handleCreate}
-            disabled={!enabled}
-            style={{
-              ...btnBase,
-              background: enabled
-                ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
-                : 'rgba(255,255,255,0.08)',
-              boxShadow: enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
-              cursor: enabled ? 'pointer' : 'not-allowed',
-              opacity: enabled ? 1 : 0.5,
-            }}
-            onMouseEnter={(e) => {
-              if (enabled) {
-                e.currentTarget.style.transform = 'translateY(-2px)'
-                e.currentTarget.style.boxShadow = '0 6px 24px rgba(58,124,189,0.35)'
-              }
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none'
-            }}
-          >
-            Create Room
-          </button>
-
-          <div style={{ display: 'flex', gap: 10, width: 320 }}>
-            <input
-              placeholder="Code"
-              value={joinCode}
-              onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleJoin()
-              }}
-              style={{
-                ...inputStyle,
-                width: 160,
-                letterSpacing: 6,
-                textTransform: 'uppercase',
-                fontFamily: "'Outfit', monospace",
-                fontWeight: 600,
-              }}
-              onFocus={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'
-                e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
-              }}
-              onBlur={(e) => {
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-                e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
-              }}
-            />
-            <button
-              onClick={handleJoin}
-              disabled={!enabled || !joinCode.trim()}
-              style={{
-                ...btnBase,
-                width: 'auto',
-                flex: 1,
-                padding: '14px 20px',
-                background: enabled && joinCode.trim()
-                  ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
-                  : 'rgba(255,255,255,0.08)',
-                boxShadow: enabled && joinCode.trim() ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
-                cursor: enabled && joinCode.trim() ? 'pointer' : 'not-allowed',
-                opacity: enabled && joinCode.trim() ? 1 : 0.5,
-              }}
-            >
-              Join
-            </button>
-          </div>
-
-          <button
-            onClick={() => {
-              setSubMode('idle')
-              setJoinCode('')
-            }}
-            style={{
-              padding: '10px 20px',
-              fontSize: 14,
-              fontWeight: 500,
-              borderRadius: 10,
-              border: '1px solid rgba(255,255,255,0.12)',
-              background: 'transparent',
-              color: 'rgba(232,230,225,0.5)',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'
-              e.currentTarget.style.color = 'rgba(232,230,225,0.8)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
-              e.currentTarget.style.color = 'rgba(232,230,225,0.5)'
-            }}
-          >
-            Back
-          </button>
-        </>
-      )}
+      <div style={{ display: 'flex', gap: 10, width: 320 }}>
+        <input
+          placeholder="Code"
+          value={joinCode}
+          onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') handleJoin()
+          }}
+          style={{
+            ...inputStyle,
+            width: 160,
+            letterSpacing: 6,
+            textTransform: 'uppercase',
+            fontFamily: "'Outfit', monospace",
+            fontWeight: 600,
+          }}
+          onFocus={(e) => {
+            e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'
+            e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+          }}
+          onBlur={(e) => {
+            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+            e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
+          }}
+        />
+        <button
+          onClick={handleJoin}
+          disabled={!enabled || !joinCode.trim()}
+          style={{
+            ...btnBase,
+            width: 'auto',
+            flex: 1,
+            padding: '14px 20px',
+            background: enabled && joinCode.trim()
+              ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
+              : 'rgba(255,255,255,0.08)',
+            boxShadow: enabled && joinCode.trim() ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
+            cursor: enabled && joinCode.trim() ? 'pointer' : 'not-allowed',
+            opacity: enabled && joinCode.trim() ? 1 : 0.5,
+          }}
+        >
+          Join
+        </button>
+      </div>
     </div>
   )
 }
