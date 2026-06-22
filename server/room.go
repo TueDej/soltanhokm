@@ -159,6 +159,28 @@ func (r *Room) StartGame() {
 	}
 	r.Status = RoomPlaying
 
+	// Randomly assign teams to players without one
+	nsCount := 0
+	ewCount := 0
+	for _, hp := range r.Players {
+		if hp.Team == "ns" {
+			nsCount++
+		} else if hp.Team == "ew" {
+			ewCount++
+		}
+	}
+	for _, hp := range r.Players {
+		if hp.Team == "" {
+			if nsCount < 2 {
+				hp.Team = "ns"
+				nsCount++
+			} else {
+				hp.Team = "ew"
+				ewCount++
+			}
+		}
+	}
+
 	// Assign positions based on team choice
 	nsPositions := []PlayerPosition{North, South}
 	ewPositions := []PlayerPosition{East, West}
@@ -170,6 +192,9 @@ func (r *Room) StartGame() {
 		if hp.Team == "ew" && ewIdx < len(ewPositions) {
 			hp.Position = ewPositions[ewIdx]
 			ewIdx++
+		} else if hp.Team == "ns" && nsIdx < len(nsPositions) {
+			hp.Position = nsPositions[nsIdx]
+			nsIdx++
 		} else if nsIdx < len(nsPositions) {
 			hp.Position = nsPositions[nsIdx]
 			nsIdx++
@@ -186,7 +211,7 @@ func (r *Room) StartGame() {
 		allPlayers = append(allPlayers, hp.Player)
 	}
 
-	// Fill empty positions with bots
+	// Fill empty positions with bots (each team must have exactly 2)
 	for _, pos := range AllPositions {
 		if !usedPositions[pos] {
 			team := "ew"
