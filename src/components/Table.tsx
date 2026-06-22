@@ -47,7 +47,7 @@ interface TableProps {
 }
 
 export function Table({ trick, myPosition, hokmSuit }: TableProps) {
-  const [phase, setPhase] = useState<'playing' | 'waiting' | 'collecting'>('playing')
+  const [phase, setPhase] = useState<'playing' | 'waiting' | 'collecting' | 'done'>('playing')
   const [collectTarget, setCollectTarget] = useState<string | null>(null)
   const prevCardCountRef = useRef(Object.keys(trick.cards).length)
 
@@ -63,8 +63,7 @@ export function Table({ trick, myPosition, hokmSuit }: TableProps) {
       const waitTimer = setTimeout(() => {
         setPhase('collecting')
         const collectTimer = setTimeout(() => {
-          setPhase('playing')
-          setCollectTarget(null)
+          setPhase('done')
         }, 500)
         return () => clearTimeout(collectTimer)
       }, 800)
@@ -79,6 +78,10 @@ export function Table({ trick, myPosition, hokmSuit }: TableProps) {
 
     prevCardCountRef.current = cardCount
   }, [cardCount, trick.cards, trick.leader, myPosition, hokmSuit])
+
+  if (phase === 'done') {
+    return <div className="game-table" />
+  }
 
   return (
     <div className="game-table">
