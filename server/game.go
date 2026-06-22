@@ -245,15 +245,6 @@ func (g *GameState) ResolveTrick() {
 		winner.TricksWon++
 	}
 
-	// Rotate hakem: if hakem's team won the trick, stay; otherwise pass to next player
-	hakemPlayer := g.FindPlayer(g.HokmPlayer)
-	if hakemPlayer != nil {
-		hakemTeamWon := (hakemPlayer.Team == "ns" && winnerIsNS) || (hakemPlayer.Team == "ew" && !winnerIsNS)
-		if !hakemTeamWon {
-			g.HokmPlayer = NextPos(g.HokmPlayer)
-		}
-	}
-
 	// Check if round over (first to 7 tricks wins the round)
 	if g.NorthSouthScore >= 7 || g.EastWestScore >= 7 {
 		nsWinsRound := g.NorthSouthScore >= 7
@@ -275,8 +266,18 @@ func (g *GameState) ResolveTrick() {
 			return
 		}
 
-		// New round — use the already-rotated hakem
-		g.startNewRound(g.HokmPlayer)
+		// Rotate hakem at end of hand: if hakem's team won, stay; otherwise pass to next player
+		nextHokmPlayer := g.HokmPlayer
+		hakemPlayer := g.FindPlayer(g.HokmPlayer)
+		if hakemPlayer != nil {
+			hakemTeamWon := (hakemPlayer.Team == "ns" && winnerIsNS) || (hakemPlayer.Team == "ew" && !winnerIsNS)
+			if !hakemTeamWon {
+				nextHokmPlayer = NextPos(g.HokmPlayer)
+			}
+		}
+
+		// New round
+		g.startNewRound(nextHokmPlayer)
 		return
 	}
 
