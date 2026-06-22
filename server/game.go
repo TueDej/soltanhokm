@@ -252,8 +252,8 @@ func (g *GameState) ResolveTrick() {
 	}
 
 	// Check if round over (first to 7 tricks wins the round)
-	if g.NorthSouthScore >= g.HandsToWin || g.EastWestScore >= g.HandsToWin {
-		nsWinsRound := g.NorthSouthScore >= g.HandsToWin
+	if g.NorthSouthScore >= 7 || g.EastWestScore >= 7 {
+		nsWinsRound := g.NorthSouthScore >= 7
 
 		if nsWinsRound {
 			g.NsGamesWon++
