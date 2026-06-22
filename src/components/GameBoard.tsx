@@ -321,14 +321,15 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 padding: '8px 14px',
                 borderRadius: 12,
                 background: isPlayerTurn
-                  ? 'rgba(201,168,76,0.12)'
+                  ? 'rgba(201,168,76,0.2)'
                   : 'rgba(255,255,255,0.04)',
-                border: `1.5px solid ${isPlayerTurn ? 'rgba(201,168,76,0.4)' : 'rgba(255,255,255,0.06)'}`,
+                border: `1.5px solid ${isPlayerTurn ? 'rgba(201,168,76,0.6)' : 'rgba(255,255,255,0.06)'}`,
                 textAlign: 'center',
                 fontSize: '0.75rem',
                 transition: 'all 0.3s ease',
                 zIndex: 5,
-                boxShadow: isPlayerTurn ? '0 0 16px rgba(201,168,76,0.1)' : 'none',
+                boxShadow: isPlayerTurn ? '0 0 20px rgba(201,168,76,0.4), 0 0 40px rgba(201,168,76,0.15)' : 'none',
+                animation: isPlayerTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
               }}
             >
               <div style={{ fontWeight: 600, fontSize: '0.8rem', color: '#e8e6e1' }}>
@@ -456,14 +457,15 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             padding: '5px 16px',
             borderRadius: 10,
             background: isMyTurn
-              ? 'rgba(201,168,76,0.12)'
+              ? 'rgba(201,168,76,0.2)'
               : 'rgba(255,255,255,0.03)',
-            border: `1.5px solid ${isMyTurn ? 'rgba(201,168,76,0.35)' : 'rgba(255,255,255,0.05)'}`,
+            border: `1.5px solid ${isMyTurn ? 'rgba(201,168,76,0.6)' : 'rgba(255,255,255,0.05)'}`,
             textAlign: 'center',
             fontSize: '0.75rem',
             marginTop: 8,
             transition: 'all 0.3s ease',
-            boxShadow: isMyTurn ? '0 0 16px rgba(201,168,76,0.08)' : 'none',
+            boxShadow: isMyTurn ? '0 0 20px rgba(201,168,76,0.4), 0 0 40px rgba(201,168,76,0.15)' : 'none',
+            animation: isMyTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
           }}>
             <div style={{ fontWeight: 600, fontSize: '0.8rem', color: '#e8e6e1' }}>
               {me.name}
