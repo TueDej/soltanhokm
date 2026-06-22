@@ -295,6 +295,9 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           }}>
             {game.ewGamesWon ?? 0}
           </span>
+          <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.3)', fontWeight: 400 }}>
+            /{game.handsToWin ?? 7}
+          </span>
         </div>
       </div>
 

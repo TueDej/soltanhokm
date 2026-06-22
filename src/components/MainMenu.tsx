@@ -167,10 +167,10 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         }}
       />
 
-      {/* Hands to win selector */}
+      {/* Games to win selector */}
       <div style={{ display: 'flex', gap: 8, width: 320 }}>
         <span style={{ fontSize: '0.8rem', color: 'rgba(232,230,225,0.5)', fontWeight: 500, alignSelf: 'center', whiteSpace: 'nowrap' }}>
-          Hands to win:
+          Games to win:
         </span>
         {[3, 7].map((n) => (
           <button
