@@ -18,13 +18,14 @@ const (
 )
 
 type Room struct {
-	Code      string
-	Status    RoomStatus
-	CreatorID string
-	Players   []*HumanPlayer
-	Game      *GameState
-	mu        sync.Mutex
-	stopCh    chan struct{}
+	Code        string
+	Status      RoomStatus
+	CreatorID   string
+	Players     []*HumanPlayer
+	Game        *GameState
+	HandsToWin  int
+	mu          sync.Mutex
+	stopCh      chan struct{}
 }
 
 type RoomManager struct {
@@ -40,15 +41,20 @@ func NewRoomManager() *RoomManager {
 	return rm
 }
 
-func (rm *RoomManager) CreateRoom(creator *HumanPlayer) *Room {
+func (rm *RoomManager) CreateRoom(creator *HumanPlayer, handsToWin int) *Room {
 	code := rm.generateCode()
 
+	if handsToWin != 3 && handsToWin != 7 {
+		handsToWin = 7
+	}
+
 	room := &Room{
-		Code:      code,
-		Status:    RoomWaiting,
-		CreatorID: creator.ID,
-		Players:   []*HumanPlayer{creator},
-		stopCh:    make(chan struct{}),
+		Code:       code,
+		Status:     RoomWaiting,
+		CreatorID:  creator.ID,
+		Players:    []*HumanPlayer{creator},
+		HandsToWin: handsToWin,
+		stopCh:     make(chan struct{}),
 	}
 
 	creator.Room = room
@@ -202,7 +208,7 @@ func (r *Room) StartGame() {
 	// Pick random hokm player
 	hokmIdx := rand.Intn(4)
 
-	r.Game = CreateGame(allPlayers, hokmIdx)
+	r.Game = CreateGame(allPlayers, hokmIdx, r.HandsToWin)
 	r.mu.Unlock()
 
 	// Notify game started

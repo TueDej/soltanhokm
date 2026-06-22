@@ -22,6 +22,7 @@ interface LocalGameView {
   nsGamesWon?: number
   ewGamesWon?: number
   turn: PlayerPosition
+  handsToWin?: number
 }
 
 interface GameBoardProps {
@@ -232,7 +233,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             </span>
           </div>
 
-          <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '1rem', fontWeight: 300 }}>/7</span>
+          <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '1rem', fontWeight: 300 }}>/{game.handsToWin ?? 7}</span>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{

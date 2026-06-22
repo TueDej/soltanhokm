@@ -11,7 +11,7 @@ interface SavedSession {
 }
 
 interface MainMenuProps {
-  onSelectMode: (mode: 'online_create' | 'online_join', playerName: string, roomCode?: string) => void
+  onSelectMode: (mode: 'online_create' | 'online_join', playerName: string, roomCode?: string, handsToWin?: number) => void
   onResumeGame: (playerName: string) => void
 }
 
@@ -57,6 +57,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
     try { return localStorage.getItem(NAME_KEY) || '' } catch { return '' }
   })
   const [joinCode, setJoinCode] = useState('')
+  const [handsToWin, setHandsToWin] = useState(7)
   const [savedSession, setSavedSession] = useState<SavedSession | null>(null)
 
   useEffect(() => {
@@ -71,7 +72,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
 
   function handleCreate() {
     if (playerName.trim()) {
-      onSelectMode('online_create', playerName.trim())
+      onSelectMode('online_create', playerName.trim(), undefined, handsToWin)
     }
   }
 
@@ -165,6 +166,34 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
           e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
         }}
       />
+
+      {/* Hands to win selector */}
+      <div style={{ display: 'flex', gap: 8, width: 320 }}>
+        <span style={{ fontSize: '0.8rem', color: 'rgba(232,230,225,0.5)', fontWeight: 500, alignSelf: 'center', whiteSpace: 'nowrap' }}>
+          Hands to win:
+        </span>
+        {[3, 7].map((n) => (
+          <button
+            key={n}
+            onClick={() => setHandsToWin(n)}
+            style={{
+              flex: 1,
+              padding: '10px 0',
+              borderRadius: 10,
+              border: `1.5px solid ${handsToWin === n ? 'rgba(201,168,76,0.6)' : 'rgba(255,255,255,0.1)'}`,
+              background: handsToWin === n ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.04)',
+              color: handsToWin === n ? '#c9a84c' : 'rgba(232,230,225,0.5)',
+              cursor: 'pointer',
+              fontSize: 15,
+              fontWeight: 600,
+              fontFamily: "'Outfit', sans-serif",
+              transition: 'all 0.2s',
+            }}
+          >
+            {n}
+          </button>
+        ))}
+      </div>
 
       <button
         onClick={handleCreate}

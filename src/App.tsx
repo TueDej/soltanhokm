@@ -59,10 +59,10 @@ export default function App() {
     prevHokmRef.current = currentHokm
   }, [onlineGame.game?.hokmSuit])
 
-  function handleSelectMode(selectedMode: string, name: string, roomCode?: string) {
+  function handleSelectMode(selectedMode: string, name: string, roomCode?: string, handsToWin?: number) {
     if (selectedMode === 'online_create') {
       setMode('online')
-      onlineGame.createRoom(name)
+      onlineGame.createRoom(name, handsToWin)
     } else if (selectedMode === 'online_join' && roomCode) {
       setMode('online')
       onlineGame.joinRoom(name, roomCode)
@@ -158,6 +158,7 @@ export default function App() {
               nsGamesWon: onlineGame.game.nsGamesWon,
               ewGamesWon: onlineGame.game.ewGamesWon,
               turn: onlineGame.game.turn,
+              handsToWin: onlineGame.game.handsToWin,
             }}
             playerId={onlineGame.playerId || ''}
             onPlayCard={onlineGame.playCard}

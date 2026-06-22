@@ -65,7 +65,8 @@ type ClientMessage struct {
 }
 
 type CreateRoomPayload struct {
-	PlayerName string `json:"playerName"`
+	PlayerName  string `json:"playerName"`
+	HandsToWin  int    `json:"handsToWin"`
 }
 
 type JoinRoomPayload struct {
@@ -150,6 +151,7 @@ type GameStatePayload struct {
 	Turn            PlayerPosition     `json:"turn"`
 	RoundNumber     int                `json:"roundNumber"`
 	MatchWinner     *string            `json:"matchWinner,omitempty"`
+	HandsToWin      int                `json:"handsToWin"`
 }
 
 type ErrorPayload struct {

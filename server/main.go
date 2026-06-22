@@ -101,7 +101,7 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request, rm *RoomManager) {
 			conn,
 		)
 
-		room := rm.CreateRoom(player)
+		room := rm.CreateRoom(player, payload.HandsToWin)
 
 		player.SendMessage(ServerMessage{
 			Type:    "room_created",

@@ -22,7 +22,7 @@ export enum MessageType {
 
 export interface CreateRoomMessage {
   type: MessageType.CreateRoom
-  payload: { playerName: string }
+  payload: { playerName: string; handsToWin: number }
 }
 
 export interface JoinRoomMessage {
@@ -123,6 +123,7 @@ export interface OnlineGameState {
   turn: PlayerPosition
   roundNumber: number
   matchWinner?: 'ns' | 'ew'
+  handsToWin: number
 }
 
 export interface ServerMessage {

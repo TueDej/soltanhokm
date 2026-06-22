@@ -227,13 +227,13 @@ export function useOnlineGame() {
     }
   }, [connect])
 
-  const createRoom = useCallback((name: string) => {
+  const createRoom = useCallback((name: string, handsToWin: number = 7) => {
     setPlayerName(name)
     clearSession()
     savedSessionRef.current = null
     sendOrQueue({
       type: MessageType.CreateRoom,
-      payload: { playerName: name },
+      payload: { playerName: name, handsToWin },
     })
   }, [sendOrQueue])
 

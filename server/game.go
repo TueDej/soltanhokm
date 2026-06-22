@@ -27,6 +27,7 @@ type GameState struct {
 	RoundNumber     int
 	MatchWinner     *string
 	RemainingDeck   []Card
+	HandsToWin      int
 }
 
 var RANK_ORDER = map[Rank]int{
@@ -146,13 +147,17 @@ func PickWinner(cards map[PlayerPosition]*Card, hokmSuit Suit, leader PlayerPosi
 
 // --- Game Creation ---
 
-func CreateGame(players []*Player, hokmPlayerIdx int) *GameState {
+func CreateGame(players []*Player, hokmPlayerIdx int, handsToWin int) *GameState {
 	deck := ShuffleDeck(CreateDeck())
 	hands := Deal(deck[:20])
 
 	for _, p := range players {
 		p.Hand = SortHand(hands[p.Position])
 		p.TricksWon = 0
+	}
+
+	if handsToWin != 3 && handsToWin != 7 {
+		handsToWin = 7
 	}
 
 	hokmPlayer := players[hokmPlayerIdx].Position
@@ -168,6 +173,7 @@ func CreateGame(players []*Player, hokmPlayerIdx int) *GameState {
 		},
 		RoundNumber:   1,
 		RemainingDeck: deck[20:],
+		HandsToWin:    handsToWin,
 	}
 }
 
@@ -246,8 +252,8 @@ func (g *GameState) ResolveTrick() {
 	}
 
 	// Check if round over (first to 7 tricks wins the round)
-	if g.NorthSouthScore >= 7 || g.EastWestScore >= 7 {
-		nsWinsRound := g.NorthSouthScore >= 7
+	if g.NorthSouthScore >= g.HandsToWin || g.EastWestScore >= g.HandsToWin {
+		nsWinsRound := g.NorthSouthScore >= g.HandsToWin
 
 		if nsWinsRound {
 			g.NsGamesWon++
@@ -255,10 +261,10 @@ func (g *GameState) ResolveTrick() {
 			g.EwGamesWon++
 		}
 
-		// Check if match over (first to 7 games wins the match)
-		if g.NsGamesWon >= 7 || g.EwGamesWon >= 7 {
+		// Check if match over (first to HandsToWin games wins the match)
+		if g.NsGamesWon >= g.HandsToWin || g.EwGamesWon >= g.HandsToWin {
 			w := "ns"
-			if g.EwGamesWon >= 7 {
+			if g.EwGamesWon >= g.HandsToWin {
 				w = "ew"
 			}
 			g.MatchWinner = &w
@@ -364,6 +370,7 @@ func (g *GameState) GetPublicState(forPos PlayerPosition) GameStatePayload {
 		Turn:            g.Turn,
 		RoundNumber:     g.RoundNumber,
 		MatchWinner:     g.MatchWinner,
+		HandsToWin:      g.HandsToWin,
 	}
 }
 
