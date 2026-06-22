@@ -35,7 +35,7 @@ export function Table({ trick, myPosition }: TableProps) {
         const relPos = getRelativePosition(myPosition, pos as PlayerPosition)
         const style = TABLE_POSITIONS[relPos]
         return (
-          <div key={pos} style={{ position: 'absolute', ...style }}>
+          <div key={pos} style={{ position: 'absolute', ...style, animation: 'cardPlay 0.3s ease-out' }}>
             <Card card={card as CardType} disabled />
           </div>
         )
