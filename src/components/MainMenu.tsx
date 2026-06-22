@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 const STORAGE_KEY = 'soltanhokm_session'
+const NAME_KEY = 'soltanhokm_playerName'
 
 interface SavedSession {
   roomCode: string
@@ -52,7 +53,9 @@ const inputStyle: React.CSSProperties = {
 }
 
 export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
-  const [playerName, setPlayerName] = useState('')
+  const [playerName, setPlayerName] = useState(() => {
+    try { return localStorage.getItem(NAME_KEY) || '' } catch { return '' }
+  })
   const [joinCode, setJoinCode] = useState('')
   const [savedSession, setSavedSession] = useState<SavedSession | null>(null)
 
@@ -60,6 +63,11 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
     const session = loadSession()
     if (session) setSavedSession(session)
   }, [])
+
+  function updateName(name: string) {
+    setPlayerName(name)
+    try { localStorage.setItem(NAME_KEY, name) } catch {}
+  }
 
   function handleCreate() {
     if (playerName.trim()) {
@@ -141,7 +149,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
       <input
         placeholder="Enter your name"
         value={playerName}
-        onChange={(e) => setPlayerName(e.target.value)}
+        onChange={(e) => updateName(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && playerName.trim()) {
             handleCreate()
