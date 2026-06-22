@@ -5,11 +5,11 @@ import { Card } from './Card'
 
 const POSITIONS_ORDER: PlayerPosition[] = [PlayerPosition.North, PlayerPosition.East, PlayerPosition.South, PlayerPosition.West]
 
-const TABLE_POSITIONS: Record<string, React.CSSProperties> = {
-  bottom: { bottom: 8, left: '50%', transform: 'translateX(-50%)' },
-  top: { top: 8, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: 8, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: 8, top: '50%', transform: 'translateY(-50%)' },
+const TABLE_POSITIONS: Record<string, { style: React.CSSProperties; animation: string }> = {
+  bottom: { style: { bottom: 8, left: '50%', transform: 'translateX(-50%)' }, animation: 'cardPlayBottom 0.3s ease-out' },
+  top: { style: { top: 8, left: '50%', transform: 'translateX(-50%)' }, animation: 'cardPlayTop 0.3s ease-out' },
+  left: { style: { left: 8, top: '50%', transform: 'translateY(-50%)' }, animation: 'cardPlayLeft 0.3s ease-out' },
+  right: { style: { right: 8, top: '50%', transform: 'translateY(-50%)' }, animation: 'cardPlayRight 0.3s ease-out' },
 }
 
 function getRelativePosition(myPos: PlayerPosition | undefined, otherPos: PlayerPosition): string {
@@ -33,9 +33,9 @@ export function Table({ trick, myPosition }: TableProps) {
     <div className="game-table">
       {Object.entries(trick.cards).map(([pos, card]) => {
         const relPos = getRelativePosition(myPosition, pos as PlayerPosition)
-        const style = TABLE_POSITIONS[relPos]
+        const posData = TABLE_POSITIONS[relPos]
         return (
-          <div key={pos} style={{ position: 'absolute', ...style, animation: 'cardPlay 0.3s ease-out' }}>
+          <div key={pos} style={{ position: 'absolute', ...posData.style, animation: posData.animation }}>
             <Card card={card as CardType} disabled />
           </div>
         )
