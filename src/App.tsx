@@ -46,7 +46,7 @@ export default function App() {
     const currentHokm = onlineGame.game?.hokmSuit
     if (currentHokm && !prevHokmRef.current) {
       setHokmReveal(currentHokm)
-      const timer = setTimeout(() => setHokmReveal(null), 1200)
+      const timer = setTimeout(() => setHokmReveal(null), 1800)
       return () => clearTimeout(timer)
     }
     prevHokmRef.current = currentHokm
@@ -167,7 +167,7 @@ export default function App() {
               justifyContent: 'center',
               background: 'rgba(10,26,18,0.85)',
               backdropFilter: 'blur(8px)',
-              animation: 'hokmRevealFade 1.2s ease-in-out forwards',
+              animation: 'hokmRevealFade 1.8s ease-in-out forwards',
             }}>
               <div style={{
                 display: 'flex',
