@@ -108,13 +108,17 @@ export function canBeat(
 export function pickWinner(
   cards: Partial<Record<PlayerPosition, Card>>,
   hokmSuit: Suit,
+  leader: PlayerPosition,
 ): PlayerPosition {
   const entries = Object.entries(cards).filter(([, c]) => c !== undefined) as [PlayerPosition, Card][]
   if (entries.length === 0) throw new Error('No cards played')
-  let winner = entries[0]
-  for (let i = 1; i < entries.length; i++) {
-    if (canBeat(entries[i][1], winner[1], hokmSuit)) {
-      winner = entries[i]
+  const leaderEntry = entries.find(([pos]) => pos === leader)
+  if (!leaderEntry) return entries[0][0]
+  let winner = leaderEntry
+  for (const entry of entries) {
+    if (entry[0] === leader) continue
+    if (canBeat(entry[1], winner[1], hokmSuit)) {
+      winner = entry
     }
   }
   return winner[0]

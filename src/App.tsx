@@ -44,11 +44,6 @@ export default function App() {
   const onlineGame = useOnlineGame()
 
   useSounds({
-    phase: onlineGame.game?.phase as TrickPhase | undefined,
-    turn: onlineGame.game?.turn,
-    playerId: onlineGame.playerId || undefined,
-    hokmSuit: onlineGame.game?.hokmSuit,
-    trickCardCount: onlineGame.game?.currentTrick?.cards ? Object.keys(onlineGame.game.currentTrick.cards).length : 0,
     northSouthScore: onlineGame.game?.northSouthScore ?? 0,
     eastWestScore: onlineGame.game?.eastWestScore ?? 0,
     hokmReveal,
