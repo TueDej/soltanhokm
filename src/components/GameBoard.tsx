@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from 'react'
 import { TrickPhase, PlayerPosition } from '../types/game'
 import { Suit } from '../types/card'
 import type { Card } from '../types/card'
@@ -116,6 +117,20 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
   const sortedHand = sortHand(getPlayerHand(game, playerId))
   const isChoosingHokm = game.phase === TrickPhase.ChoosingHokm
   const otherPlayers = game.players.filter((p) => p.position !== myPos)
+
+  const [trickWinner, setTrickWinner] = useState<PlayerPosition | null>(null)
+  const prevScoreRef = useRef({ ns: game.northSouthScore, ew: game.eastWestScore })
+
+  useEffect(() => {
+    const ns = game.northSouthScore
+    const ew = game.eastWestScore
+    if (ns + ew > prevScoreRef.current.ns + prevScoreRef.current.ew) {
+      setTrickWinner(game.turn)
+      const timer = setTimeout(() => setTrickWinner(null), 800)
+      return () => clearTimeout(timer)
+    }
+    prevScoreRef.current = { ns, ew }
+  }, [game.northSouthScore, game.eastWestScore, game.turn])
 
   function getCardCount(p: typeof game.players[0]): number {
     if ('cardCount' in p && p.cardCount !== undefined) {
@@ -313,6 +328,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           const style = SCREEN_POSITIONS[screenPos]
           if (!style) return null
           const isPlayerTurn = game.turn === p.position
+          const isTrickWinner = trickWinner === p.position
           return (
             <div
               key={p.position}
@@ -321,16 +337,22 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 position: 'absolute',
                 padding: '8px 14px',
                 borderRadius: 12,
-                background: isPlayerTurn
-                  ? 'rgba(201,168,76,0.2)'
-                  : 'rgba(255,255,255,0.04)',
-                border: `1.5px solid ${isPlayerTurn ? 'rgba(201,168,76,0.6)' : 'rgba(255,255,255,0.06)'}`,
+                background: isTrickWinner
+                  ? 'rgba(201,168,76,0.35)'
+                  : isPlayerTurn
+                    ? 'rgba(201,168,76,0.2)'
+                    : 'rgba(255,255,255,0.04)',
+                border: `1.5px solid ${isTrickWinner ? 'rgba(201,168,76,0.8)' : isPlayerTurn ? 'rgba(201,168,76,0.6)' : 'rgba(255,255,255,0.06)'}`,
                 textAlign: 'center',
                 fontSize: '0.75rem',
                 transition: 'all 0.3s ease',
                 zIndex: 5,
-                boxShadow: isPlayerTurn ? '0 0 20px rgba(201,168,76,0.4), 0 0 40px rgba(201,168,76,0.15)' : 'none',
-                animation: isPlayerTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
+                boxShadow: isTrickWinner
+                  ? '0 0 30px rgba(201,168,76,0.7), 0 0 60px rgba(201,168,76,0.3)'
+                  : isPlayerTurn
+                    ? '0 0 20px rgba(201,168,76,0.4), 0 0 40px rgba(201,168,76,0.15)'
+                    : 'none',
+                animation: isTrickWinner ? 'trickWinFlash 0.8s ease-out' : isPlayerTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
               }}
             >
               <div style={{ fontWeight: 600, fontSize: '0.8rem', color: '#e8e6e1' }}>
@@ -457,16 +479,22 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           <div style={{
             padding: '5px 16px',
             borderRadius: 10,
-            background: isMyTurn
-              ? 'rgba(201,168,76,0.2)'
-              : 'rgba(255,255,255,0.03)',
-            border: `1.5px solid ${isMyTurn ? 'rgba(201,168,76,0.6)' : 'rgba(255,255,255,0.05)'}`,
+            background: trickWinner === myPos
+              ? 'rgba(201,168,76,0.35)'
+              : isMyTurn
+                ? 'rgba(201,168,76,0.2)'
+                : 'rgba(255,255,255,0.03)',
+            border: `1.5px solid ${trickWinner === myPos ? 'rgba(201,168,76,0.8)' : isMyTurn ? 'rgba(201,168,76,0.6)' : 'rgba(255,255,255,0.05)'}`,
             textAlign: 'center',
             fontSize: '0.75rem',
             marginTop: 8,
             transition: 'all 0.3s ease',
-            boxShadow: isMyTurn ? '0 0 20px rgba(201,168,76,0.4), 0 0 40px rgba(201,168,76,0.15)' : 'none',
-            animation: isMyTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
+            boxShadow: trickWinner === myPos
+              ? '0 0 30px rgba(201,168,76,0.7), 0 0 60px rgba(201,168,76,0.3)'
+              : isMyTurn
+                ? '0 0 20px rgba(201,168,76,0.4), 0 0 40px rgba(201,168,76,0.15)'
+                : 'none',
+            animation: trickWinner === myPos ? 'trickWinFlash 0.8s ease-out' : isMyTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
           }}>
             <div style={{ fontWeight: 600, fontSize: '0.8rem', color: '#e8e6e1' }}>
               {me.name}

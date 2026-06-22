@@ -232,3 +232,8 @@ button, input {
   75% { opacity: 1; }
   100% { opacity: 0; pointer-events: none; }
 }
+
+@keyframes trickWinFlash {
+  0% { box-shadow: 0 0 30px rgba(201,168,76,0.7), 0 0 60px rgba(201,168,76,0.3); }
+  100% { box-shadow: none; }
+}
