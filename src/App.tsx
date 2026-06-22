@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { TrickPhase } from './types/game'
 import { GameBoard } from './components/GameBoard'
 import { MainMenu } from './components/MainMenu'
@@ -38,8 +38,6 @@ export default function App() {
   const [mode, setMode] = useState<Mode>(null)
 
   const onlineGame = useOnlineGame()
-
-  useEffect(() => { window.scrollTo(0, 0) }, [])
 
   function handleSelectMode(selectedMode: string, name: string, roomCode?: string) {
     if (selectedMode === 'online_create') {
