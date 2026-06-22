@@ -12,11 +12,11 @@ interface HandProps {
 const MAX_CARDS = 13
 const STEP = 3
 const R_DESKTOP = 450
-const R_MOBILE = 300
+const R_MOBILE = 350
 const CARD_W_DESKTOP = 88
 const CARD_H_DESKTOP = 128
-const CARD_W_MOBILE = 58
-const CARD_H_MOBILE = 88
+const CARD_W_MOBILE = 68
+const CARD_H_MOBILE = 96
 
 export function Hand({ cards, onPlayCard, playableCards, disabled }: HandProps) {
   const [selectedKey, setSelectedKey] = useState<string | null>(null)

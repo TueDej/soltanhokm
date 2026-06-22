@@ -114,9 +114,9 @@ button, input {
 
 @media (max-width: 480px) {
   .game-card {
-    width: 72px;
-    height: 100px;
-    min-width: 72px;
+    width: 68px;
+    height: 96px;
+    min-width: 68px;
     font-size: 15px;
     border-width: 1.5px;
     border-radius: 8px;
