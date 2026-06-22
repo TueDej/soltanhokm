@@ -174,7 +174,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
-                marginTop: 4,
+                marginTop: 5,
                 color: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds ? '#e07060' : '#c9a84c',
                 textShadow: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds
                   ? '0 0 8px rgba(224,112,96,0.6), 0 0 16px rgba(224,112,96,0.3)'
