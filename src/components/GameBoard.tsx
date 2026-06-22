@@ -207,7 +207,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               ))}
             </div>
             <span style={{
-              fontSize: '0.8rem',
+              fontSize: '1rem',
               fontWeight: 700,
               color: '#2ecc71',
               minWidth: 28,
@@ -217,11 +217,11 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             </span>
           </div>
 
-          <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '0.8rem', fontWeight: 300 }}>/7</span>
+          <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '1rem', fontWeight: 300 }}>/7</span>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{
-              fontSize: '0.8rem',
+              fontSize: '1rem',
               fontWeight: 700,
               color: '#e07060',
               minWidth: 28,
@@ -249,7 +249,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         {/* Games won */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end' }}>
           <span style={{
-            fontSize: '0.9rem',
+            fontSize: '1.1rem',
             fontWeight: 700,
             color: '#2ecc71',
             padding: '2px 8px',
@@ -258,9 +258,9 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           }}>
             {game.nsGamesWon ?? 0}
           </span>
-          <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)', fontWeight: 300 }}>-</span>
+          <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.2)', fontWeight: 300 }}>-</span>
           <span style={{
-            fontSize: '0.9rem',
+            fontSize: '1.1rem',
             fontWeight: 700,
             color: '#e07060',
             padding: '2px 8px',
