@@ -351,7 +351,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           left: '50%',
           transform: 'translate(-50%, -50%)',
         }}>
-          <Table trick={game.currentTrick} myPosition={myPos} hokmSuit={game.hokmSuit} />
+          <Table trick={game.currentTrick} myPosition={myPos} />
         </div>
 
         {/* Hokm picker */}
