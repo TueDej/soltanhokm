@@ -35,7 +35,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
       animation: 'fadeIn 0.5s ease',
     }}>
       <h2 style={{
-        fontFamily: "'Luckiest Guy', cursive",
+        fontFamily: "'Science Gothic', cursive",
         fontSize: 22,
         color: '#f7f5eb',
         textShadow: '3px 3px 0px #0e2a1f',
@@ -66,7 +66,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
         }}
       >
         <p style={{
-          fontFamily: "'Luckiest Guy', cursive",
+          fontFamily: "'Science Gothic', cursive",
           fontSize: 8,
           color: '#2a6b55',
           marginBottom: 8,
@@ -76,7 +76,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           CLICK TO COPY
         </p>
         <p style={{
-          fontFamily: "'Luckiest Guy', cursive",
+          fontFamily: "'Science Gothic', cursive",
           fontSize: 24,
           letterSpacing: 6,
           color: '#d4a843',
@@ -105,7 +105,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           }}
         >
           <div style={{
-            fontFamily: "'Luckiest Guy', cursive",
+            fontFamily: "'Science Gothic', cursive",
             fontSize: 8,
             color: '#f7f5eb',
             marginBottom: 10,
@@ -120,7 +120,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
               borderRadius: 4,
               background: '#1b4d3e',
               border: '2px solid #2a6b55',
-              fontFamily: "'Luckiest Guy', cursive",
+              fontFamily: "'Science Gothic', cursive",
               fontSize: 10,
               color: '#f7f5eb',
             }}>
@@ -129,7 +129,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
             </div>
           ))}
           {nsPlayers.length === 0 && (
-            <div style={{ fontFamily: "'Luckiest Guy', cursive", color: '#2a6b55', fontSize: 10, padding: '10px 0' }}>EMPTY</div>
+            <div style={{ fontFamily: "'Science Gothic', cursive", color: '#2a6b55', fontSize: 10, padding: '10px 0' }}>EMPTY</div>
           )}
         </div>
 
@@ -150,7 +150,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           }}
         >
           <div style={{
-            fontFamily: "'Luckiest Guy', cursive",
+            fontFamily: "'Science Gothic', cursive",
             fontSize: 8,
             color: '#c23a3a',
             marginBottom: 10,
@@ -165,7 +165,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
               borderRadius: 4,
               background: '#3a1a1a',
               border: '2px solid #c23a3a',
-              fontFamily: "'Luckiest Guy', cursive",
+              fontFamily: "'Science Gothic', cursive",
               fontSize: 10,
               color: '#c23a3a',
             }}>
@@ -174,18 +174,18 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
             </div>
           ))}
           {ewPlayers.length === 0 && (
-            <div style={{ fontFamily: "'Luckiest Guy', cursive", color: '#2a6b55', fontSize: 10, padding: '10px 0' }}>EMPTY</div>
+            <div style={{ fontFamily: "'Science Gothic', cursive", color: '#2a6b55', fontSize: 10, padding: '10px 0' }}>EMPTY</div>
           )}
         </div>
       </div>
 
       {noTeamPlayers.length > 0 && (
-        <p style={{ fontFamily: "'Luckiest Guy', cursive", fontSize: 8, color: '#2a6b55' }}>
+        <p style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: '#2a6b55' }}>
           {noTeamPlayers.length} PLAYER(S) CHOOSING...
         </p>
       )}
 
-      <p style={{ fontFamily: "'Luckiest Guy', cursive", fontSize: 8, color: '#2a6b55', textAlign: 'center' }}>
+      <p style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: '#2a6b55', textAlign: 'center' }}>
         CLICK A TEAM TO JOIN. EMPTY SEATS = BOTS.
       </p>
 
@@ -199,7 +199,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
             background: '#143a2e',
             color: '#f7f5eb',
             cursor: 'pointer',
-            fontFamily: "'Luckiest Guy', cursive",
+            fontFamily: "'Science Gothic', cursive",
             fontSize: 10,
             transition: 'all 0.15s',
           }}
@@ -222,7 +222,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
               background: '#d4a843',
               color: '#1b4d3e',
               cursor: 'pointer',
-              fontFamily: "'Luckiest Guy', cursive",
+              fontFamily: "'Science Gothic', cursive",
               fontSize: 10,
               transition: 'all 0.15s',
               boxShadow: '3px 3px 0px #6b5020',

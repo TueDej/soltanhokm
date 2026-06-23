@@ -17,7 +17,7 @@ const btnStyle: React.CSSProperties = {
   border: '3px solid #2a6b55',
   color: '#f7f5eb',
   cursor: 'pointer',
-  fontFamily: "'Luckiest Guy', cursive",
+  fontFamily: "'Science Gothic', cursive",
   letterSpacing: 0,
   transition: 'all 0.15s',
   textTransform: 'uppercase',
@@ -31,7 +31,7 @@ const screenStyle: React.CSSProperties = {
 }
 
 const titleStyle: React.CSSProperties = {
-  fontFamily: "'Luckiest Guy', cursive",
+  fontFamily: "'Science Gothic', cursive",
   fontSize: 28,
   fontWeight: 400,
   marginBottom: 12,
@@ -110,7 +110,7 @@ export default function App() {
               fontSize: '1.2rem',
               fontWeight: 400,
               marginBottom: 24,
-              fontFamily: "'Luckiest Guy', cursive",
+              fontFamily: "'Science Gothic', cursive",
               textShadow: nsWins
                 ? '2px 2px 0px #0e2a1f'
                 : '2px 2px 0px #7a1a1a',
@@ -188,7 +188,7 @@ export default function App() {
               }}>
                 <span style={{
                   fontSize: '1rem',
-                  fontFamily: "'Luckiest Guy', cursive",
+                  fontFamily: "'Science Gothic', cursive",
                   color: '#d4a843',
                   textShadow: '2px 2px 0px #6b5020',
                   letterSpacing: 2,
@@ -197,7 +197,7 @@ export default function App() {
                 </span>
                 <span style={{
                   fontSize: '80px',
-                  fontFamily: "'Luckiest Guy', cursive",
+                  fontFamily: "'Science Gothic', cursive",
                   color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#c23a3a' : '#2c2c2c',
                   textShadow: hokmReveal === 'hearts' || hokmReveal === 'diamonds'
                     ? '4px 4px 0px #7a1a1a, 0 0 20px rgba(194,58,58,0.3)'
@@ -221,7 +221,7 @@ export default function App() {
       }}>
         {onlineGame.error ? (
           <>
-            <p style={{ color: '#c23a3a', marginBottom: 16, fontFamily: "'Luckiest Guy', cursive", fontSize: 12 }}>{onlineGame.error}</p>
+            <p style={{ color: '#c23a3a', marginBottom: 16, fontFamily: "'Science Gothic', cursive", fontSize: 12 }}>{onlineGame.error}</p>
             <button
               onClick={() => {
                 onlineGame.reset()
@@ -237,7 +237,7 @@ export default function App() {
             </button>
           </>
         ) : (
-          <p style={{ fontFamily: "'Luckiest Guy', cursive", fontSize: 12 }}>CONNECTING...</p>
+          <p style={{ fontFamily: "'Science Gothic', cursive", fontSize: 12 }}>CONNECTING...</p>
         )}
       </div>
     )

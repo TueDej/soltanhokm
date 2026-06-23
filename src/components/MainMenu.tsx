@@ -35,7 +35,7 @@ const btnBase: React.CSSProperties = {
   width: 320,
   cursor: 'pointer',
   transition: 'all 0.15s',
-  fontFamily: "'Luckiest Guy', cursive",
+  fontFamily: "'Science Gothic', cursive",
   textTransform: 'uppercase',
   background: '#143a2e',
 }
@@ -49,7 +49,7 @@ const inputStyle: React.CSSProperties = {
   color: '#f7f5eb',
   width: 320,
   textAlign: 'center',
-  fontFamily: "'Luckiest Guy', cursive",
+  fontFamily: "'Science Gothic', cursive",
   outline: 'none',
   letterSpacing: 2,
 }
@@ -98,7 +98,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
       {/* Title */}
       <div style={{ textAlign: 'center', marginBottom: 8 }}>
         <h1 style={{
-          fontFamily: "'Luckiest Guy', cursive",
+          fontFamily: "'Science Gothic', cursive",
           fontSize: 36,
           fontWeight: 400,
           color: '#f7f5eb',
@@ -109,7 +109,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
           SOLTAN HOKM
         </h1>
         <p style={{
-          fontFamily: "'Luckiest Guy', cursive",
+          fontFamily: "'Science Gothic', cursive",
           color: '#2a6b55',
           fontSize: 12,
           fontWeight: 400,
@@ -168,7 +168,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
       {/* Games to win selector */}
       <div style={{ display: 'flex', gap: 8, width: 320 }}>
         <span style={{
-          fontFamily: "'Luckiest Guy', cursive",
+          fontFamily: "'Science Gothic', cursive",
           fontSize: 10,
           color: '#2a6b55',
           fontWeight: 400,
@@ -191,7 +191,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
               cursor: 'pointer',
               fontSize: 16,
               fontWeight: 400,
-              fontFamily: "'Luckiest Guy', cursive",
+              fontFamily: "'Science Gothic', cursive",
               transition: 'all 0.15s',
             }}
           >
