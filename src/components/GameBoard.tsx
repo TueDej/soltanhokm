@@ -396,6 +396,54 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               </div>
             )
           })}
+
+          {/* My indicator at table bottom edge */}
+          {me && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: '50%',
+                transform: 'translate(-50%, 50%)',
+                padding: '6px 12px',
+                borderRadius: 4,
+                background: trickWinner === myPos
+                  ? '#1a3050'
+                  : isMyTurn
+                    ? '#152535'
+                    : '#0c1220',
+                border: `2px solid ${trickWinner === myPos ? '#7ec8e3' : isMyTurn ? '#4a90b8' : '#1e3a50'}`,
+                textAlign: 'center',
+                fontSize: '0.75rem',
+                transition: 'none',
+                zIndex: 5,
+                boxShadow: trickWinner === myPos
+                  ? '4px 4px 0px #4a90b8, 0 0 15px rgba(126,200,227,0.3)'
+                  : isMyTurn
+                    ? '0 0 12px rgba(126,200,227,0.15)'
+                    : '3px 3px 0px #0a1a28',
+                animation: trickWinner === myPos ? 'trickWinFlash 0.8s ease-out' : isMyTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <div style={{
+                fontFamily: "'Science Gothic', monospace",
+                fontSize: 8,
+                color: '#7ec8e3',
+              }}>
+                {me.name}
+                {game.hokmPlayer === myPos && <span style={{ marginLeft: 4 }}>★</span>}
+              </div>
+              <div style={{
+                fontFamily: "'Science Gothic', monospace",
+                color: '#4a6a80',
+                fontSize: '0.85rem',
+                marginTop: 2,
+              }}>
+                {sortedHand.length} cards
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Hokm picker */}
@@ -459,54 +507,6 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                   {SUIT_SYMBOLS[suit]}
                 </button>
               ))}
-            </div>
-          </div>
-        )}
-
-        {/* Bottom indicator - positioned relative to center area */}
-        {me && (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: '50%',
-              transform: 'translate(-50%, 50%)',
-              padding: '6px 12px',
-              borderRadius: 4,
-              background: trickWinner === myPos
-                ? '#1a3050'
-                : isMyTurn
-                  ? '#152535'
-                  : '#0c1220',
-              border: `2px solid ${trickWinner === myPos ? '#7ec8e3' : isMyTurn ? '#4a90b8' : '#1e3a50'}`,
-              textAlign: 'center',
-              fontSize: '0.75rem',
-              transition: 'none',
-              zIndex: 5,
-              boxShadow: trickWinner === myPos
-                ? '4px 4px 0px #4a90b8, 0 0 15px rgba(126,200,227,0.3)'
-                : isMyTurn
-                  ? '0 0 12px rgba(126,200,227,0.15)'
-                  : '3px 3px 0px #0a1a28',
-              animation: trickWinner === myPos ? 'trickWinFlash 0.8s ease-out' : isMyTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            <div style={{
-              fontFamily: "'Science Gothic', monospace",
-              fontSize: 8,
-              color: '#7ec8e3',
-            }}>
-              {me.name}
-              {game.hokmPlayer === myPos && <span style={{ marginLeft: 4 }}>★</span>}
-            </div>
-            <div style={{
-              fontFamily: "'Science Gothic', monospace",
-              color: '#4a6a80',
-              fontSize: '0.85rem',
-              marginTop: 2,
-            }}>
-              {sortedHand.length} cards
             </div>
           </div>
         )}
