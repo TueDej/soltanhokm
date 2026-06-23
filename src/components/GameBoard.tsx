@@ -103,9 +103,9 @@ function getRelativePosition(myPos: PlayerPosition | undefined, otherPos: Player
 }
 
 const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
-  top: { top: 0, left: '50%', transform: 'translate(-50%, -50%)' },
-  left: { left: 0, top: '50%', transform: 'translate(-50%, -50%)' },
-  right: { right: 0, top: '50%', transform: 'translate(50%, -50%)' },
+  top: { top: -20, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: -20, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: -20, top: '50%', transform: 'translateY(-50%)' },
 }
 
 export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecting }: GameBoardProps) {
@@ -331,7 +331,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
       )}
 
       {/* Center area */}
-      <div style={{ flex: 1, position: 'relative', minHeight: 0, padding: '16px 12px' }}>
+      <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
         {otherPlayers.map((p) => {
           const screenPos = getRelativePosition(myPos, p.position)
           const style = SCREEN_POSITIONS[screenPos]
@@ -388,10 +388,11 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         {/* Table */}
         <div style={{
           position: 'absolute',
-          top: 16,
-          left: 12,
-          right: 12,
-          bottom: 16,
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '70%',
+          height: '80%',
         }}>
           <Table trick={game.currentTrick} myPosition={myPos} hokmSuit={game.hokmSuit} />
         </div>
