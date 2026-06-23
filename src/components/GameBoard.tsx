@@ -524,6 +524,12 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           background: '#0c1220',
           borderTop: '2px solid #1e3a50',
         }}>
+          <Hand
+            cards={sortedHand}
+            onPlayCard={onPlayCard}
+            playableCards={playableCards}
+            disabled={(isPlaying && !isMyTurn) || trickComplete}
+          />
           {/* Team badge */}
           {me.team && (
             <div style={{
@@ -534,18 +540,12 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               fontFamily: "'Science Gothic', monospace",
               fontSize: 8,
               color: me.team === 'ns' ? '#7ec8e3' : '#ff8a80',
-              marginBottom: 6,
+              marginTop: 6,
               textTransform: 'uppercase',
             }}>
               {me.team === 'ns' ? 'BLUE' : 'RED'}
             </div>
           )}
-          <Hand
-            cards={sortedHand}
-            onPlayCard={onPlayCard}
-            playableCards={playableCards}
-            disabled={(isPlaying && !isMyTurn) || trickComplete}
-          />
         </div>
       )}
     </div>
