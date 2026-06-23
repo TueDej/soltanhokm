@@ -5,11 +5,11 @@ import { Card } from './Card'
 
 const POSITIONS_ORDER: PlayerPosition[] = [PlayerPosition.North, PlayerPosition.East, PlayerPosition.South, PlayerPosition.West]
 
-const TABLE_POSITIONS: Record<string, React.CSSProperties> = {
-  bottom: { bottom: '25%', left: '50%', transform: 'translateX(-50%)' },
-  top: { top: '25%', left: '50%', transform: 'translateX(-50%)' },
-  left: { left: '25%', top: '50%', transform: 'translateY(-50%)' },
-  right: { right: '25%', top: '50%', transform: 'translateY(-50%)' },
+const CARD_POSITIONS: Record<string, React.CSSProperties> = {
+  bottom: { bottom: 0, left: '50%', transform: 'translateX(-50%)' },
+  top: { top: 0, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: 0, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: 0, top: '50%', transform: 'translateY(-50%)' },
 }
 
 const PLAY_ANIMATIONS: Record<string, string> = {
@@ -39,22 +39,32 @@ interface TableProps {
 export function Table({ trick, myPosition }: TableProps) {
   return (
     <div className="game-table">
-      {Object.entries(trick.cards).map(([pos, card]) => {
-        if (!card) return null
-        const relPos = getRelativePosition(myPosition, pos as PlayerPosition)
-        return (
-          <div
-            key={pos}
-            style={{
-              position: 'absolute',
-              ...TABLE_POSITIONS[relPos],
-              animation: PLAY_ANIMATIONS[relPos],
-            }}
-          >
-            <Card card={card as CardType} disabled />
-          </div>
-        )
-      })}
+      {/* Fixed compact play area in the center */}
+      <div className="play-area" style={{
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 180,
+        height: 260,
+      }}>
+        {Object.entries(trick.cards).map(([pos, card]) => {
+          if (!card) return null
+          const relPos = getRelativePosition(myPosition, pos as PlayerPosition)
+          return (
+            <div
+              key={pos}
+              style={{
+                position: 'absolute',
+                ...CARD_POSITIONS[relPos],
+                animation: PLAY_ANIMATIONS[relPos],
+              }}
+            >
+              <Card card={card as CardType} disabled />
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

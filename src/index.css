@@ -95,6 +95,11 @@ button, input {
     border-radius: 12px !important;
   }
 
+  .play-area {
+    width: 140px !important;
+    height: 200px !important;
+  }
+
   .score-dots {
     display: none !important;
   }
