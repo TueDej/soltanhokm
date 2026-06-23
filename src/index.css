@@ -92,8 +92,8 @@ button, input {
   }
 
   .game-table {
-    width: 240px !important;
-    height: 280px !important;
+    width: min(200px, 55vw) !important;
+    height: min(220px, 40vh) !important;
   }
 
   .score-dots {
@@ -105,8 +105,8 @@ button, input {
 
 .game-table {
   position: relative;
-  width: 380px;
-  height: 380px;
+  width: min(320px, 60vw);
+  height: min(320px, 45vh);
   background: linear-gradient(160deg, #0f2a3a, #0c1a2a, #0a1520);
   border-radius: 16px;
   border: 2px solid #1e3a50;
