@@ -27,29 +27,31 @@ function loadSession(): SavedSession | null {
 
 const btnBase: React.CSSProperties = {
   padding: '14px 40px',
-  fontSize: 17,
-  fontWeight: 600,
-  borderRadius: 12,
-  border: 'none',
-  color: '#fff',
+  fontSize: 14,
+  fontWeight: 400,
+  borderRadius: 0,
+  border: '3px solid #33ff33',
+  color: '#33ff33',
   width: 320,
   cursor: 'pointer',
-  transition: 'all 0.2s ease',
-  letterSpacing: 0.3,
+  transition: 'none',
+  fontFamily: "'Press Start 2P', monospace",
+  textTransform: 'uppercase',
+  background: '#0a0a0a',
 }
 
 const inputStyle: React.CSSProperties = {
   padding: '14px 20px',
-  fontSize: 17,
-  borderRadius: 12,
-  border: '2px solid rgba(255,255,255,0.1)',
-  background: 'rgba(255,255,255,0.06)',
-  color: '#e8e6e1',
+  fontSize: 18,
+  borderRadius: 0,
+  border: '3px solid #33ff33',
+  background: '#0a0a0a',
+  color: '#33ff33',
   width: 320,
   textAlign: 'center',
-  fontFamily: "'Outfit', sans-serif",
+  fontFamily: "'VT323', monospace",
   outline: 'none',
-  transition: 'border-color 0.2s, background 0.2s',
+  letterSpacing: 2,
 }
 
 export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
@@ -96,26 +98,27 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
       {/* Title */}
       <div style={{ textAlign: 'center', marginBottom: 8 }}>
         <h1 style={{
-          fontFamily: "'Playfair Display', serif",
-          fontSize: 56,
-          fontWeight: 900,
-          background: 'linear-gradient(135deg, #c9a84c, #f0d78c, #c9a84c)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          letterSpacing: 1,
-          lineHeight: 1.1,
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: 32,
+          fontWeight: 400,
+          color: '#ffff00',
+          textShadow: '4px 4px 0px #aa8800, 0 0 30px rgba(255,255,0,0.3)',
+          letterSpacing: 2,
+          lineHeight: 1.4,
         }}>
-          Soltan Hokm
+          SOLTAN<br/>HOKM
         </h1>
         <p style={{
-          color: 'rgba(232,230,225,0.4)',
-          fontSize: '0.9rem',
-          fontWeight: 300,
-          marginTop: 6,
+          fontFamily: "'Press Start 2P', monospace",
+          color: '#33ff33',
+          fontSize: 10,
+          fontWeight: 400,
+          marginTop: 12,
           letterSpacing: 3,
           textTransform: 'uppercase',
+          textShadow: '2px 2px 0px #0a3a0a',
         }}>
-          Card Game
+          CARD GAME
         </p>
       </div>
 
@@ -125,30 +128,25 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
           onClick={() => onResumeGame(savedSession.playerName)}
           style={{
             ...btnBase,
-            background: 'linear-gradient(135deg, #2ecc71, #27ae60)',
-            boxShadow: '0 4px 16px rgba(46,204,113,0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 10,
+            borderColor: '#ffff00',
+            color: '#ffff00',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.transform = 'translateY(-2px)'
-            e.currentTarget.style.boxShadow = '0 6px 24px rgba(46,204,113,0.4)'
+            e.currentTarget.style.background = '#ffff00'
+            e.currentTarget.style.color = '#0a0a0a'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.transform = 'translateY(0)'
-            e.currentTarget.style.boxShadow = '0 4px 16px rgba(46,204,113,0.3)'
+            e.currentTarget.style.background = '#0a0a0a'
+            e.currentTarget.style.color = '#ffff00'
           }}
         >
-          <span style={{ fontSize: 18 }}>&#9654;</span>
-          Resume Game
+          ▶ RESUME GAME
         </button>
       )}
 
       {/* Name input */}
       <input
-        placeholder="Enter your name"
+        placeholder="YOUR NAME"
         value={playerName}
         onChange={(e) => updateName(e.target.value)}
         onKeyDown={(e) => {
@@ -158,19 +156,26 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         }}
         style={inputStyle}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'
-          e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+          e.currentTarget.style.borderColor = '#ffff00'
+          e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,0,0.2)'
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-          e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
+          e.currentTarget.style.borderColor = '#33ff33'
+          e.currentTarget.style.boxShadow = 'none'
         }}
       />
 
       {/* Games to win selector */}
       <div style={{ display: 'flex', gap: 8, width: 320 }}>
-        <span style={{ fontSize: '0.8rem', color: 'rgba(232,230,225,0.5)', fontWeight: 500, alignSelf: 'center', whiteSpace: 'nowrap' }}>
-          Games to win:
+        <span style={{
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: 8,
+          color: '#33ff33',
+          fontWeight: 400,
+          alignSelf: 'center',
+          whiteSpace: 'nowrap',
+        }}>
+          WINS:
         </span>
         {[3, 7].map((n) => (
           <button
@@ -179,15 +184,15 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             style={{
               flex: 1,
               padding: '10px 0',
-              borderRadius: 10,
-              border: `1.5px solid ${handsToWin === n ? 'rgba(201,168,76,0.6)' : 'rgba(255,255,255,0.1)'}`,
-              background: handsToWin === n ? 'rgba(201,168,76,0.15)' : 'rgba(255,255,255,0.04)',
-              color: handsToWin === n ? '#c9a84c' : 'rgba(232,230,225,0.5)',
+              borderRadius: 0,
+              border: `3px solid ${handsToWin === n ? '#ffff00' : '#33ff33'}`,
+              background: handsToWin === n ? '#ffff00' : '#0a0a0a',
+              color: handsToWin === n ? '#0a0a0a' : '#33ff33',
               cursor: 'pointer',
-              fontSize: 15,
-              fontWeight: 600,
-              fontFamily: "'Outfit', sans-serif",
-              transition: 'all 0.2s',
+              fontSize: 16,
+              fontWeight: 400,
+              fontFamily: "'Press Start 2P', monospace",
+              transition: 'none',
             }}
           >
             {n}
@@ -200,30 +205,29 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         disabled={!enabled}
         style={{
           ...btnBase,
-          background: enabled
-            ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
-            : 'rgba(255,255,255,0.08)',
-          boxShadow: enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
+          borderColor: enabled ? '#33ff33' : '#1a3a1a',
+          color: enabled ? '#33ff33' : '#1a3a1a',
           cursor: enabled ? 'pointer' : 'not-allowed',
-          opacity: enabled ? 1 : 0.5,
         }}
         onMouseEnter={(e) => {
           if (enabled) {
-            e.currentTarget.style.transform = 'translateY(-2px)'
-            e.currentTarget.style.boxShadow = '0 6px 24px rgba(58,124,189,0.35)'
+            e.currentTarget.style.background = '#33ff33'
+            e.currentTarget.style.color = '#0a0a0a'
           }
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0)'
-          e.currentTarget.style.boxShadow = enabled ? '0 4px 16px rgba(58,124,189,0.25)' : 'none'
+          if (enabled) {
+            e.currentTarget.style.background = '#0a0a0a'
+            e.currentTarget.style.color = '#33ff33'
+          }
         }}
       >
-        Create Room
+        CREATE ROOM
       </button>
 
       <div style={{ display: 'flex', gap: 10, width: 320 }}>
         <input
-          placeholder="Code"
+          placeholder="CODE"
           value={joinCode}
           onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
           onKeyDown={(e) => {
@@ -234,16 +238,14 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             width: 160,
             letterSpacing: 6,
             textTransform: 'uppercase',
-            fontFamily: "'Outfit', monospace",
-            fontWeight: 600,
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(201,168,76,0.5)'
-            e.currentTarget.style.background = 'rgba(255,255,255,0.08)'
+            e.currentTarget.style.borderColor = '#ffff00'
+            e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,0,0.2)'
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-            e.currentTarget.style.background = 'rgba(255,255,255,0.06)'
+            e.currentTarget.style.borderColor = '#33ff33'
+            e.currentTarget.style.boxShadow = 'none'
           }}
         />
         <button
@@ -254,15 +256,24 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             width: 'auto',
             flex: 1,
             padding: '14px 20px',
-            background: enabled && joinCode.trim()
-              ? 'linear-gradient(135deg, #3a7cbd, #2d6aad)'
-              : 'rgba(255,255,255,0.08)',
-            boxShadow: enabled && joinCode.trim() ? '0 4px 16px rgba(58,124,189,0.25)' : 'none',
+            borderColor: enabled && joinCode.trim() ? '#33ff33' : '#1a3a1a',
+            color: enabled && joinCode.trim() ? '#33ff33' : '#1a3a1a',
             cursor: enabled && joinCode.trim() ? 'pointer' : 'not-allowed',
-            opacity: enabled && joinCode.trim() ? 1 : 0.5,
+          }}
+          onMouseEnter={(e) => {
+            if (enabled && joinCode.trim()) {
+              e.currentTarget.style.background = '#33ff33'
+              e.currentTarget.style.color = '#0a0a0a'
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (enabled && joinCode.trim()) {
+              e.currentTarget.style.background = '#0a0a0a'
+              e.currentTarget.style.color = '#33ff33'
+            }
           }}
         >
-          Join
+          JOIN
         </button>
       </div>
     </div>

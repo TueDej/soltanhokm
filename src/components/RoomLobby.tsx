@@ -35,12 +35,12 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
       animation: 'fadeIn 0.5s ease',
     }}>
       <h2 style={{
-        fontFamily: "'Playfair Display', serif",
-        fontSize: 32,
-        fontWeight: 800,
-        color: '#e8e6e1',
+        fontFamily: "'Press Start 2P', monospace",
+        fontSize: 20,
+        color: '#ffff00',
+        textShadow: '4px 4px 0px #aa8800',
       }}>
-        Room Created
+        ROOM CREATED
       </h2>
 
       {/* Room code */}
@@ -48,31 +48,39 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
         onClick={copyCode}
         style={{
           padding: '16px 32px',
-          borderRadius: 16,
-          background: 'rgba(201,168,76,0.06)',
-          border: '1.5px solid rgba(201,168,76,0.15)',
+          borderRadius: 0,
+          background: '#0a0a0a',
+          border: '3px solid #ffff00',
           cursor: 'pointer',
           textAlign: 'center',
-          transition: 'all 0.2s',
+          transition: 'none',
+          boxShadow: '4px 4px 0px #aa8800',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(201,168,76,0.3)'
-          e.currentTarget.style.background = 'rgba(201,168,76,0.1)'
+          e.currentTarget.style.background = '#ffff00'
+          e.currentTarget.style.boxShadow = '6px 6px 0px #aa8800'
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.borderColor = 'rgba(201,168,76,0.15)'
-          e.currentTarget.style.background = 'rgba(201,168,76,0.06)'
+          e.currentTarget.style.background = '#0a0a0a'
+          e.currentTarget.style.boxShadow = '4px 4px 0px #aa8800'
         }}
       >
-        <p style={{ fontSize: '0.7rem', color: 'rgba(201,168,76,0.5)', marginBottom: 8, fontWeight: 500, textTransform: 'uppercase', letterSpacing: 2 }}>
-          Click to copy
+        <p style={{
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: 8,
+          color: '#33ff33',
+          marginBottom: 8,
+          textTransform: 'uppercase',
+          letterSpacing: 2,
+        }}>
+          CLICK TO COPY
         </p>
         <p style={{
-          fontSize: 36,
-          fontWeight: 700,
-          letterSpacing: 10,
-          fontFamily: "'Outfit', monospace",
-          color: '#c9a84c',
+          fontFamily: "'Press Start 2P', monospace",
+          fontSize: 24,
+          letterSpacing: 6,
+          color: '#ffff00',
+          textShadow: '2px 2px 0px #aa8800',
         }}>
           {roomCode}
         </p>
@@ -86,33 +94,42 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           style={{
             flex: 1,
             padding: '14px',
-            borderRadius: 14,
-            background: myTeam === 'ns' ? 'rgba(46,204,113,0.1)' : 'rgba(255,255,255,0.03)',
-            border: `1.5px solid ${myTeam === 'ns' ? 'rgba(46,204,113,0.35)' : nsFull ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.08)'}`,
+            borderRadius: 0,
+            background: myTeam === 'ns' ? '#0a2a0a' : '#0a0a0a',
+            border: `3px solid ${myTeam === 'ns' ? '#33ff33' : nsFull ? '#1a1a1a' : '#33ff33'}`,
             cursor: nsFull && myTeam !== 'ns' ? 'not-allowed' : 'pointer',
             textAlign: 'center',
-            transition: 'all 0.2s',
-            opacity: nsFull && myTeam !== 'ns' ? 0.4 : 1,
+            transition: 'none',
+            opacity: nsFull && myTeam !== 'ns' ? 0.3 : 1,
+            boxShadow: '3px 3px 0px #1a5c1a',
           }}
         >
-          <div style={{ fontSize: '0.7rem', color: '#2ecc71', fontWeight: 600, marginBottom: 10, textTransform: 'uppercase', letterSpacing: 1 }}>
-            Green {nsFull && '(Full)'}
+          <div style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 8,
+            color: '#33ff33',
+            marginBottom: 10,
+            textTransform: 'uppercase',
+          }}>
+            GREEN {nsFull && '(FULL)'}
           </div>
           {nsPlayers.map((p) => (
             <div key={p.id} style={{
               padding: '6px 10px',
               marginBottom: 4,
-              borderRadius: 8,
-              background: 'rgba(46,204,113,0.1)',
-              fontSize: '0.8rem',
-              fontWeight: 500,
+              borderRadius: 0,
+              background: '#0a2a0a',
+              border: '1px solid #33ff33',
+              fontFamily: "'VT323', monospace",
+              fontSize: '1rem',
+              color: '#33ff33',
             }}>
               {p.name}
-              {p.id === playerId && <span style={{ color: '#2ecc71', marginLeft: 4, fontSize: '0.7rem' }}>(you)</span>}
+              {p.id === playerId && <span style={{ marginLeft: 4, fontSize: '0.8rem' }}>(YOU)</span>}
             </div>
           ))}
           {nsPlayers.length === 0 && (
-            <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.75rem', padding: '10px 0', fontWeight: 400 }}>Empty</div>
+            <div style={{ fontFamily: "'VT323', monospace", color: '#333', fontSize: '1rem', padding: '10px 0' }}>EMPTY</div>
           )}
         </div>
 
@@ -122,45 +139,54 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           style={{
             flex: 1,
             padding: '14px',
-            borderRadius: 14,
-            background: myTeam === 'ew' ? 'rgba(224,112,96,0.1)' : 'rgba(255,255,255,0.03)',
-            border: `1.5px solid ${myTeam === 'ew' ? 'rgba(224,112,96,0.35)' : ewFull ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.08)'}`,
+            borderRadius: 0,
+            background: myTeam === 'ew' ? '#2a0a0a' : '#0a0a0a',
+            border: `3px solid ${myTeam === 'ew' ? '#ff3333' : ewFull ? '#1a1a1a' : '#ff3333'}`,
             cursor: ewFull && myTeam !== 'ew' ? 'not-allowed' : 'pointer',
             textAlign: 'center',
-            transition: 'all 0.2s',
-            opacity: ewFull && myTeam !== 'ew' ? 0.4 : 1,
+            transition: 'none',
+            opacity: ewFull && myTeam !== 'ew' ? 0.3 : 1,
+            boxShadow: '3px 3px 0px #5c1a1a',
           }}
         >
-          <div style={{ fontSize: '0.7rem', color: '#e07060', fontWeight: 600, marginBottom: 10, textTransform: 'uppercase', letterSpacing: 1 }}>
-            Red {ewFull && '(Full)'}
+          <div style={{
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 8,
+            color: '#ff3333',
+            marginBottom: 10,
+            textTransform: 'uppercase',
+          }}>
+            RED {ewFull && '(FULL)'}
           </div>
           {ewPlayers.map((p) => (
             <div key={p.id} style={{
               padding: '6px 10px',
               marginBottom: 4,
-              borderRadius: 8,
-              background: 'rgba(224,112,96,0.1)',
-              fontSize: '0.8rem',
-              fontWeight: 500,
+              borderRadius: 0,
+              background: '#2a0a0a',
+              border: '1px solid #ff3333',
+              fontFamily: "'VT323', monospace",
+              fontSize: '1rem',
+              color: '#ff3333',
             }}>
               {p.name}
-              {p.id === playerId && <span style={{ color: '#e07060', marginLeft: 4, fontSize: '0.7rem' }}>(you)</span>}
+              {p.id === playerId && <span style={{ marginLeft: 4, fontSize: '0.8rem' }}>(YOU)</span>}
             </div>
           ))}
           {ewPlayers.length === 0 && (
-            <div style={{ color: 'rgba(255,255,255,0.2)', fontSize: '0.75rem', padding: '10px 0', fontWeight: 400 }}>Empty</div>
+            <div style={{ fontFamily: "'VT323', monospace", color: '#333', fontSize: '1rem', padding: '10px 0' }}>EMPTY</div>
           )}
         </div>
       </div>
 
       {noTeamPlayers.length > 0 && (
-        <p style={{ fontSize: '0.75rem', color: 'rgba(232,230,225,0.4)' }}>
-          {noTeamPlayers.length} player(s) choosing team...
+        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#33ff33', opacity: 0.5 }}>
+          {noTeamPlayers.length} PLAYER(S) CHOOSING...
         </p>
       )}
 
-      <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.25)', textAlign: 'center', fontWeight: 400 }}>
-        Click a team to join. Empty seats will be filled with bots.
+      <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#33ff33', opacity: 0.3, textAlign: 'center' }}>
+        CLICK A TEAM TO JOIN. EMPTY SEATS = BOTS.
       </p>
 
       <div style={{ display: 'flex', gap: 14 }}>
@@ -168,54 +194,49 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           onClick={onBack}
           style={{
             padding: '12px 28px',
-            borderRadius: 12,
-            border: '1.5px solid rgba(255,255,255,0.1)',
-            background: 'transparent',
-            color: 'rgba(232,230,225,0.5)',
+            borderRadius: 0,
+            border: '3px solid #33ff33',
+            background: '#0a0a0a',
+            color: '#33ff33',
             cursor: 'pointer',
-            fontSize: 14,
-            fontWeight: 500,
-            fontFamily: "'Outfit', sans-serif",
-            transition: 'all 0.2s',
+            fontFamily: "'Press Start 2P', monospace",
+            fontSize: 10,
+            transition: 'none',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.2)'
-            e.currentTarget.style.color = 'rgba(232,230,225,0.8)'
+            e.currentTarget.style.background = '#33ff33'
+            e.currentTarget.style.color = '#0a0a0a'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
-            e.currentTarget.style.color = 'rgba(232,230,225,0.5)'
+            e.currentTarget.style.background = '#0a0a0a'
+            e.currentTarget.style.color = '#33ff33'
           }}
         >
-          Back
+          BACK
         </button>
         {isCreator && (
           <button
             onClick={onStartGame}
             style={{
               padding: '12px 28px',
-              borderRadius: 12,
-              border: 'none',
-              background: 'linear-gradient(135deg, #c9a84c, #b8943f)',
-              color: '#fff',
+              borderRadius: 0,
+              border: '3px solid #ffff00',
+              background: '#ffff00',
+              color: '#0a0a0a',
               cursor: 'pointer',
-              fontSize: 14,
-              fontWeight: 600,
-              fontFamily: "'Outfit', sans-serif",
-              boxShadow: '0 4px 16px rgba(201,168,76,0.25)',
-              transition: 'all 0.2s',
-              letterSpacing: 0.3,
+              fontFamily: "'Press Start 2P', monospace",
+              fontSize: 10,
+              transition: 'none',
+              boxShadow: '3px 3px 0px #aa8800',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
+              e.currentTarget.style.boxShadow = '5px 5px 0px #aa8800'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = '0 4px 16px rgba(201,168,76,0.25)'
+              e.currentTarget.style.boxShadow = '3px 3px 0px #aa8800'
             }}
           >
-            Start Game
+            START GAME
           </button>
         )}
       </div>

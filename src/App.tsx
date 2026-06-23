@@ -11,15 +11,17 @@ type Mode = null | 'online'
 
 const btnStyle: React.CSSProperties = {
   padding: '14px 40px',
-  fontSize: 17,
-  fontWeight: 600,
-  borderRadius: 12,
-  border: 'none',
-  color: '#fff',
+  fontSize: 18,
+  fontWeight: 400,
+  borderRadius: 0,
+  border: '3px solid #33ff33',
+  color: '#33ff33',
   cursor: 'pointer',
-  fontFamily: "'Outfit', sans-serif",
-  letterSpacing: 0.3,
-  transition: 'all 0.2s',
+  fontFamily: "'Press Start 2P', monospace",
+  letterSpacing: 0,
+  transition: 'none',
+  textTransform: 'uppercase',
+  background: '#0a0a0a',
 }
 
 const screenStyle: React.CSSProperties = {
@@ -29,11 +31,12 @@ const screenStyle: React.CSSProperties = {
 }
 
 const titleStyle: React.CSSProperties = {
-  fontFamily: "'Playfair Display', serif",
-  fontSize: 42,
-  fontWeight: 800,
+  fontFamily: "'Press Start 2P', monospace",
+  fontSize: 28,
+  fontWeight: 400,
   marginBottom: 12,
-  color: '#e8e6e1',
+  color: '#ffff00',
+  textShadow: '4px 4px 0px #aa8800, 0 0 20px rgba(255,255,0,0.3)',
 }
 
 export default function App() {
@@ -101,35 +104,35 @@ export default function App() {
         const nsWins = onlineGame.game.matchWinner === 'ns'
         return (
           <div style={screenStyle}>
-            <h2 style={titleStyle}>Game Over</h2>
+            <h2 style={titleStyle}>GAME OVER</h2>
             <p style={{
-              color: nsWins ? '#2ecc71' : '#e07060',
-              fontSize: '1.1rem',
-              fontWeight: 600,
+              color: nsWins ? '#33ff33' : '#ff3333',
+              fontSize: '1.2rem',
+              fontWeight: 400,
               marginBottom: 24,
+              fontFamily: "'Press Start 2P', monospace",
+              textShadow: nsWins
+                ? '2px 2px 0px #0a3a0a'
+                : '2px 2px 0px #3a0a0a',
             }}>
-              {nsWins ? 'North-South won!' : 'East-West won!'}
+              {nsWins ? 'GREEN WINS!' : 'RED WINS!'}
             </p>
             <button
               onClick={() => {
                 onlineGame.reset()
                 setMode(null)
               }}
-              style={{
-                ...btnStyle,
-                background: 'linear-gradient(135deg, #c9a84c, #b8943f)',
-                boxShadow: '0 4px 16px rgba(201,168,76,0.25)',
-              }}
+              style={btnStyle}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)'
-                e.currentTarget.style.boxShadow = '0 6px 24px rgba(201,168,76,0.35)'
+                e.currentTarget.style.background = '#33ff33'
+                e.currentTarget.style.color = '#0a0a0a'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-                e.currentTarget.style.boxShadow = '0 4px 16px rgba(201,168,76,0.25)'
+                e.currentTarget.style.background = '#0a0a0a'
+                e.currentTarget.style.color = '#33ff33'
               }}
             >
-              Play Again
+              PLAY AGAIN
             </button>
           </div>
         )
@@ -173,33 +176,32 @@ export default function App() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(10,26,18,0.85)',
-              backdropFilter: 'blur(8px)',
+              background: 'rgba(0,0,0,0.92)',
               animation: 'hokmRevealFade 1.8s ease-in-out forwards',
             }}>
               <div style={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: 12,
-                animation: 'hokmRevealPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                gap: 16,
+                animation: 'hokmRevealPop 0.3s step-end',
               }}>
                 <span style={{
                   fontSize: '1rem',
-                  fontWeight: 600,
-                  color: 'rgba(201,168,76,0.7)',
-                  fontFamily: "'Estedad', sans-serif",
-                  letterSpacing: 1,
+                  fontFamily: "'Press Start 2P', monospace",
+                  color: '#ffff00',
+                  textShadow: '2px 2px 0px #aa8800',
+                  letterSpacing: 2,
                 }}>
-                  حکم
+                  TRUMP
                 </span>
                 <span style={{
                   fontSize: '80px',
-                  fontFamily: "'Noto Sans Symbols 2', sans-serif",
-                  color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#e07060' : '#c9a84c',
+                  fontFamily: "'VT323', monospace",
+                  color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#ff3333' : '#33ff33',
                   textShadow: hokmReveal === 'hearts' || hokmReveal === 'diamonds'
-                    ? '0 0 30px rgba(224,112,96,0.7), 0 0 60px rgba(224,112,96,0.3)'
-                    : '0 0 30px rgba(201,168,76,0.7), 0 0 60px rgba(201,168,76,0.3)',
+                    ? '4px 4px 0px #aa0000, 0 0 20px rgba(255,0,0,0.5)'
+                    : '4px 4px 0px #00aa00, 0 0 20px rgba(0,255,0,0.5)',
                   lineHeight: 1,
                 }}>
                   {{ hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' }[hokmReveal]}
@@ -214,11 +216,12 @@ export default function App() {
     return (
       <div style={{
         ...screenStyle,
-        color: 'rgba(232,230,225,0.4)',
+        color: '#33ff33',
+        opacity: 0.5,
       }}>
         {onlineGame.error ? (
           <>
-            <p style={{ color: '#e07060', marginBottom: 16, fontWeight: 500 }}>{onlineGame.error}</p>
+            <p style={{ color: '#ff3333', marginBottom: 16, fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>{onlineGame.error}</p>
             <button
               onClick={() => {
                 onlineGame.reset()
@@ -227,17 +230,16 @@ export default function App() {
               style={{
                 ...btnStyle,
                 padding: '12px 28px',
-                fontSize: 15,
-                background: 'transparent',
-                border: '1.5px solid rgba(255,255,255,0.12)',
-                color: 'rgba(232,230,225,0.6)',
+                fontSize: 12,
+                borderColor: '#33ff33',
+                color: '#33ff33',
               }}
             >
-              Go Back
+              GO BACK
             </button>
           </>
         ) : (
-          <p style={{ fontWeight: 400 }}>Connecting to server...</p>
+          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>CONNECTING...</p>
         )}
       </div>
     )
