@@ -332,59 +332,6 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
 
       {/* Center area */}
       <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
-        {otherPlayers.map((p) => {
-          const screenPos = getRelativePosition(myPos, p.position)
-          const style = SCREEN_POSITIONS[screenPos]
-          if (!style) return null
-          const isPlayerTurn = game.turn === p.position
-          const isTrickWinner = trickWinner === p.position
-          return (
-            <div
-              key={p.position}
-              style={{
-                ...style,
-                position: 'absolute',
-                padding: '6px 12px',
-                borderRadius: 4,
-                background: isTrickWinner
-                  ? '#1a3050'
-                  : isPlayerTurn
-                    ? '#152535'
-                    : '#0c1220',
-                border: `2px solid ${isTrickWinner ? '#7ec8e3' : isPlayerTurn ? '#4a90b8' : '#1e3a50'}`,
-                textAlign: 'center',
-                fontSize: '0.75rem',
-                transition: 'none',
-                zIndex: 5,
-                boxShadow: isTrickWinner
-                  ? '4px 4px 0px #4a90b8, 0 0 15px rgba(126,200,227,0.3)'
-                  : isPlayerTurn
-                    ? '0 0 12px rgba(126,200,227,0.15)'
-                    : '3px 3px 0px #0a1a28',
-                animation: isTrickWinner ? 'trickWinFlash 0.8s ease-out' : isPlayerTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <div style={{
-                fontFamily: "'Science Gothic', monospace",
-                fontSize: 8,
-                color: '#7ec8e3',
-              }}>
-                {p.name}
-                {game.hokmPlayer === p.position && <span style={{ marginLeft: 4 }}>★</span>}
-              </div>
-              <div style={{
-                fontFamily: "'Science Gothic', monospace",
-                color: '#4a6a80',
-                fontSize: '0.85rem',
-                marginTop: 2,
-              }}>
-                {getCardCount(p)} cards
-              </div>
-            </div>
-          )
-        })}
-
         {/* Table */}
         <div style={{
           position: 'absolute',
@@ -395,6 +342,59 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           height: '80%',
         }}>
           <Table trick={game.currentTrick} myPosition={myPos} hokmSuit={game.hokmSuit} />
+
+          {otherPlayers.map((p) => {
+            const screenPos = getRelativePosition(myPos, p.position)
+            const style = SCREEN_POSITIONS[screenPos]
+            if (!style) return null
+            const isPlayerTurn = game.turn === p.position
+            const isTrickWinner = trickWinner === p.position
+            return (
+              <div
+                key={p.position}
+                style={{
+                  ...style,
+                  position: 'absolute',
+                  padding: '6px 12px',
+                  borderRadius: 4,
+                  background: isTrickWinner
+                    ? '#1a3050'
+                    : isPlayerTurn
+                      ? '#152535'
+                      : '#0c1220',
+                  border: `2px solid ${isTrickWinner ? '#7ec8e3' : isPlayerTurn ? '#4a90b8' : '#1e3a50'}`,
+                  textAlign: 'center',
+                  fontSize: '0.75rem',
+                  transition: 'none',
+                  zIndex: 5,
+                  boxShadow: isTrickWinner
+                    ? '4px 4px 0px #4a90b8, 0 0 15px rgba(126,200,227,0.3)'
+                    : isPlayerTurn
+                      ? '0 0 12px rgba(126,200,227,0.15)'
+                      : '3px 3px 0px #0a1a28',
+                  animation: isTrickWinner ? 'trickWinFlash 0.8s ease-out' : isPlayerTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <div style={{
+                  fontFamily: "'Science Gothic', monospace",
+                  fontSize: 8,
+                  color: '#7ec8e3',
+                }}>
+                  {p.name}
+                  {game.hokmPlayer === p.position && <span style={{ marginLeft: 4 }}>★</span>}
+                </div>
+                <div style={{
+                  fontFamily: "'Science Gothic', monospace",
+                  color: '#4a6a80',
+                  fontSize: '0.85rem',
+                  marginTop: 2,
+                }}>
+                  {getCardCount(p)} cards
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         {/* Hokm picker */}
