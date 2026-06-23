@@ -13,15 +13,15 @@ const btnStyle: React.CSSProperties = {
   padding: '14px 40px',
   fontSize: 18,
   fontWeight: 400,
-  borderRadius: 0,
-  border: '3px solid #33ff33',
-  color: '#33ff33',
+  borderRadius: 4,
+  border: '2px solid #4a90b8',
+  color: '#7ec8e3',
   cursor: 'pointer',
   fontFamily: "'Press Start 2P', monospace",
   letterSpacing: 0,
-  transition: 'none',
+  transition: 'all 0.15s',
   textTransform: 'uppercase',
-  background: '#0a0a0a',
+  background: '#0c1220',
 }
 
 const screenStyle: React.CSSProperties = {
@@ -35,8 +35,8 @@ const titleStyle: React.CSSProperties = {
   fontSize: 28,
   fontWeight: 400,
   marginBottom: 12,
-  color: '#ffff00',
-  textShadow: '4px 4px 0px #aa8800, 0 0 20px rgba(255,255,0,0.3)',
+  color: '#7ec8e3',
+  textShadow: '3px 3px 0px #1e3a50',
 }
 
 export default function App() {
@@ -106,16 +106,16 @@ export default function App() {
           <div style={screenStyle}>
             <h2 style={titleStyle}>GAME OVER</h2>
             <p style={{
-              color: nsWins ? '#33ff33' : '#ff3333',
+              color: nsWins ? '#7ec8e3' : '#ff8a80',
               fontSize: '1.2rem',
               fontWeight: 400,
               marginBottom: 24,
               fontFamily: "'Press Start 2P', monospace",
               textShadow: nsWins
-                ? '2px 2px 0px #0a3a0a'
-                : '2px 2px 0px #3a0a0a',
+                ? '2px 2px 0px #1e3a50'
+                : '2px 2px 0px #502020',
             }}>
-              {nsWins ? 'GREEN WINS!' : 'RED WINS!'}
+              {nsWins ? 'BLUE WINS!' : 'RED WINS!'}
             </p>
             <button
               onClick={() => {
@@ -124,12 +124,12 @@ export default function App() {
               }}
               style={btnStyle}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#33ff33'
-                e.currentTarget.style.color = '#0a0a0a'
+                e.currentTarget.style.background = '#4a90b8'
+                e.currentTarget.style.color = '#0c1220'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#0a0a0a'
-                e.currentTarget.style.color = '#33ff33'
+                e.currentTarget.style.background = '#0c1220'
+                e.currentTarget.style.color = '#7ec8e3'
               }}
             >
               PLAY AGAIN
@@ -176,7 +176,7 @@ export default function App() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(0,0,0,0.92)',
+              background: 'rgba(12,18,32,0.92)',
               animation: 'hokmRevealFade 1.8s ease-in-out forwards',
             }}>
               <div style={{
@@ -184,24 +184,24 @@ export default function App() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: 16,
-                animation: 'hokmRevealPop 0.3s step-end',
+                animation: 'hokmRevealPop 0.3s ease-out',
               }}>
                 <span style={{
                   fontSize: '1rem',
                   fontFamily: "'Press Start 2P', monospace",
-                  color: '#ffff00',
-                  textShadow: '2px 2px 0px #aa8800',
+                  color: '#7ec8e3',
+                  textShadow: '2px 2px 0px #1e3a50',
                   letterSpacing: 2,
                 }}>
-                  TRUMP
+                  HOKM
                 </span>
                 <span style={{
                   fontSize: '80px',
                   fontFamily: "'VT323', monospace",
-                  color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#ff3333' : '#33ff33',
+                  color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#ff8a80' : '#7ec8e3',
                   textShadow: hokmReveal === 'hearts' || hokmReveal === 'diamonds'
-                    ? '4px 4px 0px #aa0000, 0 0 20px rgba(255,0,0,0.5)'
-                    : '4px 4px 0px #00aa00, 0 0 20px rgba(0,255,0,0.5)',
+                    ? '4px 4px 0px #502020, 0 0 20px rgba(255,138,128,0.3)'
+                    : '4px 4px 0px #1e3a50, 0 0 20px rgba(126,200,227,0.3)',
                   lineHeight: 1,
                 }}>
                   {{ hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' }[hokmReveal]}
@@ -216,12 +216,12 @@ export default function App() {
     return (
       <div style={{
         ...screenStyle,
-        color: '#33ff33',
+        color: '#7ec8e3',
         opacity: 0.5,
       }}>
         {onlineGame.error ? (
           <>
-            <p style={{ color: '#ff3333', marginBottom: 16, fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>{onlineGame.error}</p>
+            <p style={{ color: '#ff8a80', marginBottom: 16, fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>{onlineGame.error}</p>
             <button
               onClick={() => {
                 onlineGame.reset()
@@ -231,8 +231,6 @@ export default function App() {
                 ...btnStyle,
                 padding: '12px 28px',
                 fontSize: 12,
-                borderColor: '#33ff33',
-                color: '#33ff33',
               }}
             >
               GO BACK

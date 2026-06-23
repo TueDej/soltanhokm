@@ -29,24 +29,24 @@ const btnBase: React.CSSProperties = {
   padding: '14px 40px',
   fontSize: 14,
   fontWeight: 400,
-  borderRadius: 0,
-  border: '3px solid #33ff33',
-  color: '#33ff33',
+  borderRadius: 4,
+  border: '2px solid #4a90b8',
+  color: '#7ec8e3',
   width: 320,
   cursor: 'pointer',
-  transition: 'none',
+  transition: 'all 0.15s',
   fontFamily: "'Press Start 2P', monospace",
   textTransform: 'uppercase',
-  background: '#0a0a0a',
+  background: '#0c1220',
 }
 
 const inputStyle: React.CSSProperties = {
   padding: '14px 20px',
   fontSize: 18,
-  borderRadius: 0,
-  border: '3px solid #33ff33',
-  background: '#0a0a0a',
-  color: '#33ff33',
+  borderRadius: 4,
+  border: '2px solid #4a90b8',
+  background: '#0c1220',
+  color: '#7ec8e3',
   width: 320,
   textAlign: 'center',
   fontFamily: "'VT323', monospace",
@@ -101,8 +101,8 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
           fontFamily: "'Press Start 2P', monospace",
           fontSize: 32,
           fontWeight: 400,
-          color: '#ffff00',
-          textShadow: '4px 4px 0px #aa8800, 0 0 30px rgba(255,255,0,0.3)',
+          color: '#7ec8e3',
+          textShadow: '4px 4px 0px #1e3a50',
           letterSpacing: 2,
           lineHeight: 1.4,
         }}>
@@ -110,13 +110,12 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         </h1>
         <p style={{
           fontFamily: "'Press Start 2P', monospace",
-          color: '#33ff33',
+          color: '#4a90b8',
           fontSize: 10,
           fontWeight: 400,
           marginTop: 12,
           letterSpacing: 3,
           textTransform: 'uppercase',
-          textShadow: '2px 2px 0px #0a3a0a',
         }}>
           CARD GAME
         </p>
@@ -128,16 +127,16 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
           onClick={() => onResumeGame(savedSession.playerName)}
           style={{
             ...btnBase,
-            borderColor: '#ffff00',
-            color: '#ffff00',
+            borderColor: '#5cb870',
+            color: '#5cb870',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#ffff00'
-            e.currentTarget.style.color = '#0a0a0a'
+            e.currentTarget.style.background = '#5cb870'
+            e.currentTarget.style.color = '#0c1220'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#0a0a0a'
-            e.currentTarget.style.color = '#ffff00'
+            e.currentTarget.style.background = '#0c1220'
+            e.currentTarget.style.color = '#5cb870'
           }}
         >
           ▶ RESUME GAME
@@ -156,11 +155,11 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         }}
         style={inputStyle}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = '#ffff00'
-          e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,0,0.2)'
+          e.currentTarget.style.borderColor = '#7ec8e3'
+          e.currentTarget.style.boxShadow = '0 0 10px rgba(126,200,227,0.15)'
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = '#33ff33'
+          e.currentTarget.style.borderColor = '#4a90b8'
           e.currentTarget.style.boxShadow = 'none'
         }}
       />
@@ -170,7 +169,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         <span style={{
           fontFamily: "'Press Start 2P', monospace",
           fontSize: 8,
-          color: '#33ff33',
+          color: '#4a90b8',
           fontWeight: 400,
           alignSelf: 'center',
           whiteSpace: 'nowrap',
@@ -184,15 +183,15 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             style={{
               flex: 1,
               padding: '10px 0',
-              borderRadius: 0,
-              border: `3px solid ${handsToWin === n ? '#ffff00' : '#33ff33'}`,
-              background: handsToWin === n ? '#ffff00' : '#0a0a0a',
-              color: handsToWin === n ? '#0a0a0a' : '#33ff33',
+              borderRadius: 4,
+              border: `2px solid ${handsToWin === n ? '#7ec8e3' : '#2a4a5a'}`,
+              background: handsToWin === n ? '#1e3a50' : '#0c1220',
+              color: handsToWin === n ? '#7ec8e3' : '#4a6a80',
               cursor: 'pointer',
               fontSize: 16,
               fontWeight: 400,
               fontFamily: "'Press Start 2P', monospace",
-              transition: 'none',
+              transition: 'all 0.15s',
             }}
           >
             {n}
@@ -205,20 +204,20 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         disabled={!enabled}
         style={{
           ...btnBase,
-          borderColor: enabled ? '#33ff33' : '#1a3a1a',
-          color: enabled ? '#33ff33' : '#1a3a1a',
+          borderColor: enabled ? '#4a90b8' : '#1a2a35',
+          color: enabled ? '#7ec8e3' : '#1a2a35',
           cursor: enabled ? 'pointer' : 'not-allowed',
         }}
         onMouseEnter={(e) => {
           if (enabled) {
-            e.currentTarget.style.background = '#33ff33'
-            e.currentTarget.style.color = '#0a0a0a'
+            e.currentTarget.style.background = '#4a90b8'
+            e.currentTarget.style.color = '#0c1220'
           }
         }}
         onMouseLeave={(e) => {
           if (enabled) {
-            e.currentTarget.style.background = '#0a0a0a'
-            e.currentTarget.style.color = '#33ff33'
+            e.currentTarget.style.background = '#0c1220'
+            e.currentTarget.style.color = '#7ec8e3'
           }
         }}
       >
@@ -240,11 +239,11 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             textTransform: 'uppercase',
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = '#ffff00'
-            e.currentTarget.style.boxShadow = '0 0 10px rgba(255,255,0,0.2)'
+            e.currentTarget.style.borderColor = '#7ec8e3'
+            e.currentTarget.style.boxShadow = '0 0 10px rgba(126,200,227,0.15)'
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = '#33ff33'
+            e.currentTarget.style.borderColor = '#4a90b8'
             e.currentTarget.style.boxShadow = 'none'
           }}
         />
@@ -256,20 +255,20 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             width: 'auto',
             flex: 1,
             padding: '14px 20px',
-            borderColor: enabled && joinCode.trim() ? '#33ff33' : '#1a3a1a',
-            color: enabled && joinCode.trim() ? '#33ff33' : '#1a3a1a',
+            borderColor: enabled && joinCode.trim() ? '#4a90b8' : '#1a2a35',
+            color: enabled && joinCode.trim() ? '#7ec8e3' : '#1a2a35',
             cursor: enabled && joinCode.trim() ? 'pointer' : 'not-allowed',
           }}
           onMouseEnter={(e) => {
             if (enabled && joinCode.trim()) {
-              e.currentTarget.style.background = '#33ff33'
-              e.currentTarget.style.color = '#0a0a0a'
+              e.currentTarget.style.background = '#4a90b8'
+              e.currentTarget.style.color = '#0c1220'
             }
           }}
           onMouseLeave={(e) => {
             if (enabled && joinCode.trim()) {
-              e.currentTarget.style.background = '#0a0a0a'
-              e.currentTarget.style.color = '#33ff33'
+              e.currentTarget.style.background = '#0c1220'
+              e.currentTarget.style.color = '#7ec8e3'
             }
           }}
         >

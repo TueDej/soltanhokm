@@ -162,11 +162,11 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
-      background: '#0a0a0a',
+      background: '#0c1220',
     }}>
       {/* Status bar */}
       <div style={{
-        background: '#0a0a0a',
+        background: '#0c1220',
         height: 52,
         padding: '0 16px',
         flexShrink: 0,
@@ -174,7 +174,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 8,
-        borderBottom: '3px solid #33ff33',
+        borderBottom: '2px solid #1e3a50',
       }}>
         {/* Trump suit */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
@@ -184,20 +184,20 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               alignItems: 'center',
               gap: 6,
               padding: '4px 12px',
-              borderRadius: 0,
-              background: '#0a0a0a',
-              border: '2px solid #ffff00',
+              borderRadius: 4,
+              background: '#0f1e2e',
+              border: '2px solid #2a5070',
               height: 32,
             }}>
               <span style={{
                 fontFamily: "'Press Start 2P', monospace",
                 fontSize: 8,
-                color: '#ffff00',
+                color: '#7ec8e3',
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
               }}>
-                TRUMP
+                HOKM
               </span>
               <span style={{
                 fontSize: '1.3rem',
@@ -205,17 +205,16 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
-                marginTop: 7,
-                color: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds ? '#ff3333' : '#33ff33',
+                color: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds ? '#ff6b6b' : '#7ec8e3',
                 textShadow: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds
-                  ? '2px 2px 0px #aa0000'
-                  : '2px 2px 0px #00aa00',
+                  ? '2px 2px 0px #aa4444'
+                  : '2px 2px 0px #4488aa',
               }}>
                 {SUIT_SYMBOLS[game.hokmSuit]}
               </span>
             </div>
           ) : (
-            <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#33ff33', opacity: 0.4 }}>CHOOSING...</span>
+            <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#4a6a80', opacity: 0.6 }}>CHOOSING...</span>
           )}
         </div>
 
@@ -227,9 +226,9 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 <div key={i} style={{
                   width: 10,
                   height: 10,
-                  borderRadius: 0,
-                  background: i < game.northSouthScore ? '#33ff33' : '#1a1a1a',
-                  border: `2px solid ${i < game.northSouthScore ? '#33ff33' : '#333'}`,
+                  borderRadius: 2,
+                  background: i < game.northSouthScore ? '#7ec8e3' : '#1a2a35',
+                  border: `2px solid ${i < game.northSouthScore ? '#4a90b8' : '#2a3a45'}`,
                   transition: 'none',
                 }} />
               ))}
@@ -237,7 +236,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             <span style={{
               fontFamily: "'Press Start 2P', monospace",
               fontSize: 12,
-              color: '#33ff33',
+              color: '#7ec8e3',
               minWidth: 28,
               textAlign: 'right',
             }}>
@@ -245,13 +244,13 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             </span>
           </div>
 
-          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 10, color: '#333' }}>/7</span>
+          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 10, color: '#3a4a55' }}>/7</span>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{
               fontFamily: "'Press Start 2P', monospace",
               fontSize: 12,
-              color: '#ff3333',
+              color: '#ff8a80',
               minWidth: 28,
             }}>
               {game.eastWestScore}
@@ -261,9 +260,9 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 <div key={i} style={{
                   width: 10,
                   height: 10,
-                  borderRadius: 0,
-                  background: i < game.eastWestScore ? '#ff3333' : '#1a1a1a',
-                  border: `2px solid ${i < game.eastWestScore ? '#ff3333' : '#333'}`,
+                  borderRadius: 2,
+                  background: i < game.eastWestScore ? '#ff8a80' : '#1a2a35',
+                  border: `2px solid ${i < game.eastWestScore ? '#cc5544' : '#2a3a45'}`,
                   transition: 'none',
                 }} />
               ))}
@@ -276,23 +275,23 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           <span style={{
             fontFamily: "'Press Start 2P', monospace",
             fontSize: 12,
-            color: '#33ff33',
+            color: '#7ec8e3',
             padding: '2px 8px',
-            border: '2px solid #33ff33',
+            border: '2px solid #2a5070',
           }}>
             {game.nsGamesWon ?? 0}
           </span>
-          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 10, color: '#333' }}>-</span>
+          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 10, color: '#3a4a55' }}>-</span>
           <span style={{
             fontFamily: "'Press Start 2P', monospace",
             fontSize: 12,
-            color: '#ff3333',
+            color: '#ff8a80',
             padding: '2px 8px',
-            border: '2px solid #ff3333',
+            border: '2px solid #502020',
           }}>
             {game.ewGamesWon ?? 0}
           </span>
-          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#333' }}>
+          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#3a4a55' }}>
             /{game.handsToWin ?? 7}
           </span>
         </div>
@@ -306,8 +305,8 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           left: 0,
           right: 0,
           zIndex: 100,
-          background: '#ff3333',
-          color: '#0a0a0a',
+          background: '#cc5544',
+          color: '#0c1220',
           textAlign: 'center',
           padding: '10px 16px',
           fontFamily: "'Press Start 2P', monospace",
@@ -345,37 +344,36 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 ...style,
                 position: 'absolute',
                 padding: '8px 14px',
-                borderRadius: 0,
+                borderRadius: 4,
                 background: isTrickWinner
-                  ? '#1a3a0a'
+                  ? '#1a3050'
                   : isPlayerTurn
-                    ? '#1a2a0a'
-                    : '#0a0a0a',
-                border: `2px solid ${isTrickWinner ? '#ffff00' : isPlayerTurn ? '#ffff00' : '#33ff33'}`,
+                    ? '#152535'
+                    : '#0c1220',
+                border: `2px solid ${isTrickWinner ? '#7ec8e3' : isPlayerTurn ? '#4a90b8' : '#1e3a50'}`,
                 textAlign: 'center',
                 fontSize: '0.75rem',
                 transition: 'none',
                 zIndex: 5,
                 boxShadow: isTrickWinner
-                  ? '4px 4px 0px #ffff00, 0 0 20px rgba(255,255,0,0.3)'
+                  ? '4px 4px 0px #4a90b8, 0 0 15px rgba(126,200,227,0.3)'
                   : isPlayerTurn
-                    ? '0 0 15px rgba(255,255,0,0.2)'
-                    : '3px 3px 0px #1a5c1a',
-                animation: isTrickWinner ? 'trickWinFlash 0.8s step-end' : isPlayerTurn ? 'pulse 1.5s step-end infinite' : 'none',
+                    ? '0 0 12px rgba(126,200,227,0.15)'
+                    : '3px 3px 0px #0a1a28',
+                animation: isTrickWinner ? 'trickWinFlash 0.8s ease-out' : isPlayerTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
               }}
             >
               <div style={{
                 fontFamily: "'Press Start 2P', monospace",
                 fontSize: 8,
-                color: '#33ff33',
+                color: '#7ec8e3',
               }}>
                 {p.name}
                 {game.hokmPlayer === p.position && <span style={{ marginLeft: 4 }}>★</span>}
               </div>
               <div style={{
                 fontFamily: "'VT323', monospace",
-                color: '#33ff33',
-                opacity: 0.5,
+                color: '#4a6a80',
                 fontSize: '0.85rem',
                 marginTop: 2,
               }}>
@@ -404,20 +402,20 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             transform: 'translate(-50%, -50%)',
             textAlign: 'center',
             zIndex: 10,
-            background: '#0a0a0a',
+            background: '#0c1220',
             padding: '28px 36px',
-            borderRadius: 0,
-            border: '3px solid #ffff00',
-            boxShadow: '8px 8px 0px #aa8800',
+            borderRadius: 8,
+            border: '2px solid #4a90b8',
+            boxShadow: '8px 8px 0px #1e3a50',
           }}>
             <p style={{
               fontFamily: "'Press Start 2P', monospace",
               fontSize: 10,
               marginBottom: 20,
-              color: '#ffff00',
+              color: '#7ec8e3',
               letterSpacing: 1,
             }}>
-              CHOOSE TRUMP
+              CHOOSE HOKM
             </p>
             <div style={{ display: 'flex', gap: 14, justifyContent: 'center' }}>
               {[Suit.Hearts, Suit.Diamonds, Suit.Clubs, Suit.Spades].map((suit) => (
@@ -427,10 +425,10 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                   style={{
                     width: 68,
                     height: 88,
-                    borderRadius: 0,
-                    border: '3px solid #33ff33',
-                    background: '#0a0a0a',
-                    color: suit === Suit.Hearts || suit === Suit.Diamonds ? '#ff3333' : '#33ff33',
+                    borderRadius: 4,
+                    border: '2px solid #2a5070',
+                    background: '#0f1e2e',
+                    color: suit === Suit.Hearts || suit === Suit.Diamonds ? '#ff8a80' : '#7ec8e3',
                     cursor: 'pointer',
                     fontSize: 30,
                     display: 'flex',
@@ -438,21 +436,19 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 4,
-                    transition: 'none',
+                    transition: 'all 0.15s',
                     fontFamily: "'VT323', monospace",
                     textShadow: suit === Suit.Hearts || suit === Suit.Diamonds
-                      ? '2px 2px 0px #aa0000'
-                      : '2px 2px 0px #00aa00',
+                      ? '2px 2px 0px #502020'
+                      : '2px 2px 0px #1e3a50',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#ffff00'
-                    e.currentTarget.style.color = '#0a0a0a'
-                    e.currentTarget.style.borderColor = '#ffff00'
+                    e.currentTarget.style.background = '#1e3a50'
+                    e.currentTarget.style.borderColor = '#7ec8e3'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#0a0a0a'
-                    e.currentTarget.style.color = suit === Suit.Hearts || suit === Suit.Diamonds ? '#ff3333' : '#33ff33'
-                    e.currentTarget.style.borderColor = '#33ff33'
+                    e.currentTarget.style.background = '#0f1e2e'
+                    e.currentTarget.style.borderColor = '#2a5070'
                   }}
                 >
                   {SUIT_SYMBOLS[suit]}
@@ -472,23 +468,23 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          background: '#0a0a0a',
-          borderTop: '3px solid #33ff33',
+          background: '#0c1220',
+          borderTop: '2px solid #1e3a50',
         }}>
           {/* Team badge */}
           {me.team && (
             <div style={{
               padding: '4px 14px',
-              borderRadius: 0,
-              background: me.team === 'ns' ? '#0a2a0a' : '#2a0a0a',
-              border: `2px solid ${me.team === 'ns' ? '#33ff33' : '#ff3333'}`,
+              borderRadius: 4,
+              background: me.team === 'ns' ? '#0f2530' : '#2a1020',
+              border: `2px solid ${me.team === 'ns' ? '#2a5070' : '#502020'}`,
               fontFamily: "'Press Start 2P', monospace",
               fontSize: 8,
-              color: me.team === 'ns' ? '#33ff33' : '#ff3333',
+              color: me.team === 'ns' ? '#7ec8e3' : '#ff8a80',
               marginBottom: 6,
               textTransform: 'uppercase',
             }}>
-              {me.team === 'ns' ? 'GREEN' : 'RED'}
+              {me.team === 'ns' ? 'BLUE' : 'RED'}
             </div>
           )}
           <Hand
@@ -499,35 +495,34 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           />
           <div style={{
             padding: '5px 16px',
-            borderRadius: 0,
+            borderRadius: 4,
             background: trickWinner === myPos
-              ? '#1a3a0a'
+              ? '#1a3050'
               : isMyTurn
-                ? '#1a2a0a'
-                : '#0a0a0a',
-            border: `2px solid ${trickWinner === myPos ? '#ffff00' : isMyTurn ? '#ffff00' : '#33ff33'}`,
+                ? '#152535'
+                : '#0c1220',
+            border: `2px solid ${trickWinner === myPos ? '#7ec8e3' : isMyTurn ? '#4a90b8' : '#1e3a50'}`,
             textAlign: 'center',
             marginTop: 8,
             transition: 'none',
             boxShadow: trickWinner === myPos
-              ? '4px 4px 0px #ffff00, 0 0 20px rgba(255,255,0,0.3)'
+              ? '4px 4px 0px #4a90b8, 0 0 15px rgba(126,200,227,0.3)'
               : isMyTurn
-                ? '0 0 15px rgba(255,255,0,0.2)'
-                : '3px 3px 0px #1a5c1a',
-            animation: trickWinner === myPos ? 'trickWinFlash 0.8s step-end' : isMyTurn ? 'pulse 1.5s step-end infinite' : 'none',
+                ? '0 0 12px rgba(126,200,227,0.15)'
+                : '3px 3px 0px #0a1a28',
+            animation: trickWinner === myPos ? 'trickWinFlash 0.8s ease-out' : isMyTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
           }}>
             <div style={{
               fontFamily: "'Press Start 2P', monospace",
               fontSize: 8,
-              color: '#33ff33',
+              color: '#7ec8e3',
             }}>
               {me.name}
               {game.hokmPlayer === myPos && <span style={{ marginLeft: 4 }}>★</span>}
             </div>
             <div style={{
               fontFamily: "'VT323', monospace",
-              color: '#33ff33',
-              opacity: 0.5,
+              color: '#4a6a80',
               fontSize: '0.85rem',
               marginTop: 1,
             }}>{sortedHand.length} cards</div>
