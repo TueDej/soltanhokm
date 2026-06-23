@@ -6,10 +6,10 @@ import { Card } from './Card'
 const POSITIONS_ORDER: PlayerPosition[] = [PlayerPosition.North, PlayerPosition.East, PlayerPosition.South, PlayerPosition.West]
 
 const TABLE_POSITIONS: Record<string, React.CSSProperties> = {
-  bottom: { bottom: 8, left: '50%', transform: 'translateX(-50%)' },
-  top: { top: 8, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: 8, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: 8, top: '50%', transform: 'translateY(-50%)' },
+  bottom: { bottom: 12, left: '50%', transform: 'translateX(-50%)' },
+  top: { top: 12, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: 12, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: 12, top: '50%', transform: 'translateY(-50%)' },
 }
 
 const PLAY_ANIMATIONS: Record<string, string> = {

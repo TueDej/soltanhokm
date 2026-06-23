@@ -103,9 +103,9 @@ function getRelativePosition(myPos: PlayerPosition | undefined, otherPos: Player
 }
 
 const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
-  top: { top: 8, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: 8, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: 8, top: '50%', transform: 'translateY(-50%)' },
+  top: { top: 0, left: '50%', transform: 'translate(-50%, -50%)' },
+  left: { left: 0, top: '50%', transform: 'translate(-50%, -50%)' },
+  right: { right: 0, top: '50%', transform: 'translate(50%, -50%)' },
 }
 
 export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecting }: GameBoardProps) {
@@ -331,7 +331,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
       )}
 
       {/* Center area */}
-      <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+      <div style={{ flex: 1, position: 'relative', minHeight: 0, padding: '16px 12px' }}>
         {otherPlayers.map((p) => {
           const screenPos = getRelativePosition(myPos, p.position)
           const style = SCREEN_POSITIONS[screenPos]
@@ -344,7 +344,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               style={{
                 ...style,
                 position: 'absolute',
-                padding: '8px 14px',
+                padding: '6px 12px',
                 borderRadius: 4,
                 background: isTrickWinner
                   ? '#1a3050'
@@ -362,6 +362,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                     ? '0 0 12px rgba(126,200,227,0.15)'
                     : '3px 3px 0px #0a1a28',
                 animation: isTrickWinner ? 'trickWinFlash 0.8s ease-out' : isPlayerTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
+                whiteSpace: 'nowrap',
               }}
             >
               <div style={{
@@ -387,11 +388,10 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         {/* Table */}
         <div style={{
           position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          maxWidth: '90%',
-          maxHeight: '90%',
+          top: 16,
+          left: 12,
+          right: 12,
+          bottom: 16,
         }}>
           <Table trick={game.currentTrick} myPosition={myPos} hokmSuit={game.hokmSuit} />
         </div>
