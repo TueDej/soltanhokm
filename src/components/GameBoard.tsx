@@ -543,7 +543,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               marginTop: 6,
               textTransform: 'uppercase',
             }}>
-              {me.team === 'ns' ? 'BLUE' : 'RED'}
+              {me.team === 'ns' ? 'TEAM BLUE' : 'TEAM RED'}
             </div>
           )}
         </div>
