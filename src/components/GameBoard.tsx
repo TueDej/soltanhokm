@@ -175,6 +175,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         justifyContent: 'space-between',
         gap: 8,
         borderBottom: '2px solid #1e3a50',
+        position: 'relative',
       }}>
         {/* Trump suit */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
@@ -219,7 +220,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         </div>
 
         {/* Score */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexShrink: 1, minWidth: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <div className="score-dots" style={{ display: 'flex', gap: 3 }}>
               {Array.from({ length: 7 }).map((_, i) => (
