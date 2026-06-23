@@ -29,20 +29,11 @@ function getPlayOrder(pos: PlayerPosition, leader: PlayerPosition): number {
   return (posIdx - leaderIdx + 4) % 4
 }
 
-function getCardOffset(relPos: string, playIndex: number): React.CSSProperties {
-  const gap = 12
-  switch (relPos) {
-    case 'bottom':
-      return { bottom: 0, left: `calc(50% + ${playIndex * gap}px)`, transform: 'translateX(-50%)' }
-    case 'top':
-      return { top: 0, left: `calc(50% - ${playIndex * gap}px)`, transform: 'translateX(-50%)' }
-    case 'left':
-      return { left: 0, top: `calc(50% - ${playIndex * gap}px)`, transform: 'translateY(-50%)' }
-    case 'right':
-      return { right: 0, top: `calc(50% + ${playIndex * gap}px)`, transform: 'translateY(-50%)' }
-    default:
-      return {}
-  }
+const BASE_POSITIONS: Record<string, React.CSSProperties> = {
+  bottom: { bottom: 0, left: '50%', transform: 'translateX(-50%)' },
+  top: { top: 0, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: 0, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: 0, top: '50%', transform: 'translateY(-50%)' },
 }
 
 interface TableProps {
@@ -75,7 +66,7 @@ export function Table({ trick, myPosition }: TableProps) {
               key={pos}
               style={{
                 position: 'absolute',
-                ...getCardOffset(relPos, idx),
+                ...BASE_POSITIONS[relPos],
                 zIndex: idx,
                 animation: PLAY_ANIMATIONS[relPos],
               }}
