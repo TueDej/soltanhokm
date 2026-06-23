@@ -35,7 +35,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
       animation: 'fadeIn 0.5s ease',
     }}>
       <h2 style={{
-        fontFamily: "'Press Start 2P', monospace",
+        fontFamily: "'Science Gothic', monospace",
         fontSize: 20,
         color: '#7ec8e3',
         textShadow: '3px 3px 0px #1e3a50',
@@ -66,7 +66,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
         }}
       >
         <p style={{
-          fontFamily: "'Press Start 2P', monospace",
+          fontFamily: "'Science Gothic', monospace",
           fontSize: 8,
           color: '#4a6a80',
           marginBottom: 8,
@@ -76,7 +76,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           CLICK TO COPY
         </p>
         <p style={{
-          fontFamily: "'Press Start 2P', monospace",
+          fontFamily: "'Science Gothic', monospace",
           fontSize: 24,
           letterSpacing: 6,
           color: '#7ec8e3',
@@ -105,7 +105,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           }}
         >
           <div style={{
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Science Gothic', monospace",
             fontSize: 8,
             color: '#7ec8e3',
             marginBottom: 10,
@@ -120,7 +120,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
               borderRadius: 4,
               background: '#0f2530',
               border: '1px solid #2a5070',
-              fontFamily: "'VT323', monospace",
+              fontFamily: "'Science Gothic', monospace",
               fontSize: '1rem',
               color: '#7ec8e3',
             }}>
@@ -129,7 +129,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
             </div>
           ))}
           {nsPlayers.length === 0 && (
-            <div style={{ fontFamily: "'VT323', monospace", color: '#2a3a45', fontSize: '1rem', padding: '10px 0' }}>EMPTY</div>
+            <div style={{ fontFamily: "'Science Gothic', monospace", color: '#2a3a45', fontSize: '1rem', padding: '10px 0' }}>EMPTY</div>
           )}
         </div>
 
@@ -150,7 +150,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           }}
         >
           <div style={{
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Science Gothic', monospace",
             fontSize: 8,
             color: '#ff8a80',
             marginBottom: 10,
@@ -165,7 +165,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
               borderRadius: 4,
               background: '#2a1020',
               border: '1px solid #502020',
-              fontFamily: "'VT323', monospace",
+              fontFamily: "'Science Gothic', monospace",
               fontSize: '1rem',
               color: '#ff8a80',
             }}>
@@ -174,18 +174,18 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
             </div>
           ))}
           {ewPlayers.length === 0 && (
-            <div style={{ fontFamily: "'VT323', monospace", color: '#2a3a45', fontSize: '1rem', padding: '10px 0' }}>EMPTY</div>
+            <div style={{ fontFamily: "'Science Gothic', monospace", color: '#2a3a45', fontSize: '1rem', padding: '10px 0' }}>EMPTY</div>
           )}
         </div>
       </div>
 
       {noTeamPlayers.length > 0 && (
-        <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#4a6a80' }}>
+        <p style={{ fontFamily: "'Science Gothic', monospace", fontSize: 8, color: '#4a6a80' }}>
           {noTeamPlayers.length} PLAYER(S) CHOOSING...
         </p>
       )}
 
-      <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#2a3a45', textAlign: 'center' }}>
+      <p style={{ fontFamily: "'Science Gothic', monospace", fontSize: 8, color: '#2a3a45', textAlign: 'center' }}>
         CLICK A TEAM TO JOIN. EMPTY SEATS = BOTS.
       </p>
 
@@ -199,7 +199,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
             background: '#0c1220',
             color: '#7ec8e3',
             cursor: 'pointer',
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Science Gothic', monospace",
             fontSize: 10,
             transition: 'all 0.15s',
           }}
@@ -222,7 +222,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
               background: '#4a90b8',
               color: '#0c1220',
               cursor: 'pointer',
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: "'Science Gothic', monospace",
               fontSize: 10,
               transition: 'all 0.15s',
               boxShadow: '3px 3px 0px #1e3a50',

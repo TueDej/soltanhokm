@@ -190,7 +190,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               height: 32,
             }}>
               <span style={{
-                fontFamily: "'Press Start 2P', monospace",
+                fontFamily: "'Science Gothic', monospace",
                 fontSize: 8,
                 color: '#7ec8e3',
                 display: 'flex',
@@ -201,7 +201,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               </span>
               <span style={{
                 fontSize: '1.3rem',
-                fontFamily: "'VT323', monospace",
+                fontFamily: "'Science Gothic', monospace",
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
@@ -214,7 +214,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               </span>
             </div>
           ) : (
-            <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#4a6a80', opacity: 0.6 }}>CHOOSING...</span>
+            <span style={{ fontFamily: "'Science Gothic', monospace", fontSize: 8, color: '#4a6a80', opacity: 0.6 }}>CHOOSING...</span>
           )}
         </div>
 
@@ -234,7 +234,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               ))}
             </div>
             <span style={{
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: "'Science Gothic', monospace",
               fontSize: 12,
               color: '#7ec8e3',
               minWidth: 28,
@@ -244,11 +244,11 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             </span>
           </div>
 
-          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 10, color: '#3a4a55' }}>/7</span>
+          <span style={{ fontFamily: "'Science Gothic', monospace", fontSize: 10, color: '#3a4a55' }}>/7</span>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: "'Science Gothic', monospace",
               fontSize: 12,
               color: '#ff8a80',
               minWidth: 28,
@@ -273,7 +273,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         {/* Games won */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'flex-end' }}>
           <span style={{
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Science Gothic', monospace",
             fontSize: 12,
             color: '#7ec8e3',
             padding: '2px 8px',
@@ -281,9 +281,9 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           }}>
             {game.nsGamesWon ?? 0}
           </span>
-          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 10, color: '#3a4a55' }}>-</span>
+          <span style={{ fontFamily: "'Science Gothic', monospace", fontSize: 10, color: '#3a4a55' }}>-</span>
           <span style={{
-            fontFamily: "'Press Start 2P', monospace",
+            fontFamily: "'Science Gothic', monospace",
             fontSize: 12,
             color: '#ff8a80',
             padding: '2px 8px',
@@ -291,7 +291,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           }}>
             {game.ewGamesWon ?? 0}
           </span>
-          <span style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 8, color: '#3a4a55' }}>
+          <span style={{ fontFamily: "'Science Gothic', monospace", fontSize: 8, color: '#3a4a55' }}>
             /{game.handsToWin ?? 7}
           </span>
         </div>
@@ -309,7 +309,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           color: '#0c1220',
           textAlign: 'center',
           padding: '10px 16px',
-          fontFamily: "'Press Start 2P', monospace",
+          fontFamily: "'Science Gothic', monospace",
           fontSize: 10,
           display: 'flex',
           alignItems: 'center',
@@ -364,7 +364,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               }}
             >
               <div style={{
-                fontFamily: "'Press Start 2P', monospace",
+                fontFamily: "'Science Gothic', monospace",
                 fontSize: 8,
                 color: '#7ec8e3',
               }}>
@@ -372,7 +372,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 {game.hokmPlayer === p.position && <span style={{ marginLeft: 4 }}>★</span>}
               </div>
               <div style={{
-                fontFamily: "'VT323', monospace",
+                fontFamily: "'Science Gothic', monospace",
                 color: '#4a6a80',
                 fontSize: '0.85rem',
                 marginTop: 2,
@@ -409,7 +409,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             boxShadow: '8px 8px 0px #1e3a50',
           }}>
             <p style={{
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: "'Science Gothic', monospace",
               fontSize: 10,
               marginBottom: 20,
               color: '#7ec8e3',
@@ -437,7 +437,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                     justifyContent: 'center',
                     gap: 4,
                     transition: 'all 0.15s',
-                    fontFamily: "'VT323', monospace",
+                    fontFamily: "'Science Gothic', monospace",
                     textShadow: suit === Suit.Hearts || suit === Suit.Diamonds
                       ? '2px 2px 0px #502020'
                       : '2px 2px 0px #1e3a50',
@@ -478,7 +478,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               borderRadius: 4,
               background: me.team === 'ns' ? '#0f2530' : '#2a1020',
               border: `2px solid ${me.team === 'ns' ? '#2a5070' : '#502020'}`,
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: "'Science Gothic', monospace",
               fontSize: 8,
               color: me.team === 'ns' ? '#7ec8e3' : '#ff8a80',
               marginBottom: 6,
@@ -513,7 +513,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             animation: trickWinner === myPos ? 'trickWinFlash 0.8s ease-out' : isMyTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
           }}>
             <div style={{
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: "'Science Gothic', monospace",
               fontSize: 8,
               color: '#7ec8e3',
             }}>
@@ -521,7 +521,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               {game.hokmPlayer === myPos && <span style={{ marginLeft: 4 }}>★</span>}
             </div>
             <div style={{
-              fontFamily: "'VT323', monospace",
+              fontFamily: "'Science Gothic', monospace",
               color: '#4a6a80',
               fontSize: '0.85rem',
               marginTop: 1,

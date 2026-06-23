@@ -35,7 +35,7 @@ const btnBase: React.CSSProperties = {
   width: 320,
   cursor: 'pointer',
   transition: 'all 0.15s',
-  fontFamily: "'Press Start 2P', monospace",
+  fontFamily: "'Science Gothic', monospace",
   textTransform: 'uppercase',
   background: '#0c1220',
 }
@@ -49,7 +49,7 @@ const inputStyle: React.CSSProperties = {
   color: '#7ec8e3',
   width: 320,
   textAlign: 'center',
-  fontFamily: "'VT323', monospace",
+  fontFamily: "'Science Gothic', monospace",
   outline: 'none',
   letterSpacing: 2,
 }
@@ -98,7 +98,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
       {/* Title */}
       <div style={{ textAlign: 'center', marginBottom: 8 }}>
         <h1 style={{
-          fontFamily: "'Press Start 2P', monospace",
+          fontFamily: "'Science Gothic', monospace",
           fontSize: 32,
           fontWeight: 400,
           color: '#7ec8e3',
@@ -109,7 +109,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
           SOLTAN<br/>HOKM
         </h1>
         <p style={{
-          fontFamily: "'Press Start 2P', monospace",
+          fontFamily: "'Science Gothic', monospace",
           color: '#4a90b8',
           fontSize: 10,
           fontWeight: 400,
@@ -167,7 +167,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
       {/* Games to win selector */}
       <div style={{ display: 'flex', gap: 8, width: 320 }}>
         <span style={{
-          fontFamily: "'Press Start 2P', monospace",
+          fontFamily: "'Science Gothic', monospace",
           fontSize: 8,
           color: '#4a90b8',
           fontWeight: 400,
@@ -190,7 +190,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
               cursor: 'pointer',
               fontSize: 16,
               fontWeight: 400,
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: "'Science Gothic', monospace",
               transition: 'all 0.15s',
             }}
           >

@@ -17,7 +17,7 @@ const btnStyle: React.CSSProperties = {
   border: '2px solid #4a90b8',
   color: '#7ec8e3',
   cursor: 'pointer',
-  fontFamily: "'Press Start 2P', monospace",
+  fontFamily: "'Science Gothic', monospace",
   letterSpacing: 0,
   transition: 'all 0.15s',
   textTransform: 'uppercase',
@@ -31,7 +31,7 @@ const screenStyle: React.CSSProperties = {
 }
 
 const titleStyle: React.CSSProperties = {
-  fontFamily: "'Press Start 2P', monospace",
+  fontFamily: "'Science Gothic', monospace",
   fontSize: 28,
   fontWeight: 400,
   marginBottom: 12,
@@ -110,7 +110,7 @@ export default function App() {
               fontSize: '1.2rem',
               fontWeight: 400,
               marginBottom: 24,
-              fontFamily: "'Press Start 2P', monospace",
+              fontFamily: "'Science Gothic', monospace",
               textShadow: nsWins
                 ? '2px 2px 0px #1e3a50'
                 : '2px 2px 0px #502020',
@@ -188,7 +188,7 @@ export default function App() {
               }}>
                 <span style={{
                   fontSize: '1rem',
-                  fontFamily: "'Press Start 2P', monospace",
+                  fontFamily: "'Science Gothic', monospace",
                   color: '#7ec8e3',
                   textShadow: '2px 2px 0px #1e3a50',
                   letterSpacing: 2,
@@ -197,7 +197,7 @@ export default function App() {
                 </span>
                 <span style={{
                   fontSize: '80px',
-                  fontFamily: "'VT323', monospace",
+                  fontFamily: "'Science Gothic', monospace",
                   color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#ff8a80' : '#7ec8e3',
                   textShadow: hokmReveal === 'hearts' || hokmReveal === 'diamonds'
                     ? '4px 4px 0px #502020, 0 0 20px rgba(255,138,128,0.3)'
@@ -221,7 +221,7 @@ export default function App() {
       }}>
         {onlineGame.error ? (
           <>
-            <p style={{ color: '#ff8a80', marginBottom: 16, fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>{onlineGame.error}</p>
+            <p style={{ color: '#ff8a80', marginBottom: 16, fontFamily: "'Science Gothic', monospace", fontSize: 12 }}>{onlineGame.error}</p>
             <button
               onClick={() => {
                 onlineGame.reset()
@@ -237,7 +237,7 @@ export default function App() {
             </button>
           </>
         ) : (
-          <p style={{ fontFamily: "'Press Start 2P', monospace", fontSize: 12 }}>CONNECTING...</p>
+          <p style={{ fontFamily: "'Science Gothic', monospace", fontSize: 12 }}>CONNECTING...</p>
         )}
       </div>
     )

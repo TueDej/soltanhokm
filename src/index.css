@@ -10,7 +10,7 @@ html, body, #root {
 }
 
 body {
-  font-family: 'VT323', monospace;
+  font-family: 'Science Gothic', sans-serif;
   background: #0c1220;
   color: #c8dae8;
   overflow-x: hidden;
@@ -20,7 +20,7 @@ body {
 
 button, input {
   -webkit-tap-highlight-color: transparent;
-  font-family: 'VT323', monospace;
+  font-family: 'Science Gothic', sans-serif;
 }
 
 /* ===== Cards ===== */
