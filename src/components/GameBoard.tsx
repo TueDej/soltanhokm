@@ -463,12 +463,14 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           </div>
         )}
 
-        {/* My indicator at table bottom edge */}
+        {/* Bottom indicator - positioned relative to center area */}
         {me && (
           <div
             style={{
-              ...SCREEN_POSITIONS.bottom,
               position: 'absolute',
+              bottom: 0,
+              left: '50%',
+              transform: 'translate(-50%, 50%)',
               padding: '6px 12px',
               borderRadius: 4,
               background: trickWinner === myPos
