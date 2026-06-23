@@ -103,10 +103,10 @@ function getRelativePosition(myPos: PlayerPosition | undefined, otherPos: Player
 }
 
 const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
-  top: { top: -22, left: '50%', transform: 'translateX(-50%)' },
-  bottom: { bottom: -22, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: -22, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: -22, top: '50%', transform: 'translateY(-50%)' },
+  top: { top: 0, left: '50%', transform: 'translate(-50%, -50%)' },
+  bottom: { bottom: 0, left: '50%', transform: 'translate(-50%, 50%)' },
+  left: { left: 0, top: '50%', transform: 'translate(-50%, -50%)' },
+  right: { right: 0, top: '50%', transform: 'translate(50%, -50%)' },
 }
 
 export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecting }: GameBoardProps) {
