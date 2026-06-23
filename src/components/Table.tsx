@@ -5,13 +5,6 @@ import { Card } from './Card'
 
 const POSITIONS_ORDER: PlayerPosition[] = [PlayerPosition.North, PlayerPosition.East, PlayerPosition.South, PlayerPosition.West]
 
-const CARD_POSITIONS: Record<string, React.CSSProperties> = {
-  bottom: { bottom: 0, left: '50%', transform: 'translateX(-50%)' },
-  top: { top: 0, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: 0, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: 0, top: '50%', transform: 'translateY(-50%)' },
-}
-
 const PLAY_ANIMATIONS: Record<string, string> = {
   bottom: 'cardPlayBottom 0.3s ease-out',
   top: 'cardPlayTop 0.3s ease-out',
@@ -30,6 +23,28 @@ function getRelativePosition(myPos: PlayerPosition | undefined, otherPos: Player
   return 'left'
 }
 
+function getPlayOrder(pos: PlayerPosition, leader: PlayerPosition): number {
+  const leaderIdx = POSITIONS_ORDER.indexOf(leader)
+  const posIdx = POSITIONS_ORDER.indexOf(pos)
+  return (posIdx - leaderIdx + 4) % 4
+}
+
+function getCardOffset(relPos: string, playIndex: number): React.CSSProperties {
+  const gap = 12
+  switch (relPos) {
+    case 'bottom':
+      return { bottom: 0, left: `calc(50% + ${playIndex * gap}px)`, transform: 'translateX(-50%)' }
+    case 'top':
+      return { top: 0, left: `calc(50% - ${playIndex * gap}px)`, transform: 'translateX(-50%)' }
+    case 'left':
+      return { left: 0, top: `calc(50% - ${playIndex * gap}px)`, transform: 'translateY(-50%)' }
+    case 'right':
+      return { right: 0, top: `calc(50% + ${playIndex * gap}px)`, transform: 'translateY(-50%)' }
+    default:
+      return {}
+  }
+}
+
 interface TableProps {
   trick: Trick
   myPosition?: PlayerPosition
@@ -37,9 +52,14 @@ interface TableProps {
 }
 
 export function Table({ trick, myPosition }: TableProps) {
+  const leader = trick.leader
+
+  const sortedCards = Object.entries(trick.cards)
+    .filter((entry): entry is [string, CardType] => entry[1] !== undefined)
+    .sort((a, b) => getPlayOrder(a[0] as PlayerPosition, leader) - getPlayOrder(b[0] as PlayerPosition, leader))
+
   return (
     <div className="game-table">
-      {/* Fixed compact play area in the center */}
       <div className="play-area" style={{
         position: 'absolute',
         top: '50%',
@@ -48,19 +68,19 @@ export function Table({ trick, myPosition }: TableProps) {
         width: 180,
         height: 260,
       }}>
-        {Object.entries(trick.cards).map(([pos, card]) => {
-          if (!card) return null
+        {sortedCards.map(([pos, card], idx) => {
           const relPos = getRelativePosition(myPosition, pos as PlayerPosition)
           return (
             <div
               key={pos}
               style={{
                 position: 'absolute',
-                ...CARD_POSITIONS[relPos],
+                ...getCardOffset(relPos, idx),
+                zIndex: idx,
                 animation: PLAY_ANIMATIONS[relPos],
               }}
             >
-              <Card card={card as CardType} disabled />
+              <Card card={card} disabled />
             </div>
           )
         })}
