@@ -61,7 +61,7 @@ button, input {
 }
 
 .game-card-dimmed {
-  filter: brightness(0.3) saturate(0.15) contrast(1.1);
+  filter: brightness(0.45) saturate(0.6);
 }
 
 .hand-card:hover .game-card:not(:disabled):not(.game-card-dimmed) {
