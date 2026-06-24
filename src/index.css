@@ -9,6 +9,18 @@ html, body, #root {
   overflow: hidden;
 }
 
+#root::after {
+  content: 'v0.1.1';
+  position: fixed;
+  bottom: 8px;
+  right: 12px;
+  font-family: 'Science Gothic', cursive;
+  font-size: 9px;
+  color: rgba(197,163,90,0.3);
+  pointer-events: none;
+  z-index: 9999;
+}
+
 body {
   font-family: 'Science Gothic', cursive;
   background: #0f1b2d;
