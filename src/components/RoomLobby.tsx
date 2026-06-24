@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { PlayerInfo } from '../types/socket'
 
 interface RoomLobbyProps {
@@ -19,9 +20,12 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
   const noTeamPlayers = players.filter((p) => !p.team)
   const nsFull = nsPlayers.length >= 2
   const ewFull = ewPlayers.length >= 2
+  const [copied, setCopied] = useState(false)
 
   function copyCode() {
     navigator.clipboard.writeText(roomCode)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 1500)
   }
 
   return (
@@ -69,12 +73,13 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
         <p style={{
           fontFamily: "'Science Gothic', cursive",
           fontSize: 8,
-          color: 'rgba(197,163,90,0.5)',
+          color: copied ? '#4a907e' : 'rgba(197,163,90,0.5)',
           marginBottom: 8,
           textTransform: 'uppercase',
           letterSpacing: 2,
+          transition: 'color 0.15s ease',
         }}>
-          CLICK TO COPY
+          {copied ? 'COPIED!' : 'CLICK TO COPY'}
         </p>
         <p style={{
           fontFamily: "'Science Gothic', cursive",
