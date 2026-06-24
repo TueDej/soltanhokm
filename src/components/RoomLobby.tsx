@@ -37,8 +37,9 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
       <h2 style={{
         fontFamily: "'Science Gothic', cursive",
         fontSize: 22,
-        color: '#f7f5eb',
-        textShadow: '3px 3px 0px #0e2a1f',
+        color: '#e8e4da',
+        textShadow: '0 2px 12px rgba(197,163,90,0.2)',
+        letterSpacing: 2,
       }}>
         ROOM CREATED
       </h2>
@@ -48,27 +49,27 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
         onClick={copyCode}
         style={{
           padding: '16px 32px',
-          borderRadius: 6,
-          background: '#143a2e',
-          border: '3px solid #2a6b55',
+          borderRadius: 8,
+          background: 'rgba(26,46,71,0.6)',
+          border: '2px solid rgba(197,163,90,0.2)',
           cursor: 'pointer',
           textAlign: 'center',
-          transition: 'all 0.15s',
-          boxShadow: '4px 4px 0px #0e2a1f',
+          transition: 'all 0.2s ease',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = '#1b4d3e'
-          e.currentTarget.style.boxShadow = '6px 6px 0px #0e2a1f'
+          e.currentTarget.style.borderColor = 'rgba(197,163,90,0.4)'
+          e.currentTarget.style.boxShadow = '0 4px 24px rgba(0,0,0,0.3), 0 0 20px rgba(197,163,90,0.08)'
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = '#143a2e'
-          e.currentTarget.style.boxShadow = '4px 4px 0px #0e2a1f'
+          e.currentTarget.style.borderColor = 'rgba(197,163,90,0.2)'
+          e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)'
         }}
       >
         <p style={{
           fontFamily: "'Science Gothic', cursive",
           fontSize: 8,
-          color: '#2a6b55',
+          color: 'rgba(197,163,90,0.5)',
           marginBottom: 8,
           textTransform: 'uppercase',
           letterSpacing: 2,
@@ -79,8 +80,8 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           fontFamily: "'Science Gothic', cursive",
           fontSize: 24,
           letterSpacing: 6,
-          color: '#d4a843',
-          textShadow: '2px 2px 0px #6b5020',
+          color: '#c5a35a',
+          textShadow: '0 2px 8px rgba(197,163,90,0.2)',
         }}>
           {roomCode}
         </p>
@@ -94,20 +95,20 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           style={{
             flex: 1,
             padding: '14px',
-            borderRadius: 6,
-            background: myTeam === 'ns' ? '#1b4d3e' : '#143a2e',
-            border: `3px solid ${myTeam === 'ns' ? '#2a6b55' : nsFull ? '#1a3a2e' : '#2a6b55'}`,
+            borderRadius: 8,
+            background: myTeam === 'ns' ? 'rgba(26,46,71,0.7)' : 'rgba(17,31,51,0.6)',
+            border: `2px solid ${myTeam === 'ns' ? 'rgba(74,144,126,0.5)' : nsFull ? 'rgba(74,144,126,0.1)' : 'rgba(74,144,126,0.2)'}`,
             cursor: nsFull && myTeam !== 'ns' ? 'not-allowed' : 'pointer',
             textAlign: 'center',
-            transition: 'all 0.15s',
+            transition: 'all 0.2s ease',
             opacity: nsFull && myTeam !== 'ns' ? 0.3 : 1,
-            boxShadow: '3px 3px 0px #0e2a1f',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
           }}
         >
           <div style={{
             fontFamily: "'Science Gothic', cursive",
             fontSize: 8,
-            color: '#f7f5eb',
+            color: '#4a907e',
             marginBottom: 10,
             textTransform: 'uppercase',
           }}>
@@ -118,18 +119,18 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
               padding: '6px 10px',
               marginBottom: 4,
               borderRadius: 4,
-              background: '#1b4d3e',
-              border: '2px solid #2a6b55',
+              background: 'rgba(74,144,126,0.1)',
+              border: '1px solid rgba(74,144,126,0.2)',
               fontFamily: "'Science Gothic', cursive",
               fontSize: 10,
-              color: '#f7f5eb',
+              color: '#e8e4da',
             }}>
               {p.name}
               {p.id === playerId && <span style={{ marginLeft: 4, fontSize: '0.8rem' }}>(YOU)</span>}
             </div>
           ))}
           {nsPlayers.length === 0 && (
-            <div style={{ fontFamily: "'Science Gothic', cursive", color: '#2a6b55', fontSize: 10, padding: '10px 0' }}>EMPTY</div>
+            <div style={{ fontFamily: "'Science Gothic', cursive", color: 'rgba(74,144,126,0.4)', fontSize: 10, padding: '10px 0' }}>EMPTY</div>
           )}
         </div>
 
@@ -139,20 +140,20 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           style={{
             flex: 1,
             padding: '14px',
-            borderRadius: 6,
-            background: myTeam === 'ew' ? '#3a1a1a' : '#143a2e',
-            border: `3px solid ${myTeam === 'ew' ? '#c23a3a' : ewFull ? '#1a3a2e' : '#c23a3a'}`,
+            borderRadius: 8,
+            background: myTeam === 'ew' ? 'rgba(120,45,45,0.3)' : 'rgba(17,31,51,0.6)',
+            border: `2px solid ${myTeam === 'ew' ? 'rgba(180,70,70,0.5)' : ewFull ? 'rgba(180,70,70,0.1)' : 'rgba(180,70,70,0.2)'}`,
             cursor: ewFull && myTeam !== 'ew' ? 'not-allowed' : 'pointer',
             textAlign: 'center',
-            transition: 'all 0.15s',
+            transition: 'all 0.2s ease',
             opacity: ewFull && myTeam !== 'ew' ? 0.3 : 1,
-            boxShadow: '3px 3px 0px #0e2a1f',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.15)',
           }}
         >
           <div style={{
             fontFamily: "'Science Gothic', cursive",
             fontSize: 8,
-            color: '#c23a3a',
+            color: '#b44646',
             marginBottom: 10,
             textTransform: 'uppercase',
           }}>
@@ -163,29 +164,29 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
               padding: '6px 10px',
               marginBottom: 4,
               borderRadius: 4,
-              background: '#3a1a1a',
-              border: '2px solid #c23a3a',
+              background: 'rgba(180,70,70,0.1)',
+              border: '1px solid rgba(180,70,70,0.2)',
               fontFamily: "'Science Gothic', cursive",
               fontSize: 10,
-              color: '#c23a3a',
+              color: '#e8e4da',
             }}>
               {p.name}
               {p.id === playerId && <span style={{ marginLeft: 4, fontSize: '0.8rem' }}>(YOU)</span>}
             </div>
           ))}
           {ewPlayers.length === 0 && (
-            <div style={{ fontFamily: "'Science Gothic', cursive", color: '#2a6b55', fontSize: 10, padding: '10px 0' }}>EMPTY</div>
+            <div style={{ fontFamily: "'Science Gothic', cursive", color: 'rgba(180,70,70,0.4)', fontSize: 10, padding: '10px 0' }}>EMPTY</div>
           )}
         </div>
       </div>
 
       {noTeamPlayers.length > 0 && (
-        <p style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: '#2a6b55' }}>
+        <p style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: 'rgba(197,163,90,0.4)', textAlign: 'center' }}>
           {noTeamPlayers.length} PLAYER(S) CHOOSING...
         </p>
       )}
 
-      <p style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: '#2a6b55', textAlign: 'center' }}>
+      <p style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: 'rgba(197,163,90,0.35)', textAlign: 'center' }}>
         CLICK A TEAM TO JOIN. EMPTY SEATS = BOTS.
       </p>
 
@@ -195,19 +196,21 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           style={{
             padding: '12px 28px',
             borderRadius: 6,
-            border: '3px solid #2a6b55',
-            background: '#143a2e',
-            color: '#f7f5eb',
+            border: '2px solid rgba(197,163,90,0.15)',
+            background: 'rgba(26,46,71,0.6)',
+            color: '#e8e4da',
             cursor: 'pointer',
             fontFamily: "'Science Gothic', cursive",
             fontSize: 10,
-            transition: 'all 0.15s',
+            transition: 'all 0.2s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#1b4d3e'
+            e.currentTarget.style.background = 'rgba(26,46,71,0.9)'
+            e.currentTarget.style.borderColor = 'rgba(197,163,90,0.3)'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#143a2e'
+            e.currentTarget.style.background = 'rgba(26,46,71,0.6)'
+            e.currentTarget.style.borderColor = 'rgba(197,163,90,0.15)'
           }}
         >
           BACK
@@ -218,20 +221,22 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
             style={{
               padding: '12px 28px',
               borderRadius: 6,
-              border: '3px solid #d4a843',
-              background: '#d4a843',
-              color: '#1b4d3e',
+              border: '2px solid rgba(197,163,90,0.4)',
+              background: 'linear-gradient(135deg, rgba(197,163,90,0.9) 0%, rgba(168,138,62,0.9) 100%)',
+              color: '#0f1b2d',
               cursor: 'pointer',
               fontFamily: "'Science Gothic', cursive",
               fontSize: 10,
-              transition: 'all 0.15s',
-              boxShadow: '3px 3px 0px #6b5020',
+              transition: 'all 0.2s ease',
+              fontWeight: 500,
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '5px 5px 0px #6b5020'
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(212,180,106,0.95) 0%, rgba(184,154,78,0.95) 100%)'
+              e.currentTarget.style.boxShadow = '0 0 20px rgba(197,163,90,0.3)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = '3px 3px 0px #6b5020'
+              e.currentTarget.style.background = 'linear-gradient(135deg, rgba(197,163,90,0.9) 0%, rgba(168,138,62,0.9) 100%)'
+              e.currentTarget.style.boxShadow = 'none'
             }}
           >
             START GAME

@@ -14,14 +14,14 @@ const btnStyle: React.CSSProperties = {
   fontSize: 18,
   fontWeight: 400,
   borderRadius: 6,
-  border: '3px solid #2a6b55',
-  color: '#f7f5eb',
+  border: '2px solid rgba(197,163,90,0.25)',
+  color: '#e8e4da',
   cursor: 'pointer',
   fontFamily: "'Science Gothic', cursive",
   letterSpacing: 0,
-  transition: 'all 0.15s',
+  transition: 'all 0.2s ease',
   textTransform: 'uppercase',
-  background: '#143a2e',
+  background: 'rgba(26,46,71,0.8)',
 }
 
 const screenStyle: React.CSSProperties = {
@@ -35,8 +35,8 @@ const titleStyle: React.CSSProperties = {
   fontSize: 28,
   fontWeight: 400,
   marginBottom: 12,
-  color: '#f7f5eb',
-  textShadow: '3px 3px 0px #0e2a1f',
+  color: '#e8e4da',
+  textShadow: '0 2px 12px rgba(197,163,90,0.2)',
 }
 
 export default function App() {
@@ -106,14 +106,14 @@ export default function App() {
           <div style={screenStyle}>
             <h2 style={titleStyle}>GAME OVER</h2>
             <p style={{
-              color: nsWins ? '#f7f5eb' : '#c23a3a',
+              color: nsWins ? '#e8e4da' : '#b44646',
               fontSize: '1.2rem',
               fontWeight: 400,
               marginBottom: 24,
               fontFamily: "'Science Gothic', cursive",
               textShadow: nsWins
-                ? '2px 2px 0px #0e2a1f'
-                : '2px 2px 0px #7a1a1a',
+                ? '0 2px 12px rgba(197,163,90,0.2)'
+                : '0 2px 8px rgba(180,70,70,0.3)',
             }}>
               {nsWins ? 'GREEN WINS!' : 'RED WINS!'}
             </p>
@@ -124,12 +124,12 @@ export default function App() {
               }}
               style={btnStyle}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = '#2a6b55'
-                e.currentTarget.style.color = '#f7f5eb'
+                e.currentTarget.style.background = 'rgba(197,163,90,0.12)'
+                e.currentTarget.style.borderColor = 'rgba(197,163,90,0.4)'
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.background = '#143a2e'
-                e.currentTarget.style.color = '#f7f5eb'
+                e.currentTarget.style.background = 'rgba(26,46,71,0.8)'
+                e.currentTarget.style.borderColor = 'rgba(197,163,90,0.25)'
               }}
             >
               PLAY AGAIN
@@ -176,7 +176,7 @@ export default function App() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              background: 'rgba(27,77,62,0.92)',
+              background: 'rgba(15,27,45,0.94)',
               animation: 'hokmRevealFade 1.8s ease-in-out forwards',
             }}>
               <div style={{
@@ -189,19 +189,19 @@ export default function App() {
                 <span style={{
                   fontSize: '1rem',
                   fontFamily: "'Science Gothic', cursive",
-                  color: '#d4a843',
-                  textShadow: '2px 2px 0px #6b5020',
-                  letterSpacing: 2,
+                  color: '#c5a35a',
+                  textShadow: '0 2px 8px rgba(197,163,90,0.25)',
+                  letterSpacing: 3,
                 }}>
                   HOKM
                 </span>
                 <span style={{
                   fontSize: '80px',
                   fontFamily: "'Science Gothic', cursive",
-                  color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#c23a3a' : '#2c2c2c',
+                  color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#b44646' : '#4a5568',
                   textShadow: hokmReveal === 'hearts' || hokmReveal === 'diamonds'
-                    ? '4px 4px 0px #7a1a1a, 0 0 20px rgba(194,58,58,0.3)'
-                    : '4px 4px 0px #1a1a1a, 0 0 20px rgba(44,44,44,0.3)',
+                    ? '0 4px 20px rgba(180,70,70,0.3), 0 0 40px rgba(180,70,70,0.15)'
+                    : '0 4px 20px rgba(74,85,104,0.3), 0 0 40px rgba(74,85,104,0.15)',
                   lineHeight: 1,
                 }}>
                   {{ hearts: '♥', diamonds: '♦', clubs: '♣', spades: '♠' }[hokmReveal]}
@@ -216,12 +216,12 @@ export default function App() {
     return (
       <div style={{
         ...screenStyle,
-        color: '#f7f5eb',
+        color: '#e8e4da',
         opacity: 0.5,
       }}>
         {onlineGame.error ? (
           <>
-            <p style={{ color: '#c23a3a', marginBottom: 16, fontFamily: "'Science Gothic', cursive", fontSize: 12 }}>{onlineGame.error}</p>
+            <p style={{ color: '#b44646', marginBottom: 16, fontFamily: "'Science Gothic', cursive", fontSize: 12 }}>{onlineGame.error}</p>
             <button
               onClick={() => {
                 onlineGame.reset()

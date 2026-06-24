@@ -30,23 +30,24 @@ const btnBase: React.CSSProperties = {
   fontSize: 14,
   fontWeight: 400,
   borderRadius: 6,
-  border: '3px solid #2a6b55',
-  color: '#f7f5eb',
+  border: '2px solid rgba(197,163,90,0.25)',
+  color: '#e8e4da',
   width: 320,
   cursor: 'pointer',
-  transition: 'all 0.15s',
+  transition: 'all 0.2s ease',
   fontFamily: "'Science Gothic', cursive",
   textTransform: 'uppercase',
-  background: '#143a2e',
+  background: 'rgba(26,46,71,0.8)',
+  backdropFilter: 'blur(4px)',
 }
 
 const inputStyle: React.CSSProperties = {
   padding: '14px 20px',
   fontSize: 18,
   borderRadius: 6,
-  border: '3px solid #2a6b55',
-  background: '#143a2e',
-  color: '#f7f5eb',
+  border: '2px solid rgba(197,163,90,0.2)',
+  background: 'rgba(17,31,51,0.9)',
+  color: '#e8e4da',
   width: 320,
   textAlign: 'center',
   fontFamily: "'Science Gothic', cursive",
@@ -101,20 +102,26 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
           fontFamily: "'Science Gothic', cursive",
           fontSize: 36,
           fontWeight: 400,
-          color: '#f7f5eb',
-          textShadow: '4px 4px 0px #0e2a1f',
-          letterSpacing: 2,
+          color: '#e8e4da',
+          textShadow: '0 2px 12px rgba(197,163,90,0.25), 0 0 40px rgba(197,163,90,0.08)',
+          letterSpacing: 4,
           lineHeight: 1.3,
         }}>
           SOLTAN HOKM
         </h1>
+        <div style={{
+          width: 60,
+          height: 1,
+          background: 'linear-gradient(90deg, transparent, rgba(197,163,90,0.5), transparent)',
+          margin: '10px auto 6px',
+        }} />
         <p style={{
           fontFamily: "'Science Gothic', cursive",
-          color: '#2a6b55',
-          fontSize: 12,
+          color: 'rgba(197,163,90,0.6)',
+          fontSize: 11,
           fontWeight: 400,
-          marginTop: 8,
-          letterSpacing: 3,
+          marginTop: 4,
+          letterSpacing: 4,
           textTransform: 'uppercase',
         }}>
           CARD GAME
@@ -127,20 +134,21 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
           onClick={() => onResumeGame(savedSession.playerName)}
           style={{
             ...btnBase,
-            background: '#d4a843',
-            borderColor: '#d4a843',
-            color: '#1b4d3e',
+            background: 'linear-gradient(135deg, #c5a35a 0%, #a88a3e 100%)',
+            borderColor: '#c5a35a',
+            color: '#0f1b2d',
+            fontWeight: 500,
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#e8bc5a'
-            e.currentTarget.style.borderColor = '#e8bc5a'
+            e.currentTarget.style.background = 'linear-gradient(135deg, #d4b46a 0%, #b89a4e 100%)'
+            e.currentTarget.style.boxShadow = '0 0 20px rgba(197,163,90,0.3)'
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#d4a843'
-            e.currentTarget.style.borderColor = '#d4a843'
+            e.currentTarget.style.background = 'linear-gradient(135deg, #c5a35a 0%, #a88a3e 100%)'
+            e.currentTarget.style.boxShadow = 'none'
           }}
         >
-          ▶ RESUME GAME
+          RESUME GAME
         </button>
       )}
 
@@ -156,11 +164,11 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         }}
         style={inputStyle}
         onFocus={(e) => {
-          e.currentTarget.style.borderColor = '#d4a843'
-          e.currentTarget.style.boxShadow = '0 0 10px rgba(212,168,67,0.2)'
+          e.currentTarget.style.borderColor = 'rgba(197,163,90,0.5)'
+          e.currentTarget.style.boxShadow = '0 0 16px rgba(197,163,90,0.12)'
         }}
         onBlur={(e) => {
-          e.currentTarget.style.borderColor = '#2a6b55'
+          e.currentTarget.style.borderColor = 'rgba(197,163,90,0.2)'
           e.currentTarget.style.boxShadow = 'none'
         }}
       />
@@ -170,7 +178,7 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         <span style={{
           fontFamily: "'Science Gothic', cursive",
           fontSize: 10,
-          color: '#2a6b55',
+          color: 'rgba(197,163,90,0.5)',
           fontWeight: 400,
           alignSelf: 'center',
           whiteSpace: 'nowrap',
@@ -185,14 +193,14 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
               flex: 1,
               padding: '10px 0',
               borderRadius: 6,
-              border: `3px solid ${handsToWin === n ? '#d4a843' : '#2a6b55'}`,
-              background: handsToWin === n ? '#1b4d3e' : '#143a2e',
-              color: handsToWin === n ? '#d4a843' : '#2a6b55',
+              border: `2px solid ${handsToWin === n ? 'rgba(197,163,90,0.5)' : 'rgba(197,163,90,0.15)'}`,
+              background: handsToWin === n ? 'rgba(197,163,90,0.1)' : 'rgba(17,31,51,0.6)',
+              color: handsToWin === n ? '#c5a35a' : 'rgba(197,163,90,0.4)',
               cursor: 'pointer',
               fontSize: 16,
               fontWeight: 400,
               fontFamily: "'Science Gothic', cursive",
-              transition: 'all 0.15s',
+              transition: 'all 0.2s ease',
             }}
           >
             {n}
@@ -205,18 +213,21 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
         disabled={!enabled}
         style={{
           ...btnBase,
-          borderColor: enabled ? '#2a6b55' : '#1a3a2e',
-          color: enabled ? '#f7f5eb' : '#1a3a2e',
+          borderColor: enabled ? 'rgba(197,163,90,0.25)' : 'rgba(197,163,90,0.08)',
+          color: enabled ? '#e8e4da' : 'rgba(232,228,218,0.2)',
           cursor: enabled ? 'pointer' : 'not-allowed',
+          background: enabled ? 'rgba(26,46,71,0.8)' : 'rgba(17,31,51,0.4)',
         }}
         onMouseEnter={(e) => {
           if (enabled) {
-            e.currentTarget.style.background = '#2a6b55'
+            e.currentTarget.style.background = 'rgba(197,163,90,0.12)'
+            e.currentTarget.style.borderColor = 'rgba(197,163,90,0.4)'
           }
         }}
         onMouseLeave={(e) => {
           if (enabled) {
-            e.currentTarget.style.background = '#143a2e'
+            e.currentTarget.style.background = 'rgba(26,46,71,0.8)'
+            e.currentTarget.style.borderColor = 'rgba(197,163,90,0.25)'
           }
         }}
       >
@@ -238,11 +249,11 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             textTransform: 'uppercase',
           }}
           onFocus={(e) => {
-            e.currentTarget.style.borderColor = '#d4a843'
-            e.currentTarget.style.boxShadow = '0 0 10px rgba(212,168,67,0.2)'
+            e.currentTarget.style.borderColor = 'rgba(197,163,90,0.5)'
+            e.currentTarget.style.boxShadow = '0 0 16px rgba(197,163,90,0.12)'
           }}
           onBlur={(e) => {
-            e.currentTarget.style.borderColor = '#2a6b55'
+            e.currentTarget.style.borderColor = 'rgba(197,163,90,0.2)'
             e.currentTarget.style.boxShadow = 'none'
           }}
         />
@@ -254,18 +265,21 @@ export function MainMenu({ onSelectMode, onResumeGame }: MainMenuProps) {
             width: 'auto',
             flex: 1,
             padding: '14px 20px',
-            borderColor: enabled && joinCode.trim() ? '#2a6b55' : '#1a3a2e',
-            color: enabled && joinCode.trim() ? '#f7f5eb' : '#1a3a2e',
+            borderColor: enabled && joinCode.trim() ? 'rgba(197,163,90,0.25)' : 'rgba(197,163,90,0.08)',
+            color: enabled && joinCode.trim() ? '#e8e4da' : 'rgba(232,228,218,0.2)',
             cursor: enabled && joinCode.trim() ? 'pointer' : 'not-allowed',
+            background: enabled && joinCode.trim() ? 'rgba(26,46,71,0.8)' : 'rgba(17,31,51,0.4)',
           }}
           onMouseEnter={(e) => {
             if (enabled && joinCode.trim()) {
-              e.currentTarget.style.background = '#2a6b55'
+              e.currentTarget.style.background = 'rgba(197,163,90,0.12)'
+              e.currentTarget.style.borderColor = 'rgba(197,163,90,0.4)'
             }
           }}
           onMouseLeave={(e) => {
             if (enabled && joinCode.trim()) {
-              e.currentTarget.style.background = '#143a2e'
+              e.currentTarget.style.background = 'rgba(26,46,71,0.8)'
+              e.currentTarget.style.borderColor = 'rgba(197,163,90,0.25)'
             }
           }}
         >

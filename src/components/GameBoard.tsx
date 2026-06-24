@@ -163,11 +163,11 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
-      background: '#1b4d3e',
+      background: '#0f1b2d',
     }}>
       {/* Status bar */}
       <div style={{
-        background: '#143a2e',
+        background: 'rgba(17,31,51,0.95)',
         height: 52,
         padding: '0 16px',
         flexShrink: 0,
@@ -175,7 +175,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 8,
-        borderBottom: '3px solid #2a6b55',
+        borderBottom: '1px solid rgba(197,163,90,0.12)',
         position: 'relative',
       }}>
         {/* Trump suit */}
@@ -186,15 +186,15 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               alignItems: 'center',
               gap: 6,
               padding: '4px 12px',
-              borderRadius: 4,
-              background: '#1b4d3e',
-              border: '2px solid #d4a843',
+              borderRadius: 6,
+              background: 'rgba(197,163,90,0.08)',
+              border: '1px solid rgba(197,163,90,0.2)',
               height: 32,
             }}>
               <span style={{
                 fontFamily: "'Science Gothic', cursive",
                 fontSize: 8,
-                color: '#d4a843',
+                color: '#c5a35a',
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
@@ -207,16 +207,16 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
-                color: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds ? '#c23a3a' : '#2c2c2c',
+                color: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds ? '#b44646' : '#4a5568',
                 textShadow: game.hokmSuit === Suit.Hearts || game.hokmSuit === Suit.Diamonds
-                  ? '2px 2px 0px #7a1a1a'
-                  : '2px 2px 0px #1a1a1a',
+                  ? '0 2px 6px rgba(180,70,70,0.4)'
+                  : '0 2px 6px rgba(74,85,104,0.4)',
               }}>
                 {SUIT_SYMBOLS[game.hokmSuit]}
               </span>
             </div>
           ) : (
-            <span style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: '#2a6b55', opacity: 0.6 }}>CHOOSING...</span>
+            <span style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: 'rgba(197,163,90,0.3)' }}>CHOOSING...</span>
           )}
         </div>
 
@@ -229,8 +229,8 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                   width: 10,
                   height: 10,
                   borderRadius: 2,
-                  background: i < game.northSouthScore ? '#f7f5eb' : '#143a2e',
-                  border: `2px solid ${i < game.northSouthScore ? '#2a6b55' : '#2a6b55'}`,
+                  background: i < game.northSouthScore ? 'rgba(74,144,126,0.7)' : 'rgba(26,46,71,0.6)',
+                  border: `1px solid ${i < game.northSouthScore ? 'rgba(74,144,126,0.4)' : 'rgba(197,163,90,0.1)'}`,
                   transition: 'none',
                 }} />
               ))}
@@ -238,7 +238,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             <span style={{
               fontFamily: "'Science Gothic', cursive",
               fontSize: 12,
-              color: '#f7f5eb',
+              color: '#e8e4da',
               minWidth: 28,
               textAlign: 'right',
             }}>
@@ -246,13 +246,13 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             </span>
           </div>
 
-          <span style={{ fontFamily: "'Science Gothic', cursive", fontSize: 10, color: '#2a6b55' }}>/7</span>
+          <span style={{ fontFamily: "'Science Gothic', cursive", fontSize: 10, color: 'rgba(197,163,90,0.3)' }}>/7</span>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <span style={{
               fontFamily: "'Science Gothic', cursive",
               fontSize: 12,
-              color: '#c23a3a',
+              color: '#b44646',
               minWidth: 28,
             }}>
               {game.eastWestScore}
@@ -263,8 +263,8 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                   width: 10,
                   height: 10,
                   borderRadius: 2,
-                  background: i < game.eastWestScore ? '#c23a3a' : '#143a2e',
-                  border: `2px solid ${i < game.eastWestScore ? '#c23a3a' : '#2a6b55'}`,
+                  background: i < game.eastWestScore ? 'rgba(180,70,70,0.6)' : 'rgba(26,46,71,0.6)',
+                  border: `1px solid ${i < game.eastWestScore ? 'rgba(180,70,70,0.3)' : 'rgba(197,163,90,0.1)'}`,
                   transition: 'none',
                 }} />
               ))}
@@ -277,23 +277,25 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           <span style={{
             fontFamily: "'Science Gothic', cursive",
             fontSize: 12,
-            color: '#f7f5eb',
+            color: '#e8e4da',
             padding: '2px 8px',
-            border: '2px solid #2a6b55',
+            border: '1px solid rgba(74,144,126,0.25)',
+            borderRadius: 4,
           }}>
             {game.nsGamesWon ?? 0}
           </span>
-          <span style={{ fontFamily: "'Science Gothic', cursive", fontSize: 10, color: '#2a6b55' }}>-</span>
+          <span style={{ fontFamily: "'Science Gothic', cursive", fontSize: 10, color: 'rgba(197,163,90,0.3)' }}>-</span>
           <span style={{
             fontFamily: "'Science Gothic', cursive",
             fontSize: 12,
-            color: '#c23a3a',
+            color: '#b44646',
             padding: '2px 8px',
-            border: '2px solid #7a1a1a',
+            border: '1px solid rgba(180,70,70,0.25)',
+            borderRadius: 4,
           }}>
             {game.ewGamesWon ?? 0}
           </span>
-          <span style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: '#2a6b55' }}>
+          <span style={{ fontFamily: "'Science Gothic', cursive", fontSize: 8, color: 'rgba(197,163,90,0.3)' }}>
             /{game.handsToWin ?? 7}
           </span>
         </div>
@@ -307,8 +309,8 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           left: 0,
           right: 0,
           zIndex: 100,
-          background: '#c23a3a',
-          color: '#f7f5eb',
+          background: 'linear-gradient(90deg, rgba(180,70,70,0.9), rgba(140,50,50,0.9))',
+          color: '#e8e4da',
           textAlign: 'center',
           padding: '10px 16px',
           fontFamily: "'Science Gothic', cursive",
@@ -323,7 +325,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             width: 8,
             height: 8,
             borderRadius: 0,
-            background: '#f7f5eb',
+            background: '#e8e4da',
             display: 'inline-block',
             animation: 'blink 1s step-end infinite',
           }} />
@@ -357,22 +359,22 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                   ...style,
                   position: 'absolute',
                   padding: '6px 12px',
-                  borderRadius: 4,
+                  borderRadius: 6,
                   background: isTrickWinner
-                    ? '#1b4d3e'
+                    ? 'rgba(197,163,90,0.1)'
                     : isPlayerTurn
-                      ? '#143a2e'
-                      : '#0e2a1f',
-                  border: `2px solid ${isTrickWinner ? '#d4a843' : isPlayerTurn ? '#d4a843' : '#2a6b55'}`,
+                      ? 'rgba(26,46,71,0.8)'
+                      : 'rgba(12,22,36,0.7)',
+                  border: `1px solid ${isTrickWinner ? 'rgba(197,163,90,0.4)' : isPlayerTurn ? 'rgba(197,163,90,0.25)' : 'rgba(197,163,90,0.08)'}`,
                   textAlign: 'center',
                   fontSize: '0.75rem',
                   transition: 'none',
                   zIndex: 5,
                   boxShadow: isTrickWinner
-                    ? '4px 4px 0px #6b5020, 0 0 15px rgba(212,168,67,0.3)'
+                    ? '0 0 20px rgba(197,163,90,0.2), 0 0 40px rgba(197,163,90,0.08)'
                     : isPlayerTurn
-                      ? '0 0 12px rgba(212,168,67,0.15)'
-                      : '3px 3px 0px #0e2a1f',
+                      ? '0 0 16px rgba(197,163,90,0.1)'
+                      : '0 2px 8px rgba(0,0,0,0.2)',
                   animation: isTrickWinner ? 'trickWinFlash 0.8s ease-out' : isPlayerTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
                   whiteSpace: 'nowrap',
                 }}
@@ -380,14 +382,14 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 <div style={{
                   fontFamily: "'Science Gothic', monospace",
                   fontSize: 10,
-                  color: '#f7f5eb',
+                  color: '#e8e4da',
                 }}>
                   {p.name}
-                  {game.hokmPlayer === p.position && <span style={{ marginLeft: 4 }}>★</span>}
+                  {game.hokmPlayer === p.position && <span style={{ marginLeft: 4, color: '#c5a35a' }}>★</span>}
                 </div>
                 <div style={{
                   fontFamily: "'Science Gothic', monospace",
-                  color: '#2a6b55',
+                  color: 'rgba(197,163,90,0.4)',
                   fontSize: 7,
                   marginTop: 2,
                 }}>
@@ -406,22 +408,22 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                 left: '50%',
                 transform: 'translate(-50%, 50%)',
                 padding: '6px 12px',
-                borderRadius: 4,
+                borderRadius: 6,
                 background: trickWinner === myPos
-                  ? '#1b4d3e'
+                  ? 'rgba(197,163,90,0.1)'
                   : isMyTurn
-                    ? '#143a2e'
-                    : '#0e2a1f',
-                border: `2px solid ${trickWinner === myPos ? '#d4a843' : isMyTurn ? '#d4a843' : '#2a6b55'}`,
+                    ? 'rgba(26,46,71,0.8)'
+                    : 'rgba(12,22,36,0.7)',
+                border: `1px solid ${trickWinner === myPos ? 'rgba(197,163,90,0.4)' : isMyTurn ? 'rgba(197,163,90,0.25)' : 'rgba(197,163,90,0.08)'}`,
                 textAlign: 'center',
                 fontSize: '0.75rem',
                 transition: 'none',
                 zIndex: 5,
                 boxShadow: trickWinner === myPos
-                  ? '4px 4px 0px #6b5020, 0 0 15px rgba(212,168,67,0.3)'
+                  ? '0 0 20px rgba(197,163,90,0.2), 0 0 40px rgba(197,163,90,0.08)'
                   : isMyTurn
-                    ? '0 0 12px rgba(212,168,67,0.15)'
-                    : '3px 3px 0px #0e2a1f',
+                    ? '0 0 16px rgba(197,163,90,0.1)'
+                    : '0 2px 8px rgba(0,0,0,0.2)',
                 animation: trickWinner === myPos ? 'trickWinFlash 0.8s ease-out' : isMyTurn ? 'pulse 1.5s ease-in-out infinite' : 'none',
                 whiteSpace: 'nowrap',
               }}
@@ -429,14 +431,14 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               <div style={{
                 fontFamily: "'Science Gothic', monospace",
                 fontSize: 10,
-                color: '#f7f5eb',
+                color: '#e8e4da',
               }}>
                 {me.name}
-                {game.hokmPlayer === myPos && <span style={{ marginLeft: 4 }}>★</span>}
+                {game.hokmPlayer === myPos && <span style={{ marginLeft: 4, color: '#c5a35a' }}>★</span>}
               </div>
               <div style={{
                 fontFamily: "'Science Gothic', monospace",
-                color: '#2a6b55',
+                color: 'rgba(197,163,90,0.4)',
                 fontSize: 7,
                 marginTop: 2,
               }}>
@@ -455,18 +457,18 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             transform: 'translate(-50%, -50%)',
             textAlign: 'center',
             zIndex: 10,
-            background: '#143a2e',
+            background: 'rgba(17,31,51,0.95)',
             padding: '28px 36px',
-            borderRadius: 8,
-            border: '3px solid #d4a843',
-            boxShadow: '8px 8px 0px #0e2a1f',
+            borderRadius: 10,
+            border: '1px solid rgba(197,163,90,0.2)',
+            boxShadow: '0 8px 40px rgba(0,0,0,0.4), 0 0 30px rgba(197,163,90,0.06)',
           }}>
             <p style={{
               fontFamily: "'Science Gothic', cursive",
               fontSize: 10,
               marginBottom: 20,
-              color: '#d4a843',
-              letterSpacing: 1,
+              color: '#c5a35a',
+              letterSpacing: 2,
             }}>
               CHOOSE HOKM
             </p>
@@ -478,10 +480,10 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                   style={{
                     width: 68,
                     height: 88,
-                    borderRadius: 6,
-                    border: '3px solid #2a6b55',
-                    background: '#1b4d3e',
-                    color: suit === Suit.Hearts || suit === Suit.Diamonds ? '#c23a3a' : '#2c2c2c',
+                    borderRadius: 8,
+                    border: '1px solid rgba(197,163,90,0.15)',
+                    background: 'rgba(26,46,71,0.6)',
+                    color: suit === Suit.Hearts || suit === Suit.Diamonds ? '#b44646' : '#4a5568',
                     cursor: 'pointer',
                     fontSize: 30,
                     display: 'flex',
@@ -489,19 +491,19 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: 4,
-                    transition: 'all 0.15s',
+                    transition: 'all 0.2s ease',
                     fontFamily: "'Science Gothic', cursive",
                     textShadow: suit === Suit.Hearts || suit === Suit.Diamonds
-                      ? '2px 2px 0px #7a1a1a'
-                      : '2px 2px 0px #1a1a1a',
+                      ? '0 2px 8px rgba(180,70,70,0.3)'
+                      : '0 2px 8px rgba(74,85,104,0.3)',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#2a6b55'
-                    e.currentTarget.style.borderColor = '#d4a843'
+                    e.currentTarget.style.background = 'rgba(197,163,90,0.1)'
+                    e.currentTarget.style.borderColor = 'rgba(197,163,90,0.35)'
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#1b4d3e'
-                    e.currentTarget.style.borderColor = '#2a6b55'
+                    e.currentTarget.style.background = 'rgba(26,46,71,0.6)'
+                    e.currentTarget.style.borderColor = 'rgba(197,163,90,0.15)'
                   }}
                 >
                   {SUIT_SYMBOLS[suit]}
@@ -521,8 +523,8 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          background: '#143a2e',
-          borderTop: '3px solid #2a6b55',
+          background: 'rgba(17,31,51,0.95)',
+          borderTop: '1px solid rgba(197,163,90,0.1)',
         }}>
           <Hand
             cards={sortedHand}
@@ -535,11 +537,11 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             <div style={{
               padding: '4px 14px',
               borderRadius: 4,
-              background: me.team === 'ns' ? '#1b4d3e' : '#3a1a1a',
-              border: `2px solid ${me.team === 'ns' ? '#2a6b55' : '#c23a3a'}`,
+              background: me.team === 'ns' ? 'rgba(74,144,126,0.1)' : 'rgba(180,70,70,0.1)',
+              border: `1px solid ${me.team === 'ns' ? 'rgba(74,144,126,0.25)' : 'rgba(180,70,70,0.25)'}`,
               fontFamily: "'Science Gothic', cursive",
               fontSize: 8,
-              color: me.team === 'ns' ? '#f7f5eb' : '#c23a3a',
+              color: me.team === 'ns' ? '#4a907e' : '#b44646',
               marginTop: 6,
               textTransform: 'uppercase',
             }}>
