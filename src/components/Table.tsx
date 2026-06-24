@@ -64,7 +64,6 @@ export function Table({ trick, myPosition }: TableProps) {
           return (
             <div
               key={pos}
-              data-played-card={pos}
               style={{
                 position: 'absolute',
                 ...BASE_POSITIONS[relPos],

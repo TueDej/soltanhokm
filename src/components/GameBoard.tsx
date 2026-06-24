@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { TrickPhase, PlayerPosition } from '../types/game'
-import { Card } from './Card'
+import { Suit, RANK_ORDER, sortHand } from '../types/card'
 import type { Card as CardType } from '../types/card'
-import { Suit, RANK_ORDER } from '../types/card'
-import { sortHand } from '../types/card'
 import type { OnlineGameState } from '../types/socket'
 import { Hand } from './Hand'
 import { Table } from './Table'
@@ -122,13 +120,12 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
   const otherPlayers = game.players.filter((p) => p.position !== myPos)
 
   const [trickWinner, setTrickWinner] = useState<PlayerPosition | null>(null)
-  const [collectCards, setCollectCards] = useState<{ key: string; fromX: number; fromY: number; suit: Suit; rank: string }[] | null>(null)
-  const [collectTarget, setCollectTarget] = useState<{ x: number; y: number } | null>(null)
-  const [collectGo, setCollectGo] = useState(false)
   const prevScoreRef = useRef({ ns: game.northSouthScore, ew: game.eastWestScore })
   const trickWinnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const tableRef = useRef<HTMLDivElement>(null)
   const prevTrickComplete = useRef(trickComplete)
+  const collectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const ns = game.northSouthScore
@@ -144,15 +141,17 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
     prevScoreRef.current = { ns, ew }
 
     return () => {
-      if (trickWinnerTimerRef.current) {
-        clearTimeout(trickWinnerTimerRef.current)
-      }
+      if (trickWinnerTimerRef.current) clearTimeout(trickWinnerTimerRef.current)
+      if (collectTimerRef.current) clearTimeout(collectTimerRef.current)
+      if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
     }
   }, [game.northSouthScore, game.eastWestScore])
 
   useEffect(() => {
     if (trickComplete && !prevTrickComplete.current && tableRef.current) {
-      const tableRect = tableRef.current.getBoundingClientRect()
+      const tableEl = tableRef.current
+      const playArea = tableEl.querySelector('.play-area') as HTMLElement | null
+      if (!playArea) { prevTrickComplete.current = trickComplete; return }
 
       const trickCards = game.currentTrick.cards
       const leaderCard = trickCards[game.currentTrick.leader]
@@ -174,39 +173,28 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
 
       let targetEl: HTMLElement | null = null
       if (winnerPos === myPos) {
-        targetEl = tableRef.current.parentElement?.querySelector('[data-player-indicator="me"]') as HTMLElement | null
+        targetEl = tableEl.parentElement?.querySelector('[data-player-indicator="me"]') as HTMLElement | null
       } else {
-        targetEl = tableRef.current.parentElement?.querySelector(`[data-player-indicator="${winnerPos}"]`) as HTMLElement | null
+        targetEl = tableEl.parentElement?.querySelector(`[data-player-indicator="${winnerPos}"]`) as HTMLElement | null
       }
-      const targetRect = targetEl?.getBoundingClientRect()
-      const toX = targetRect ? targetRect.left + targetRect.width / 2 - tableRect.left : tableRect.width / 2
-      const toY = targetRect ? targetRect.top + targetRect.height / 2 - tableRect.top : tableRect.height / 2
 
-      const cards = Object.entries(trickCards)
-        .filter((e): e is [string, CardType] => e[1] !== undefined)
-        .map(([pos, card]) => {
-          const el = tableRef.current?.querySelector(`[data-played-card="${pos}"]`) as HTMLElement | null
-          const rect = el?.getBoundingClientRect()
-          return {
-            key: `${pos}-${card.suit}-${card.rank}`,
-            suit: card.suit,
-            rank: card.rank,
-            fromX: rect ? rect.left + rect.width / 2 - tableRect.left : tableRect.width / 2,
-            fromY: rect ? rect.top + rect.height / 2 - tableRect.top : tableRect.height / 2,
-          }
-        })
+      if (targetEl) {
+        const tableRect = tableEl.getBoundingClientRect()
+        const targetRect = targetEl.getBoundingClientRect()
+        const dx = (targetRect.left + targetRect.width / 2) - (tableRect.left + tableRect.width / 2)
+        const dy = (targetRect.top + targetRect.height / 2) - (tableRect.top + tableRect.height / 2)
 
-      if (cards.length > 0) {
-        setCollectCards(cards)
-        setCollectTarget({ x: toX, y: toY })
-        setCollectGo(false)
-        const goTimer = setTimeout(() => setCollectGo(true), 600)
-        const cleanupTimer = setTimeout(() => {
-          setCollectCards(null)
-          setCollectTarget(null)
-          setCollectGo(false)
-        }, 1200)
-        return () => { clearTimeout(goTimer); clearTimeout(cleanupTimer) }
+        collectTimerRef.current = setTimeout(() => {
+          playArea.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in'
+          playArea.style.transform = `translate(-50%, -50%) translate(${dx * 0.6}px, ${dy * 0.6}px) scale(0.15)`
+          playArea.style.opacity = '0'
+
+          resetTimerRef.current = setTimeout(() => {
+            playArea.style.transition = 'none'
+            playArea.style.transform = 'translate(-50%, -50%) scale(1)'
+            playArea.style.opacity = '1'
+          }, 550)
+        }, 800)
       }
     }
     prevTrickComplete.current = trickComplete
@@ -583,27 +571,6 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           </div>
         )}
       </div>
-
-      {/* Card collection animation */}
-      {collectCards && collectTarget && collectCards.map((c) => (
-        <div
-          key={c.key}
-          style={{
-            position: 'absolute',
-            left: collectGo ? collectTarget.x : c.fromX,
-            top: collectGo ? collectTarget.y : c.fromY,
-            width: 88,
-            height: 124,
-            transform: 'translate(-50%, -50%)',
-            zIndex: 100,
-            pointerEvents: 'none',
-            opacity: collectGo ? 0 : 1,
-            transition: collectGo ? 'left 0.5s ease-in, top 0.5s ease-in, opacity 0.5s ease-in' : 'none',
-          }}
-        >
-          <Card card={{ suit: c.suit, rank: c.rank as any }} disabled />
-        </div>
-      ))}
 
       {/* Player hand */}
       {me && (
