@@ -125,7 +125,6 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
   const tableRef = useRef<HTMLDivElement>(null)
   const prevTrickComplete = useRef(trickComplete)
   const collectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const ns = game.northSouthScore
@@ -143,11 +142,20 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
     return () => {
       if (trickWinnerTimerRef.current) clearTimeout(trickWinnerTimerRef.current)
       if (collectTimerRef.current) clearTimeout(collectTimerRef.current)
-      if (resetTimerRef.current) clearTimeout(resetTimerRef.current)
     }
   }, [game.northSouthScore, game.eastWestScore])
 
   useEffect(() => {
+    // Reset play-area when a new trick starts
+    if (!trickComplete && prevTrickComplete.current && tableRef.current) {
+      const playArea = tableRef.current.querySelector('.play-area') as HTMLElement | null
+      if (playArea) {
+        playArea.style.transition = 'none'
+        playArea.style.transform = 'translate(-50%, -50%) scale(1)'
+        playArea.style.opacity = '1'
+      }
+    }
+
     if (trickComplete && !prevTrickComplete.current && tableRef.current) {
       const tableEl = tableRef.current
       const playArea = tableEl.querySelector('.play-area') as HTMLElement | null
@@ -188,12 +196,6 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           playArea.style.transition = 'transform 0.5s ease-in, opacity 0.5s ease-in'
           playArea.style.transform = `translate(-50%, -50%) translate(${dx * 0.6}px, ${dy * 0.6}px) scale(0.15)`
           playArea.style.opacity = '0'
-
-          resetTimerRef.current = setTimeout(() => {
-            playArea.style.transition = 'none'
-            playArea.style.transform = 'translate(-50%, -50%) scale(1)'
-            playArea.style.opacity = '1'
-          }, 550)
         }, 800)
       }
     }
