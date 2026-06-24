@@ -121,8 +121,11 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
   const otherPlayers = game.players.filter((p) => p.position !== myPos)
 
   const [trickWinner, setTrickWinner] = useState<PlayerPosition | null>(null)
+  const [collectAnim, setCollectAnim] = useState<{ cards: { key: string; fromX: number; fromY: number }[]; toX: number; toY: number } | null>(null)
   const prevScoreRef = useRef({ ns: game.northSouthScore, ew: game.eastWestScore })
   const trickWinnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const tableRef = useRef<HTMLDivElement>(null)
+  const prevTrickComplete = useRef(trickComplete)
 
   useEffect(() => {
     const ns = game.northSouthScore
@@ -143,6 +146,40 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
       }
     }
   }, [game.northSouthScore, game.eastWestScore])
+
+  useEffect(() => {
+    if (trickComplete && !prevTrickComplete.current && tableRef.current) {
+      const tableRect = tableRef.current.getBoundingClientRect()
+      const winnerPos = game.turn
+      let targetEl: HTMLElement | null = null
+      if (winnerPos === myPos) {
+        targetEl = tableRef.current.parentElement?.querySelector('[data-player-indicator="me"]') as HTMLElement | null
+      } else {
+        targetEl = tableRef.current.parentElement?.querySelector(`[data-player-indicator="${winnerPos}"]`) as HTMLElement | null
+      }
+      const targetRect = targetEl?.getBoundingClientRect()
+      const toX = targetRect ? targetRect.left + targetRect.width / 2 - tableRect.left : tableRect.width / 2
+      const toY = targetRect ? targetRect.top + targetRect.height / 2 - tableRect.top : tableRect.height / 2
+
+      const cards = Object.entries(game.currentTrick.cards)
+        .filter((e): e is [string, Card] => e[1] !== undefined)
+        .map(([pos, card]) => {
+          const el = tableRef.current?.querySelector(`[data-played-card="${pos}"]`) as HTMLElement | null
+          const rect = el?.getBoundingClientRect()
+          return {
+            key: `${pos}-${card.suit}-${card.rank}`,
+            fromX: rect ? rect.left + rect.width / 2 - tableRect.left : tableRect.width / 2,
+            fromY: rect ? rect.top + rect.height / 2 - tableRect.top : tableRect.height / 2,
+          }
+        })
+
+      if (cards.length > 0) {
+        setCollectAnim({ cards, toX, toY })
+        setTimeout(() => setCollectAnim(null), 500)
+      }
+    }
+    prevTrickComplete.current = trickComplete
+  }, [trickComplete, game.currentTrick, game.turn, myPos])
 
   function getCardCount(p: typeof game.players[0]): number {
     if ('cardCount' in p && p.cardCount !== undefined) {
@@ -336,7 +373,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
       {/* Center area */}
       <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
         {/* Table */}
-        <div style={{
+        <div ref={tableRef} style={{
           position: 'absolute',
           top: '50%',
           left: '50%',
@@ -355,6 +392,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             return (
               <div
                 key={p.position}
+                data-player-indicator={p.position}
                 style={{
                   ...style,
                   position: 'absolute',
@@ -402,6 +440,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           {/* My indicator at table bottom edge */}
           {me && (
             <div
+              data-player-indicator="me"
               style={{
                 position: 'absolute',
                 bottom: 0,
@@ -513,6 +552,34 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           </div>
         )}
       </div>
+
+      {/* Card collection animation */}
+      {collectAnim && collectAnim.cards.map((c) => (
+        <div
+          key={c.key}
+          style={{
+            position: 'absolute',
+            left: c.fromX,
+            top: c.fromY,
+            width: 88,
+            height: 124,
+            transform: 'translate(-50%, -50%)',
+            zIndex: 100,
+            pointerEvents: 'none',
+            opacity: 1,
+            transition: 'left 0.45s ease-in, top 0.45s ease-in, opacity 0.45s ease-in',
+          }}
+          ref={(el) => {
+            if (el) {
+              requestAnimationFrame(() => {
+                el.style.left = `${collectAnim.toX}px`
+                el.style.top = `${collectAnim.toY}px`
+                el.style.opacity = '0'
+              })
+            }
+          }}
+        />
+      ))}
 
       {/* Player hand */}
       {me && (
