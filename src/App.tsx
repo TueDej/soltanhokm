@@ -106,13 +106,13 @@ export default function App() {
           <div style={screenStyle}>
             <h2 style={titleStyle}>GAME OVER</h2>
             <p style={{
-              color: nsWins ? '#e8e4da' : '#b44646',
+              color: nsWins ? '#4a907e' : '#b44646',
               fontSize: '1.2rem',
               fontWeight: 400,
               marginBottom: 24,
               fontFamily: "'Science Gothic', cursive",
               textShadow: nsWins
-                ? '0 2px 12px rgba(197,163,90,0.2)'
+                ? '0 2px 12px rgba(74,144,126,0.3)'
                 : '0 2px 8px rgba(180,70,70,0.3)',
             }}>
               {nsWins ? 'GREEN WINS!' : 'RED WINS!'}

@@ -238,7 +238,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             <span style={{
               fontFamily: "'Science Gothic', cursive",
               fontSize: 12,
-              color: '#e8e4da',
+              color: '#4a907e',
               minWidth: 28,
               textAlign: 'right',
             }}>
@@ -277,7 +277,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
           <span style={{
             fontFamily: "'Science Gothic', cursive",
             fontSize: 12,
-            color: '#e8e4da',
+            color: '#4a907e',
             padding: '2px 8px',
             border: '1px solid rgba(74,144,126,0.25)',
             borderRadius: 4,
