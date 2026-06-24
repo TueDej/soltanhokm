@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { TrickPhase, PlayerPosition } from '../types/game'
-import { Suit } from '../types/card'
+import { Suit, RANK_ORDER } from '../types/card'
 import type { Card } from '../types/card'
 import { sortHand } from '../types/card'
 import type { OnlineGameState } from '../types/socket'
@@ -150,7 +150,25 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
   useEffect(() => {
     if (trickComplete && !prevTrickComplete.current && tableRef.current) {
       const tableRect = tableRef.current.getBoundingClientRect()
-      const winnerPos = game.turn
+
+      // Compute trick winner from cards
+      const trickCards = game.currentTrick.cards
+      const leaderCard = trickCards[game.currentTrick.leader]
+      if (!leaderCard) { prevTrickComplete.current = trickComplete; return }
+      let winnerPos: PlayerPosition = game.currentTrick.leader
+      let winnerCard: Card = leaderCard
+      for (const [pos, card] of Object.entries(trickCards)) {
+        if (card && pos !== game.currentTrick.leader) {
+          if (game.hokmSuit && card.suit === game.hokmSuit && winnerCard.suit !== game.hokmSuit) {
+            winnerPos = pos as PlayerPosition
+            winnerCard = card
+          } else if (card.suit === winnerCard.suit && RANK_ORDER[card.rank] > RANK_ORDER[winnerCard.rank]) {
+            winnerPos = pos as PlayerPosition
+            winnerCard = card
+          }
+        }
+      }
+
       let targetEl: HTMLElement | null = null
       if (winnerPos === myPos) {
         targetEl = tableRef.current.parentElement?.querySelector('[data-player-indicator="me"]') as HTMLElement | null
@@ -161,7 +179,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
       const toX = targetRect ? targetRect.left + targetRect.width / 2 - tableRect.left : tableRect.width / 2
       const toY = targetRect ? targetRect.top + targetRect.height / 2 - tableRect.top : tableRect.height / 2
 
-      const cards = Object.entries(game.currentTrick.cards)
+      const cards = Object.entries(trickCards)
         .filter((e): e is [string, Card] => e[1] !== undefined)
         .map(([pos, card]) => {
           const el = tableRef.current?.querySelector(`[data-played-card="${pos}"]`) as HTMLElement | null
