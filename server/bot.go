@@ -1,22 +1,74 @@
 package main
 
-// Bot AI - tactical card play with team awareness
+// Bot AI - strategic card play with team awareness and card counting
 
+// cardMemory tracks which cards have been played across the current hand
+type cardMemory struct {
+	played map[Rank]map[Suit]bool // played[rank][suit] = true
+}
+
+func newCardMemory() *cardMemory {
+	return &cardMemory{played: make(map[Rank]map[Suit]bool)}
+}
+
+func (m *cardMemory) recordPlay(card Card) {
+	if m.played[card.Rank] == nil {
+		m.played[card.Rank] = make(map[Suit]bool)
+	}
+	m.played[card.Rank][card.Suit] = true
+}
+
+func (m *cardMemory) wasPlayed(card Card) bool {
+	if m.played[card.Rank] == nil {
+		return false
+	}
+	return m.played[card.Rank][card.Suit]
+}
+
+// countRemainingInSuit counts how many cards of a suit are still unseen by a player
+// (not in their hand and not played)
+func (m *cardMemory) countRemainingInSuit(suit Suit, hand []Card) int {
+	total := 13
+	for _, c := range hand {
+		if c.Suit == suit {
+			total--
+		}
+	}
+	for _, ranks := range m.played {
+		if ranks[suit] {
+			total--
+		}
+	}
+	return total
+}
+
+// hasCardInSuit checks if a specific card is still in play (not played)
+func (m *cardMemory) hasCardInSuit(rank Rank, suit Suit) bool {
+	return !m.wasPlayed(Card{Suit: suit, Rank: rank})
+}
+
+// BotChooseHokm selects the best trump suit based on hand strength
 func BotChooseHokm(hand []Card) Suit {
 	suitCounts := make(map[Suit]struct {
 		count     int
 		highCards int
 		aces      int
+		kings     int
+		queens    int
 	})
 
 	for _, card := range hand {
 		sc := suitCounts[card.Suit]
 		sc.count++
-		if RANK_ORDER[card.Rank] >= RANK_ORDER[Queen] {
-			sc.highCards++
-		}
 		if card.Rank == Ace {
 			sc.aces++
+		} else if card.Rank == King {
+			sc.kings++
+		} else if card.Rank == Queen {
+			sc.queens++
+		}
+		if RANK_ORDER[card.Rank] >= RANK_ORDER[Queen] {
+			sc.highCards++
 		}
 		suitCounts[card.Suit] = sc
 	}
@@ -25,8 +77,14 @@ func BotChooseHokm(hand []Card) Suit {
 	bestScore := -1
 
 	for suit, sc := range suitCounts {
-		score := sc.count*2 + sc.highCards*3 + sc.aces*5
+		score := sc.count*2 + sc.aces*8 + sc.kings*5 + sc.queens*3 + sc.highCards*2
 		if sc.count >= 5 {
+			score += 6
+		} else if sc.count >= 4 {
+			score += 3
+		}
+		// Bonus for having A+K together (solid holding)
+		if sc.aces > 0 && sc.kings > 0 {
 			score += 4
 		}
 		if score > bestScore {
@@ -38,6 +96,7 @@ func BotChooseHokm(hand []Card) Suit {
 	return bestSuit
 }
 
+// BotPlayCard is the main entry point for bot card selection
 func BotPlayCard(state *GameState, pos PlayerPosition) *Card {
 	player := state.FindPlayer(pos)
 	if player == nil || len(player.Hand) == 0 {
@@ -54,9 +113,17 @@ func BotPlayCard(state *GameState, pos PlayerPosition) *Card {
 		return &player.Hand[0]
 	}
 
+	// Build memory of played cards from the current trick
+	mem := newCardMemory()
+	for _, c := range state.CurrentTrick.Cards {
+		if c != nil {
+			mem.recordPlay(*c)
+		}
+	}
+
 	trickCards := state.CurrentTrick.Cards
 	if len(trickCards) == 0 {
-		return botLead(state, player, pos)
+		return botLead(state, player, pos, mem)
 	}
 
 	var ledSuit Suit
@@ -73,7 +140,7 @@ func BotPlayCard(state *GameState, pos PlayerPosition) *Card {
 	}
 
 	if hasLedSuit {
-		return botFollow(state, player, pos, ledSuit, trickCards)
+		return botFollow(state, player, pos, ledSuit, trickCards, mem)
 	}
 
 	if state.HokmSuit != nil {
@@ -85,85 +152,96 @@ func BotPlayCard(state *GameState, pos PlayerPosition) *Card {
 			}
 		}
 		if hasHokm {
-			return botTrump(state, player, pos, trickCards)
+			return botTrump(state, player, pos, trickCards, mem)
 		}
 	}
 
-	return botThrowOff(state, player, pos, trickCards)
+	return botThrowOff(state, player, pos, trickCards, mem)
 }
 
-func botLead(state *GameState, player *Player, pos PlayerPosition) *Card {
+// botLead decides which card to play when leading a trick
+func botLead(state *GameState, player *Player, pos PlayerPosition, mem *cardMemory) *Card {
 	hand := player.Hand
 	hokmSuit := state.HokmSuit
 	isHokmPlayer := pos == state.HokmPlayer
 
-	// Check if we have winning cards (Aces or high trumps)
+	cardsLeft := len(hand)
+	tricksPlayed := 13 - cardsLeft
+	earlyGame := tricksPlayed < 4
+	lateGame := tricksPlayed >= 9
+
+	// Count our trumps
+	myTrumps := 0
+	var trumpCards []Card
 	if hokmSuit != nil {
-		var topTrumps []Card
 		for _, c := range hand {
 			if c.Suit == *hokmSuit {
-				topTrumps = append(topTrumps, c)
+				myTrumps++
+				trumpCards = append(trumpCards, c)
 			}
 		}
-		// Lead with Ace of trump if we have it and it's early
-		if len(topTrumps) > 0 && len(hand) > 10 {
-			for _, c := range topTrumps {
+	}
+
+	// Count how many trumps opponents might have left
+	opponentTrumpsRemaining := 0
+	if hokmSuit != nil {
+		for _, p := range state.Players {
+			if p.Team != player.Team {
+				opponentTrumpsRemaining += len(p.Hand)
+			}
+		}
+	}
+
+	// === STRATEGY 1: Lead Ace of trump early if we have a strong holding ===
+	if hokmSuit != nil && myTrumps >= 3 && earlyGame {
+		for _, c := range trumpCards {
+			if c.Rank == Ace {
+				return &c
+			}
+		}
+	}
+
+	// === STRATEGY 2: Lead Ace/King of non-trump suits to draw out high cards ===
+	// Only lead high cards if opponents likely still have cards in that suit
+	if hokmSuit != nil {
+		for suit, cards := range groupBySuit(hand) {
+			if suit == *hokmSuit {
+				continue
+			}
+			for _, c := range cards {
 				if c.Rank == Ace {
-					return &c
+					// Check if any opponent likely still has this suit
+					if mem.countRemainingInSuit(suit, hand) > len(cards) {
+						return &c
+					}
 				}
 			}
 		}
 	}
 
-	// Lead from longest non-trump suit with high cards
-	nonHokm := make(map[Suit][]Card)
-	for _, c := range hand {
-		if hokmSuit == nil || c.Suit != *hokmSuit {
-			nonHokm[c.Suit] = append(nonHokm[c.Suit], c)
-		}
+	// === STRATEGY 3: Lead from longest suit, lowest card ===
+	// Prefer non-trump suits to preserve trump
+	nonHokm := groupBySuit(hand)
+	if hokmSuit != nil {
+		delete(nonHokm, *hokmSuit)
 	}
 
-	// Find suits with Aces or Kings
-	for suit, cards := range nonHokm {
-		for _, c := range cards {
-			if c.Rank == Ace || c.Rank == King {
-				return &c
+	if len(nonHokm) > 0 {
+		// Find the longest non-trump suit
+		var longestSuit Suit
+		longestLen := 0
+		for suit, cards := range nonHokm {
+			if len(cards) > longestLen {
+				longestLen = len(cards)
+				longestSuit = suit
 			}
 		}
-		_ = suit
-	}
 
-	// Lead from longest suit, lowest card (to draw out)
-	var longestSuit Suit
-	longestLen := 0
-	for suit, cards := range nonHokm {
-		if len(cards) > longestLen {
-			longestLen = len(cards)
-			longestSuit = suit
-		}
-	}
-
-	if longestLen > 0 {
-		best := nonHokm[longestSuit][0]
-		for _, c := range nonHokm[longestSuit][1:] {
-			if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
-				best = c
-			}
-		}
-		return &best
-	}
-
-	// Lead trump if we have good holding and it's late game
-	if hokmSuit != nil && !isHokmPlayer {
-		var trumpCards []Card
-		for _, c := range hand {
-			if c.Suit == *hokmSuit {
-				trumpCards = append(trumpCards, c)
-			}
-		}
-		if len(trumpCards) >= 2 {
-			best := trumpCards[0]
-			for _, c := range trumpCards[1:] {
+		if longestLen > 0 {
+			suitCards := nonHokm[longestSuit]
+			// Lead the lowest card to draw out higher cards from opponents
+			best := suitCards[0]
+			for _, c := range suitCards[1:] {
 				if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
 					best = c
 				}
@@ -172,7 +250,43 @@ func botLead(state *GameState, player *Player, pos PlayerPosition) *Card {
 		}
 	}
 
-	// Fallback: play lowest card
+	// === STRATEGY 4: Lead low trump in late game to draw opponent trumps ===
+	if hokmSuit != nil && lateGame && myTrumps >= 2 {
+		best := trumpCards[0]
+		for _, c := range trumpCards[1:] {
+			if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
+				best = c
+			}
+		}
+		return &best
+	}
+
+	// === STRATEGY 5: Lead King if we have it and Ace is likely played ===
+	if hokmSuit != nil {
+		for suit, cards := range groupBySuit(hand) {
+			if suit == *hokmSuit {
+				continue
+			}
+			for _, c := range cards {
+				if c.Rank == King && mem.hasCardInSuit(Ace, suit) {
+					return &c
+				}
+			}
+		}
+	}
+
+	// === STRATEGY 6: Lead trump if no good non-trump leads ===
+	if hokmSuit != nil && !isHokmPlayer && myTrumps >= 2 && (lateGame || opponentTrumpsRemaining <= myTrumps) {
+		best := trumpCards[0]
+		for _, c := range trumpCards[1:] {
+			if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
+				best = c
+			}
+		}
+		return &best
+	}
+
+	// === FALLBACK: Play lowest card ===
 	best := hand[0]
 	for _, c := range hand[1:] {
 		if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
@@ -182,7 +296,8 @@ func botLead(state *GameState, player *Player, pos PlayerPosition) *Card {
 	return &best
 }
 
-func botFollow(state *GameState, player *Player, pos PlayerPosition, ledSuit Suit, trickCards map[PlayerPosition]*Card) *Card {
+// botFollow decides which card to play when following suit
+func botFollow(state *GameState, player *Player, pos PlayerPosition, ledSuit Suit, trickCards map[PlayerPosition]*Card, mem *cardMemory) *Card {
 	hand := player.Hand
 	hokmSuit := *state.HokmSuit
 
@@ -222,7 +337,10 @@ func botFollow(state *GameState, player *Player, pos PlayerPosition, ledSuit Sui
 		}
 	}
 
-	// If partner is winning, play lowest card to let them win
+	cardsLeft := len(hand)
+	earlyGame := cardsLeft > 9
+
+	// If partner is winning, play lowest card (but consider if it's worth saving)
 	if partnerWinning {
 		best := sameCards[0]
 		for _, c := range sameCards[1:] {
@@ -235,7 +353,7 @@ func botFollow(state *GameState, player *Player, pos PlayerPosition, ledSuit Sui
 
 	// If opponent is winning, try to win with minimal cost
 	if winnerCard != nil {
-		// Find lowest card that beats current winner
+		// Find cards that beat the current winner
 		var winners []Card
 		for _, c := range sameCards {
 			if RANK_ORDER[c.Rank] > RANK_ORDER[winnerCard.Rank] {
@@ -244,6 +362,33 @@ func botFollow(state *GameState, player *Player, pos PlayerPosition, ledSuit Sui
 		}
 
 		if len(winners) > 0 {
+			// In early game, consider whether this trick is worth winning
+			// Don't waste a high card on a trick led by an opponent with a low card
+			if earlyGame && len(winners) > 0 {
+				// If the winner card is low (below Ten), only win if we can do it cheaply
+				if RANK_ORDER[winnerCard.Rank] < RANK_ORDER[Ten] {
+					// Only play the lowest winner if it's not too high
+					best := winners[0]
+					for _, c := range winners[1:] {
+						if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
+							best = c
+						}
+					}
+					// If the cheapest winner is still high (King or Ace), check if it's worth it
+					if RANK_ORDER[best.Rank] >= RANK_ORDER[King] && len(sameCards) > 2 {
+						// Save the high card, play lowest instead
+						lowest := sameCards[0]
+						for _, c := range sameCards[1:] {
+							if RANK_ORDER[c.Rank] < RANK_ORDER[lowest.Rank] {
+								lowest = c
+							}
+						}
+						return &lowest
+					}
+					return &best
+				}
+			}
+
 			// Play the lowest winning card
 			best := winners[0]
 			for _, c := range winners[1:] {
@@ -265,7 +410,8 @@ func botFollow(state *GameState, player *Player, pos PlayerPosition, ledSuit Sui
 	return &best
 }
 
-func botTrump(state *GameState, player *Player, pos PlayerPosition, trickCards map[PlayerPosition]*Card) *Card {
+// botTrump decides which card to play when trumping (ruffing)
+func botTrump(state *GameState, player *Player, pos PlayerPosition, trickCards map[PlayerPosition]*Card, mem *cardMemory) *Card {
 	hand := player.Hand
 	hokmSuit := *state.HokmSuit
 
@@ -305,7 +451,10 @@ func botTrump(state *GameState, player *Player, pos PlayerPosition, trickCards m
 		return &hand[0]
 	}
 
-	// If partner is winning, don't waste trump
+	cardsLeft := len(hand)
+	lateGame := cardsLeft <= 4
+
+	// If partner is winning, DON'T waste trump — play lowest trump (save for later)
 	if partnerWinning {
 		best := trumpCards[0]
 		for _, c := range trumpCards[1:] {
@@ -316,9 +465,8 @@ func botTrump(state *GameState, player *Player, pos PlayerPosition, trickCards m
 		return &best
 	}
 
-	// Try to win with lowest trump that beats current winner
+	// If current winner is also trump, need to beat it
 	if winnerCard != nil && winnerCard.Suit == hokmSuit {
-		// Current winner is also trump, need to beat it
 		var winners []Card
 		for _, c := range trumpCards {
 			if RANK_ORDER[c.Rank] > RANK_ORDER[winnerCard.Rank] {
@@ -344,7 +492,48 @@ func botTrump(state *GameState, player *Player, pos PlayerPosition, trickCards m
 		return &best
 	}
 
-	// Current winner is not trump, play lowest trump to win
+	// Current winner is not trump
+	// In late game, always trump to win the trick
+	if lateGame {
+		best := trumpCards[0]
+		for _, c := range trumpCards[1:] {
+			if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
+				best = c
+			}
+		}
+		return &best
+	}
+
+	// In early/mid game, consider whether this trick is worth trumping
+	// Don't waste a high trump on a trick with low non-trump cards
+	if winnerCard != nil && RANK_ORDER[winnerCard.Rank] <= RANK_ORDER[Ten] {
+		// Only trump if we have 3+ trumps or it's a critical trick
+		// Count opponent tricks
+		opponentTricks := state.EastWestScore
+		if player.Team == "ew" {
+			opponentTricks = state.NorthSouthScore
+		}
+
+		// Trump if opponent is getting close to winning
+		if opponentTricks >= 5 || len(trumpCards) >= 4 {
+			best := trumpCards[0]
+			for _, c := range trumpCards[1:] {
+				if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
+					best = c
+				}
+			}
+			return &best
+		}
+
+		// Don't waste a high trump — play lowest to concede
+		if len(trumpCards) >= 2 {
+			// Save high trumps, play second lowest
+			sorted := sortCardsByRank(trumpCards)
+			return &sorted[0]
+		}
+	}
+
+	// Play lowest trump to win cheaply
 	best := trumpCards[0]
 	for _, c := range trumpCards[1:] {
 		if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
@@ -354,7 +543,8 @@ func botTrump(state *GameState, player *Player, pos PlayerPosition, trickCards m
 	return &best
 }
 
-func botThrowOff(state *GameState, player *Player, pos PlayerPosition, trickCards map[PlayerPosition]*Card) *Card {
+// botThrowOff decides which card to discard when void in the led suit
+func botThrowOff(state *GameState, player *Player, pos PlayerPosition, trickCards map[PlayerPosition]*Card, mem *cardMemory) *Card {
 	hand := player.Hand
 	hokmSuit := state.HokmSuit
 
@@ -383,7 +573,37 @@ func botThrowOff(state *GameState, player *Player, pos PlayerPosition, trickCard
 		}
 	}
 
-	// If partner is winning, discard highest non-trump card
+	// Find led suit from trick
+	var ledSuit Suit
+	if leaderCard, ok := trickCards[state.CurrentTrick.Leader]; ok && leaderCard != nil {
+		ledSuit = leaderCard.Suit
+	}
+
+	cardsLeft := len(hand)
+
+	// === STRATEGIC DISCARDING: Void a suit to enable future trumping ===
+	// If we have only 1 card in a non-trump suit, discard it to create a void
+	if hokmSuit != nil && cardsLeft > 3 {
+		suitCounts := make(map[Suit]int)
+		for _, c := range hand {
+			suitCounts[c.Suit]++
+		}
+		for suit, count := range suitCounts {
+			if suit == *hokmSuit || suit == ledSuit {
+				continue
+			}
+			if count == 1 {
+				// This card would create a void — discard it
+				for _, c := range hand {
+					if c.Suit == suit {
+						return &c
+					}
+				}
+			}
+		}
+	}
+
+	// === If partner is winning, discard highest non-trump (dump value cards) ===
 	if partnerWinning {
 		var nonTrump []Card
 		for _, c := range hand {
@@ -400,9 +620,76 @@ func botThrowOff(state *GameState, player *Player, pos PlayerPosition, trickCard
 			}
 			return &best
 		}
+		// Only have trump left, play lowest
+		best := hand[0]
+		for _, c := range hand[1:] {
+			if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
+				best = c
+			}
+		}
+		return &best
 	}
 
-	// If opponent is winning, discard lowest card
+	// === If opponent is winning, discard strategically ===
+	// Priority: 1) Create voids  2) Dump high cards  3) Play lowest
+
+	// First try to dump high cards from suits where we're about to run out
+	suitCounts := make(map[Suit]int)
+	for _, c := range hand {
+		suitCounts[c.Suit]++
+	}
+
+	// Find suits where we have only non-trump cards and opponent is winning
+	// Discard the highest card from our shortest non-trump suit
+	var shortestSuit Suit
+	shortestLen := 999
+	for suit, count := range suitCounts {
+		if suit == *hokmSuit || suit == ledSuit {
+			continue
+		}
+		if count < shortestLen {
+			shortestLen = count
+			shortestSuit = suit
+		}
+	}
+
+	if shortestLen > 0 && shortestLen <= 2 {
+		// Discard highest from shortest suit
+		var candidates []Card
+		for _, c := range hand {
+			if c.Suit == shortestSuit {
+				candidates = append(candidates, c)
+			}
+		}
+		if len(candidates) > 0 {
+			best := candidates[0]
+			for _, c := range candidates[1:] {
+				if RANK_ORDER[c.Rank] > RANK_ORDER[best.Rank] {
+					best = c
+				}
+			}
+			return &best
+		}
+	}
+
+	// Fallback: discard highest non-trump card
+	var nonTrump []Card
+	for _, c := range hand {
+		if hokmSuit == nil || c.Suit != *hokmSuit {
+			nonTrump = append(nonTrump, c)
+		}
+	}
+	if len(nonTrump) > 0 {
+		best := nonTrump[0]
+		for _, c := range nonTrump[1:] {
+			if RANK_ORDER[c.Rank] > RANK_ORDER[best.Rank] {
+				best = c
+			}
+		}
+		return &best
+	}
+
+	// Only trump left, play lowest
 	best := hand[0]
 	for _, c := range hand[1:] {
 		if RANK_ORDER[c.Rank] < RANK_ORDER[best.Rank] {
@@ -410,4 +697,27 @@ func botThrowOff(state *GameState, player *Player, pos PlayerPosition, trickCard
 		}
 	}
 	return &best
+}
+
+// === Helper functions ===
+
+func groupBySuit(hand []Card) map[Suit][]Card {
+	groups := make(map[Suit][]Card)
+	for _, c := range hand {
+		groups[c.Suit] = append(groups[c.Suit], c)
+	}
+	return groups
+}
+
+func sortCardsByRank(cards []Card) []Card {
+	sorted := make([]Card, len(cards))
+	copy(sorted, cards)
+	for i := 0; i < len(sorted); i++ {
+		for j := i + 1; j < len(sorted); j++ {
+			if RANK_ORDER[sorted[j].Rank] < RANK_ORDER[sorted[i].Rank] {
+				sorted[i], sorted[j] = sorted[j], sorted[i]
+			}
+		}
+	}
+	return sorted
 }
