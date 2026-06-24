@@ -519,7 +519,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
         <div style={{
           flexShrink: 0,
           paddingBottom: 10,
-          paddingTop: 6,
+          paddingTop: 16,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
