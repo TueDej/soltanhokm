@@ -195,9 +195,9 @@ export default function App() {
                 }}>
                   HOKM
                 </span>
-                <span style={{
+                <span className="suit-symbol" style={{
                   fontSize: '80px',
-                  fontFamily: "'Science Gothic', cursive",
+                  fontFamily: "'Noto Color Emoji', sans-serif",
                   color: hokmReveal === 'hearts' || hokmReveal === 'diamonds' ? '#b44646' : '#4a5568',
                   textShadow: hokmReveal === 'hearts' || hokmReveal === 'diamonds'
                     ? '0 4px 20px rgba(180,70,70,0.3), 0 0 40px rgba(180,70,70,0.15)'

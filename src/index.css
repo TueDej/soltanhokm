@@ -35,6 +35,11 @@ button, input {
   font-family: 'Science Gothic', cursive;
 }
 
+.suit-symbol {
+  font-family: 'Noto Color Emoji', sans-serif;
+  line-height: 1;
+}
+
 /* ===== Cards ===== */
 
 .game-card {

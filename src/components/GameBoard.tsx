@@ -201,9 +201,9 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               }}>
                 HOKM
               </span>
-              <span style={{
+              <span className="suit-symbol" style={{
                 fontSize: '1.3rem',
-                fontFamily: "'Science Gothic', cursive",
+                fontFamily: "'Noto Color Emoji', sans-serif",
                 display: 'flex',
                 alignItems: 'center',
                 height: '100%',
@@ -506,7 +506,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
                     e.currentTarget.style.borderColor = 'rgba(197,163,90,0.15)'
                   }}
                 >
-                  {SUIT_SYMBOLS[suit]}
+                  <span className="suit-symbol" style={{ fontFamily: "'Noto Color Emoji', sans-serif" }}>{SUIT_SYMBOLS[suit]}</span>
                 </button>
               ))}
             </div>
