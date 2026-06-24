@@ -78,6 +78,7 @@ export function RoomLobby({ roomCode, players, playerId, onStartGame, onSelectTe
           textTransform: 'uppercase',
           letterSpacing: 2,
           transition: 'color 0.15s ease',
+          minWidth: 100,
         }}>
           {copied ? 'COPIED!' : 'CLICK TO COPY'}
         </p>
