@@ -3,8 +3,14 @@ set -e
 
 # Soltan Hokm — VPS Installer
 # Run from the project root: sudo bash install.sh
+# Local dev: bash install.sh --dev
 
-if [ "$EUID" -ne 0 ]; then
+DEV_MODE=false
+if [[ "$1" == "--dev" ]]; then
+  DEV_MODE=true
+fi
+
+if [ "$EUID" -ne 0 ] && [ "$DEV_MODE" = false ]; then
   echo "Error: run with sudo — sudo bash install.sh"
   exit 1
 fi
@@ -22,16 +28,32 @@ for cmd in node npm go; do
   fi
 done
 
-# --- Build frontend (as original user to avoid npm root issues) ---
+# --- Build frontend ---
 echo "Building frontend..."
-SUDO_USER="${SUDO_USER:-root}"
-su -l "$SUDO_USER" -c "cd $SCRIPT_DIR && npm install && npm run build"
+if [ "$DEV_MODE" = true ]; then
+  npm install && npm run build
+else
+  SUDO_USER="${SUDO_USER:-root}"
+  su -l "$SUDO_USER" -c "cd $SCRIPT_DIR && npm install && npm run build"
+fi
 
 # --- Build server ---
 echo "Building server..."
 cd server
 go build -o soltanhokm-server .
 cd "$SCRIPT_DIR"
+
+if [ "$DEV_MODE" = true ]; then
+  echo ""
+  echo "=== Build Complete (dev mode) ==="
+  echo ""
+  echo "Server binary: server/soltanhokm-server"
+  echo "Frontend dist: dist/"
+  echo ""
+  echo "To run locally:"
+  echo "  cd server && ./soltanhokm-server"
+  exit 0
+fi
 
 # --- Deploy frontend ---
 echo "Deploying frontend to /var/www/soltanhokm/ ..."
