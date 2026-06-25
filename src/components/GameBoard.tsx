@@ -640,10 +640,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
       )}
 
       {onSendEmoji && (
-        <EmojiButton
-          onSend={onSendEmoji}
-          disabled={(isPlaying && !isMyTurn) || trickComplete}
-        />
+        <EmojiButton onSend={onSendEmoji} />
       )}
     </div>
   )
