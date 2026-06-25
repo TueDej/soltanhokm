@@ -13,6 +13,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const justSentRef = useRef(false)
 
   useEffect(() => {
     return () => {
@@ -39,6 +40,8 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
     setCooldown(true)
     setExpanded(false)
     setClosing(false)
+    justSentRef.current = true
+    setTimeout(() => { justSentRef.current = false }, 400)
     timerRef.current = setTimeout(() => {
       setCooldown(false)
       timerRef.current = null
@@ -46,6 +49,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
   }, [cooldown, onSend])
 
   const openPanel = useCallback(() => {
+    if (justSentRef.current) return
     if (closeTimerRef.current) { clearTimeout(closeTimerRef.current); closeTimerRef.current = null }
     setClosing(false)
     setExpanded(true)
