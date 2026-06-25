@@ -543,7 +543,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
         {isChoosingHokm && game.hokmPlayer === myPos && !game.hokmSuit && onChooseHokm && (
           <div style={{
             position: 'absolute',
-            top: '30%',
+            top: '50%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
             textAlign: 'center',
