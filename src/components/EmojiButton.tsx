@@ -13,6 +13,15 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isTouchRef = useRef(false)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(hover: none) and (pointer: coarse)')
+    isTouchRef.current = mq.matches
+    const handler = (e: MediaQueryListEvent) => { isTouchRef.current = e.matches }
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   useEffect(() => {
     return () => {
@@ -37,6 +46,10 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
     if (cooldown) return
     onSend(emoji)
     setCooldown(true)
+    if (isTouchRef.current) {
+      setExpanded(false)
+      setClosing(false)
+    }
     timerRef.current = setTimeout(() => {
       setCooldown(false)
       timerRef.current = null
