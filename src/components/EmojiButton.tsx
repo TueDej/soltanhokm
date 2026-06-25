@@ -147,28 +147,29 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         </div>
       )}
 
-      {/* Toggle button */}
-      <button
-        onClick={handleToggle}
-        onTouchEnd={(e) => { e.preventDefault(); handleToggle() }}
-        style={{
-          width: '100%',
-          height: 40,
-          borderRadius: showPanel ? '0 0 12px 12px' : 14,
-          border: 'none',
-          background: 'transparent',
-          cursor: 'pointer',
-          fontSize: 18,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          transition: 'border-radius 0.2s ease',
-          padding: 0,
-          flexShrink: 0,
-        }}
-      >
-        😊
-      </button>
+      {/* Toggle button — only when collapsed */}
+      {!showPanel && (
+        <button
+          onClick={handleToggle}
+          onTouchEnd={(e) => { e.preventDefault(); handleToggle() }}
+          style={{
+            width: '100%',
+            height: 40,
+            borderRadius: 14,
+            border: 'none',
+            background: 'transparent',
+            cursor: 'pointer',
+            fontSize: 18,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          😊
+        </button>
+      )}
     </div>
   )
 }
