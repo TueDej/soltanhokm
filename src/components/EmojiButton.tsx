@@ -81,21 +81,21 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
       data-emoji-btn
       style={{
         position: 'absolute',
-        bottom: '100%',
+        top: 0,
         left: 12,
-        marginBottom: -1,
+        transform: 'translateY(-50%)',
         zIndex: 50,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'stretch',
         overflow: 'hidden',
-        borderRadius: 16,
+        borderRadius: 14,
         background: 'rgba(12,22,36,0.94)',
         border: '1px solid rgba(197,163,90,0.12)',
         backdropFilter: 'blur(12px)',
         boxShadow: '0 -4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(197,163,90,0.06)',
-        animation: closing ? 'emojiContainerClose 0.2s ease-in forwards' : (expanded ? 'emojiContainerOpen 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards' : 'none'),
-        transformOrigin: 'bottom center',
+        animation: closing ? 'emojiContainerClose 0.2s ease-in forwards' : (expanded ? 'emojiContainerOpen 0.2s ease-out forwards' : 'none'),
+        transformOrigin: 'center center',
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
