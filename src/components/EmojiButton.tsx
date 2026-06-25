@@ -37,44 +37,21 @@ export function EmojiButton({ onSend, disabled }: EmojiButtonProps) {
     <div
       style={{
         position: 'fixed',
-        bottom: 140,
+        bottom: 20,
         left: 12,
         zIndex: 50,
-        display: 'flex',
-        flexDirection: 'column-reverse',
-        alignItems: 'center',
-        gap: 4,
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
     >
-      {/* Main toggle button */}
-      <button
-        style={{
-          width: 38,
-          height: 38,
-          borderRadius: '50%',
-          border: '2px solid rgba(197,163,90,0.25)',
-          background: expanded ? 'rgba(197,163,90,0.12)' : 'rgba(17,31,51,0.9)',
-          cursor: disabled ? 'not-allowed' : 'pointer',
-          fontSize: 18,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          opacity: disabled ? 0.4 : 1,
-          transition: 'all 0.2s ease',
-          padding: 0,
-          backdropFilter: 'blur(8px)',
-        }}
-      >
-        😊
-      </button>
-
-      {/* Expanded emoji list */}
+      {/* Expanded emoji list — positioned above the button */}
       {expanded && (
         <div style={{
+          position: 'absolute',
+          bottom: 46,
+          left: 0,
           display: 'flex',
-          flexDirection: 'column',
+          flexDirection: 'column-reverse',
           gap: 4,
           padding: 4,
           borderRadius: 12,
@@ -82,8 +59,10 @@ export function EmojiButton({ onSend, disabled }: EmojiButtonProps) {
           border: '1px solid rgba(197,163,90,0.15)',
           backdropFilter: 'blur(8px)',
           boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+          transformOrigin: 'bottom left',
+          animation: 'emojiPanelOpen 0.2s ease-out',
         }}>
-          {EMOJIS.map((emoji) => (
+          {EMOJIS.map((emoji, i) => (
             <button
               key={emoji}
               onClick={() => handleSend(emoji)}
@@ -102,6 +81,7 @@ export function EmojiButton({ onSend, disabled }: EmojiButtonProps) {
                 opacity: cooldown || disabled ? 0.4 : 1,
                 transition: 'background 0.15s ease',
                 padding: 0,
+                animation: `emojiItemIn 0.15s ease-out ${i * 0.03}s both`,
               }}
               onMouseEnter={(e) => {
                 if (!cooldown && !disabled) e.currentTarget.style.background = 'rgba(197,163,90,0.12)'
@@ -115,6 +95,28 @@ export function EmojiButton({ onSend, disabled }: EmojiButtonProps) {
           ))}
         </div>
       )}
+
+      {/* Main toggle button */}
+      <button
+        style={{
+          width: 38,
+          height: 38,
+          borderRadius: '50%',
+          border: '2px solid rgba(197,163,90,0.25)',
+          background: expanded ? 'rgba(197,163,90,0.12)' : 'rgba(17,31,51,0.9)',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          fontSize: 18,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          opacity: disabled ? 0.4 : 1,
+          transition: 'background 0.2s ease, border-color 0.2s ease',
+          padding: 0,
+          backdropFilter: 'blur(8px)',
+        }}
+      >
+        😊
+      </button>
     </div>
   )
 }
