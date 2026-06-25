@@ -56,7 +56,8 @@ export function useOnlineGame() {
   const [connected, setConnected] = useState(false)
   const [reconnecting, setReconnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [incomingEmoji, setIncomingEmoji] = useState<{ position: PlayerPosition; emoji: string } | null>(null)
+  const [incomingEmojis, setIncomingEmojis] = useState<{ id: number; position: PlayerPosition; emoji: string }[]>([])
+  const emojiIdRef = useRef(0)
   const socketRef = useRef<ReturnType<typeof createSocket> | null>(null)
   const pendingRef = useRef<OutgoingMessage[]>([])
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -206,8 +207,11 @@ export function useOnlineGame() {
         }
         case MessageType.Emoji: {
           const payload = msg.payload as { position: PlayerPosition; emoji: string }
-          setIncomingEmoji(payload)
-          setTimeout(() => setIncomingEmoji(null), 2500)
+          const id = ++emojiIdRef.current
+          setIncomingEmojis((prev) => [...prev, { id, ...payload }])
+          setTimeout(() => {
+            setIncomingEmojis((prev) => prev.filter((e) => e.id !== id))
+          }, 2500)
           break
         }
       }
@@ -320,7 +324,7 @@ export function useOnlineGame() {
     connected,
     reconnecting,
     error,
-    incomingEmoji,
+    incomingEmojis,
     createRoom,
     joinRoom,
     startGame,

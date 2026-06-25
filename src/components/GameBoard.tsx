@@ -31,7 +31,7 @@ interface GameBoardProps {
   onPlayCard: (card: CardType) => void
   onChooseHokm?: (suit: Suit) => void
   onSendEmoji?: (emoji: string) => void
-  incomingEmoji?: { position: PlayerPosition; emoji: string } | null
+  incomingEmojis?: { id: number; position: PlayerPosition; emoji: string }[]
   reconnecting?: boolean
 }
 
@@ -111,7 +111,7 @@ const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
   right: { right: 0, top: '50%', transform: 'translate(50%, -50%)' },
 }
 
-export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoji, incomingEmoji, reconnecting }: GameBoardProps) {
+export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoji, incomingEmojis, reconnecting }: GameBoardProps) {
   const me = game.players.find((p) => p.id === playerId)
   const myPos = getMyPosition(game, playerId)
   const isMyTurn = myPos && game.turn === myPos
@@ -510,30 +510,33 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
             </div>
           )}
 
-          {/* Emoji popup */}
-          {incomingEmoji && (() => {
+          {/* Emoji popups */}
+          {incomingEmojis?.map((ie) => {
             let screenPos: string
-            if (incomingEmoji.position === myPos) {
+            if (ie.position === myPos) {
               screenPos = 'bottom'
             } else {
-              screenPos = getRelativePosition(myPos, incomingEmoji.position)
+              screenPos = getRelativePosition(myPos, ie.position)
             }
             const posStyle = SCREEN_POSITIONS[screenPos]
             if (!posStyle) return null
             return (
-              <div style={{
-                ...posStyle,
-                position: 'absolute',
-                zIndex: 20,
-                fontSize: 28,
-                animation: 'emojiPopIn 0.3s ease-out forwards, emojiPopOut 0.3s ease-in 2s forwards',
-                pointerEvents: 'none',
-                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
-              }}>
-                {incomingEmoji.emoji}
+              <div
+                key={ie.id}
+                style={{
+                  ...posStyle,
+                  position: 'absolute',
+                  zIndex: 20,
+                  fontSize: 28,
+                  animation: 'emojiPopIn 0.3s ease-out forwards, emojiPopOut 0.3s ease-in 2s forwards',
+                  pointerEvents: 'none',
+                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
+                }}
+              >
+                {ie.emoji}
               </div>
             )
-          })()}
+          })}
         </div>
 
         {/* Hokm picker */}
