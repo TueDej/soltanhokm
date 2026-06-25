@@ -85,9 +85,10 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         left: 12,
         transform: 'translateY(-50%)',
         zIndex: 50,
+        width: 48,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'stretch',
+        alignItems: 'center',
         overflow: 'hidden',
         borderRadius: 14,
         background: 'rgba(12,22,36,0.94)',
@@ -107,6 +108,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
           flexDirection: 'column',
           gap: 1,
           padding: '8px 6px 4px 6px',
+          width: '100%',
         }}>
           {EMOJIS.map((emoji, i) => (
             <button
@@ -115,7 +117,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
               onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); handleSend(emoji) }}
               disabled={cooldown}
               style={{
-                width: 36,
+                width: '100%',
                 height: 36,
                 borderRadius: 10,
                 border: 'none',
@@ -152,10 +154,9 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         onClick={handleToggle}
         onTouchEnd={(e) => { e.preventDefault(); handleToggle() }}
         style={{
-          width: 40,
+          width: '100%',
           height: 40,
-          margin: '0 auto',
-          borderRadius: showPanel ? '0 0 14px 14px' : 14,
+          borderRadius: showPanel ? '0 0 12px 12px' : 14,
           border: 'none',
           background: 'transparent',
           cursor: 'pointer',
