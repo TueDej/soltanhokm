@@ -22,6 +22,18 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
     }
   }, [])
 
+  // Close on click outside
+  useEffect(() => {
+    if (!expanded) return
+    const handleClick = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest('[data-emoji-btn]')) {
+        closePanel()
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [expanded])
+
   const handleSend = useCallback((emoji: string) => {
     if (cooldown) return
     onSend(emoji)
@@ -73,9 +85,9 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
       data-emoji-btn
       style={{
         position: 'absolute',
-        top: 0,
+        bottom: '100%',
         left: 12,
-        transform: 'translateY(-50%)',
+        marginBottom: -1,
         zIndex: 50,
         display: 'flex',
         flexDirection: 'column',
@@ -83,8 +95,11 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         borderRadius: 14,
         background: 'rgba(17,31,51,0.92)',
         border: '1px solid rgba(197,163,90,0.15)',
+        borderBottom: 'none',
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
         backdropFilter: 'blur(8px)',
-        boxShadow: '0 2px 16px rgba(0,0,0,0.3)',
+        boxShadow: '0 -2px 16px rgba(0,0,0,0.3)',
         overflow: 'hidden',
       }}
       onMouseEnter={handleEnter}
@@ -135,7 +150,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         </div>
       )}
 
-      {/* Toggle button */}
+      {/* Toggle button — sits on the bottom edge of the container */}
       <button
         onClick={handleToggle}
         onTouchEnd={(e) => { e.preventDefault(); handleToggle() }}
