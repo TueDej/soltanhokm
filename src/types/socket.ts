@@ -15,6 +15,7 @@ export enum MessageType {
   GameState = 'game_state',
   ChooseHokm = 'choose_hokm',
   PlayCard = 'play_card',
+  Emoji = 'emoji',
   Error = 'error',
 }
 
@@ -55,6 +56,11 @@ export interface RejoinRoomMessage {
   payload: { roomCode: string; playerId: string; playerName: string }
 }
 
+export interface EmojiMessage {
+  type: MessageType.Emoji
+  payload: { emoji: string }
+}
+
 export type OutgoingMessage =
   | CreateRoomMessage
   | JoinRoomMessage
@@ -63,6 +69,7 @@ export type OutgoingMessage =
   | PlayCardMessage
   | SelectTeamMessage
   | RejoinRoomMessage
+  | EmojiMessage
 
 // --- Server Messages ---
 
@@ -134,6 +141,7 @@ export interface ServerMessage {
     | MessageType.PlayerJoined
     | MessageType.GameStarted
     | MessageType.GameState
+    | MessageType.Emoji
     | MessageType.Error
   payload:
     | RoomCreatedPayload
@@ -141,5 +149,6 @@ export interface ServerMessage {
     | RejoinSuccessPayload
     | PlayerJoinedPayload
     | OnlineGameState
+    | { position: PlayerPosition; emoji: string }
     | { message: string }
 }

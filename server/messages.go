@@ -88,6 +88,10 @@ type PlayCardPayload struct {
 	Card Card `json:"card"`
 }
 
+type EmojiPayload struct {
+	Emoji string `json:"emoji"`
+}
+
 // --- Server Messages ---
 
 type ServerMessage struct {
@@ -156,4 +160,9 @@ type GameStatePayload struct {
 
 type ErrorPayload struct {
 	Message string `json:"message"`
+}
+
+type EmojiBroadcastPayload struct {
+	Position PlayerPosition `json:"position"`
+	Emoji    string         `json:"emoji"`
 }

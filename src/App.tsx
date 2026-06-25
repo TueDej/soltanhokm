@@ -166,6 +166,8 @@ export default function App() {
             playerId={onlineGame.playerId || ''}
             onPlayCard={onlineGame.playCard}
             onChooseHokm={onlineGame.chooseHokm}
+            onSendEmoji={onlineGame.sendEmoji}
+            incomingEmoji={onlineGame.incomingEmoji}
             reconnecting={onlineGame.reconnecting}
           />
           {hokmReveal && (

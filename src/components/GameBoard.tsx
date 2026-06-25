@@ -5,6 +5,7 @@ import type { Card as CardType } from '../types/card'
 import type { OnlineGameState } from '../types/socket'
 import { Hand } from './Hand'
 import { Table } from './Table'
+import { EmojiButton } from './EmojiButton'
 
 interface LocalGameView {
   id: string
@@ -29,6 +30,8 @@ interface GameBoardProps {
   playerId: string
   onPlayCard: (card: CardType) => void
   onChooseHokm?: (suit: Suit) => void
+  onSendEmoji?: (emoji: string) => void
+  incomingEmoji?: { position: PlayerPosition; emoji: string } | null
   reconnecting?: boolean
 }
 
@@ -108,7 +111,7 @@ const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
   right: { right: 0, top: '50%', transform: 'translate(50%, -50%)' },
 }
 
-export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecting }: GameBoardProps) {
+export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoji, incomingEmoji, reconnecting }: GameBoardProps) {
   const me = game.players.find((p) => p.id === playerId)
   const myPos = getMyPosition(game, playerId)
   const isMyTurn = myPos && game.turn === myPos
@@ -506,6 +509,31 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
               </div>
             </div>
           )}
+
+          {/* Emoji popup */}
+          {incomingEmoji && (() => {
+            let screenPos: string
+            if (incomingEmoji.position === myPos) {
+              screenPos = 'bottom'
+            } else {
+              screenPos = getRelativePosition(myPos, incomingEmoji.position)
+            }
+            const posStyle = SCREEN_POSITIONS[screenPos]
+            if (!posStyle) return null
+            return (
+              <div style={{
+                ...posStyle,
+                position: 'absolute',
+                zIndex: 20,
+                fontSize: 28,
+                animation: 'fadeIn 0.15s ease, hokmRevealPop 0.25s ease-out',
+                pointerEvents: 'none',
+                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
+              }}>
+                {incomingEmoji.emoji}
+              </div>
+            )
+          })()}
         </div>
 
         {/* Hokm picker */}
@@ -609,6 +637,13 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, reconnecti
             </div>
           )}
         </div>
+      )}
+
+      {onSendEmoji && (
+        <EmojiButton
+          onSend={onSendEmoji}
+          disabled={(isPlaying && !isMyTurn) || trickComplete}
+        />
       )}
     </div>
   )

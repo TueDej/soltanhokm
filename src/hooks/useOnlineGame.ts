@@ -6,6 +6,7 @@ import type {
   PlayerInfo,
   ServerMessage,
 } from '../types/socket'
+import type { PlayerPosition } from '../types/game'
 import { createSocket } from '../services/socket'
 import type { OutgoingMessage } from '../types/socket'
 
@@ -55,6 +56,7 @@ export function useOnlineGame() {
   const [connected, setConnected] = useState(false)
   const [reconnecting, setReconnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [incomingEmoji, setIncomingEmoji] = useState<{ position: PlayerPosition; emoji: string } | null>(null)
   const socketRef = useRef<ReturnType<typeof createSocket> | null>(null)
   const pendingRef = useRef<OutgoingMessage[]>([])
   const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -192,7 +194,6 @@ export function useOnlineGame() {
           const payload = msg.payload as { message: string }
           setError(payload.message)
           console.error('Server error:', payload.message)
-          // If rejoin failed, clear saved session
           if (payload.message.includes('not found')) {
             clearSession()
             savedSessionRef.current = null
@@ -201,6 +202,12 @@ export function useOnlineGame() {
             setRoomCode(null)
             setPlayerId(null)
           }
+          break
+        }
+        case MessageType.Emoji: {
+          const payload = msg.payload as { position: PlayerPosition; emoji: string }
+          setIncomingEmoji(payload)
+          setTimeout(() => setIncomingEmoji(null), 2500)
           break
         }
       }
@@ -297,6 +304,13 @@ export function useOnlineGame() {
     })
   }, [sendOrQueue])
 
+  const sendEmoji = useCallback((emoji: string) => {
+    sendOrQueue({
+      type: MessageType.Emoji,
+      payload: { emoji },
+    })
+  }, [sendOrQueue])
+
   return {
     roomPhase,
     roomCode,
@@ -306,12 +320,14 @@ export function useOnlineGame() {
     connected,
     reconnecting,
     error,
+    incomingEmoji,
     createRoom,
     joinRoom,
     startGame,
     chooseHokm,
     playCard,
     selectTeam,
+    sendEmoji,
     reset,
     getSavedSession,
     reconnectToSavedSession,

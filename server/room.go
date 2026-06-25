@@ -383,6 +383,22 @@ func (r *Room) HandleMessage(sender *HumanPlayer, msg ClientMessage) {
 			Type:    "player_joined",
 			Payload: buildPlayerJoinedPayload(r),
 		})
+
+	case "emoji":
+		var payload EmojiPayload
+		if err := json.Unmarshal(msg.Payload, &payload); err != nil {
+			return
+		}
+		if len(payload.Emoji) > 4 || payload.Emoji == "" {
+			return
+		}
+		r.BroadcastToPlayers(ServerMessage{
+			Type: "emoji",
+			Payload: EmojiBroadcastPayload{
+				Position: sender.Position,
+				Emoji:    payload.Emoji,
+			},
+		})
 	}
 }
 
