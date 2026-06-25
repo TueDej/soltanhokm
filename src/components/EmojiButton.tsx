@@ -180,7 +180,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
             flexShrink: 0,
           }}
         >
-          😊
+          <span className="suit-symbol" style={{ fontFamily: "'Noto Color Emoji', sans-serif" }}>🔪</span>
         </button>
       )}
     </div>
