@@ -83,7 +83,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         left: 12,
         transform: 'translateY(-50%)',
         zIndex: 50,
-        width: 48,
+        width: 40,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -105,7 +105,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
           display: 'flex',
           flexDirection: 'column',
           gap: 1,
-          padding: '8px 6px 4px 6px',
+          padding: '8px 4px 4px 4px',
           width: '100%',
         }}>
           {EMOJIS.map((emoji, i) => (
