@@ -213,6 +213,16 @@ button, input {
   to { opacity: 0; transform: scaleY(0.3); }
 }
 
+@keyframes emojiContainerOpen {
+  from { opacity: 0; transform: scaleY(0) translateY(8px); }
+  to { opacity: 1; transform: scaleY(1) translateY(0); }
+}
+
+@keyframes emojiContainerClose {
+  from { opacity: 1; transform: scaleY(1) translateY(0); }
+  to { opacity: 0; transform: scaleY(0) translateY(8px); }
+}
+
 @keyframes emojiItemIn {
   from { opacity: 0; transform: translateX(-8px); }
   to { opacity: 1; transform: translateX(0); }

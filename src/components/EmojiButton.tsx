@@ -22,7 +22,6 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
     }
   }, [])
 
-  // Close on click outside
   useEffect(() => {
     if (!expanded) return
     const handleClick = (e: MouseEvent) => {
@@ -62,11 +61,8 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
   }, [])
 
   const handleToggle = useCallback(() => {
-    if (expanded) {
-      closePanel()
-    } else {
-      openPanel()
-    }
+    if (expanded) closePanel()
+    else openPanel()
   }, [expanded, openPanel, closePanel])
 
   const handleEnter = useCallback(() => {
@@ -92,15 +88,14 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'stretch',
-        borderRadius: 14,
-        background: 'rgba(17,31,51,0.92)',
-        border: '1px solid rgba(197,163,90,0.15)',
-        borderBottom: 'none',
-        borderBottomLeftRadius: 0,
-        borderBottomRightRadius: 0,
-        backdropFilter: 'blur(8px)',
-        boxShadow: '0 -2px 16px rgba(0,0,0,0.3)',
         overflow: 'hidden',
+        borderRadius: 16,
+        background: 'rgba(12,22,36,0.94)',
+        border: '1px solid rgba(197,163,90,0.12)',
+        backdropFilter: 'blur(12px)',
+        boxShadow: '0 -4px 24px rgba(0,0,0,0.4), inset 0 1px 0 rgba(197,163,90,0.06)',
+        animation: closing ? 'emojiContainerClose 0.2s ease-in forwards' : (expanded ? 'emojiContainerOpen 0.25s cubic-bezier(0.34,1.56,0.64,1) forwards' : 'none'),
+        transformOrigin: 'bottom center',
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
@@ -110,10 +105,8 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         <div style={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
-          padding: '6px 6px 2px 6px',
-          transformOrigin: 'bottom center',
-          animation: closing ? 'emojiPanelClose 0.2s ease-in forwards' : 'emojiPanelOpen 0.2s ease-out',
+          gap: 1,
+          padding: '8px 6px 4px 6px',
         }}>
           {EMOJIS.map((emoji, i) => (
             <button
@@ -122,9 +115,9 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
               onTouchEnd={(e) => { e.preventDefault(); e.stopPropagation(); handleSend(emoji) }}
               disabled={cooldown}
               style={{
-                width: 34,
-                height: 34,
-                borderRadius: 8,
+                width: 36,
+                height: 36,
+                borderRadius: 10,
                 border: 'none',
                 background: 'transparent',
                 cursor: cooldown ? 'not-allowed' : 'pointer',
@@ -132,16 +125,20 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                opacity: cooldown ? 0.4 : 1,
-                transition: 'background 0.15s ease',
+                opacity: cooldown ? 0.35 : 1,
+                transition: 'background 0.12s ease, transform 0.12s ease',
                 padding: 0,
-                animation: closing ? 'none' : `emojiItemIn 0.15s ease-out ${i * 0.03}s both`,
+                animation: closing ? 'none' : `emojiItemIn 0.18s ease-out ${0.05 + i * 0.03}s both`,
               }}
               onMouseEnter={(e) => {
-                if (!cooldown) e.currentTarget.style.background = 'rgba(197,163,90,0.12)'
+                if (!cooldown) {
+                  e.currentTarget.style.background = 'rgba(197,163,90,0.1)'
+                  e.currentTarget.style.transform = 'scale(1.1)'
+                }
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = 'transparent'
+                e.currentTarget.style.transform = 'scale(1)'
               }}
             >
               {emoji}
@@ -150,24 +147,23 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         </div>
       )}
 
-      {/* Toggle button — sits on the bottom edge of the container */}
+      {/* Toggle button */}
       <button
         onClick={handleToggle}
         onTouchEnd={(e) => { e.preventDefault(); handleToggle() }}
         style={{
-          width: 38,
-          height: 38,
+          width: 40,
+          height: 40,
           margin: '0 auto',
-          borderRadius: '0 0 12px 12px',
+          borderRadius: showPanel ? '0 0 14px 14px' : 14,
           border: 'none',
-          borderTop: showPanel ? '1px solid rgba(197,163,90,0.08)' : 'none',
           background: 'transparent',
           cursor: 'pointer',
           fontSize: 18,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'none',
+          transition: 'border-radius 0.2s ease',
           padding: 0,
           flexShrink: 0,
         }}
