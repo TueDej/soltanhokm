@@ -616,7 +616,9 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
           alignItems: 'center',
           background: 'rgba(17,31,51,0.95)',
           borderTop: '1px solid rgba(197,163,90,0.1)',
+          position: 'relative',
         }}>
+          {onSendEmoji && <EmojiButton onSend={onSendEmoji} />}
           <Hand
             cards={sortedHand}
             onPlayCard={onPlayCard}
@@ -640,10 +642,6 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
             </div>
           )}
         </div>
-      )}
-
-      {onSendEmoji && (
-        <EmojiButton onSend={onSendEmoji} />
       )}
     </div>
   )

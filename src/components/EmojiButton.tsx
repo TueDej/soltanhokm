@@ -72,9 +72,10 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
     <div
       data-emoji-btn
       style={{
-        position: 'fixed',
-        bottom: 56,
+        position: 'absolute',
+        top: 0,
         left: 12,
+        transform: 'translateY(-50%)',
         zIndex: 50,
         display: 'flex',
         flexDirection: 'column',
@@ -134,7 +135,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         </div>
       )}
 
-      {/* Toggle button — bottom of the unified container */}
+      {/* Toggle button */}
       <button
         onClick={handleToggle}
         onTouchEnd={(e) => { e.preventDefault(); handleToggle() }}
@@ -142,17 +143,16 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
           width: 38,
           height: 38,
           margin: '0 auto',
-          marginBottom: 0,
           borderRadius: '0 0 12px 12px',
           border: 'none',
           borderTop: showPanel ? '1px solid rgba(197,163,90,0.08)' : 'none',
-          background: expanded ? 'rgba(197,163,90,0.1)' : 'transparent',
+          background: 'transparent',
           cursor: 'pointer',
           fontSize: 18,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'background 0.2s ease',
+          transition: 'none',
           padding: 0,
           flexShrink: 0,
         }}
