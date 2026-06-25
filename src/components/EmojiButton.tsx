@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 
 const EMOJIS = ['👍', '😂', '🔥', '💪', '😡', '🎉']
 
@@ -9,70 +9,95 @@ interface EmojiButtonProps {
 export function EmojiButton({ onSend }: EmojiButtonProps) {
   const [cooldown, setCooldown] = useState(false)
   const [expanded, setExpanded] = useState(false)
+  const [closing, setClosing] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+      if (leaveTimer.current) clearTimeout(leaveTimer.current)
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current)
+    }
+  }, [])
 
   const handleSend = useCallback((emoji: string) => {
     if (cooldown) return
     onSend(emoji)
     setCooldown(true)
     setExpanded(false)
+    setClosing(false)
     timerRef.current = setTimeout(() => {
       setCooldown(false)
       timerRef.current = null
-    }, 2000)
+    }, 2500)
   }, [cooldown, onSend])
 
-  const handleToggle = useCallback(() => {
-    setExpanded((prev) => !prev)
-  }, [])
-
-  const handleEnter = useCallback(() => {
-    if (leaveTimer.current) { clearTimeout(leaveTimer.current); leaveTimer.current = null }
+  const openPanel = useCallback(() => {
+    if (closeTimerRef.current) { clearTimeout(closeTimerRef.current); closeTimerRef.current = null }
+    setClosing(false)
     setExpanded(true)
   }, [])
 
-  const handleLeave = useCallback(() => {
-    leaveTimer.current = setTimeout(() => setExpanded(false), 300)
+  const closePanel = useCallback(() => {
+    setClosing(true)
+    closeTimerRef.current = setTimeout(() => {
+      setExpanded(false)
+      setClosing(false)
+      closeTimerRef.current = null
+    }, 200)
   }, [])
 
-  const handleTouchOutside = useCallback((e: React.TouchEvent) => {
-    const target = e.target as HTMLElement
-    if (!target.closest('[data-emoji-btn]')) {
-      setExpanded(false)
+  const handleToggle = useCallback(() => {
+    if (expanded) {
+      closePanel()
+    } else {
+      openPanel()
     }
-  }, [])
+  }, [expanded, openPanel, closePanel])
+
+  const handleEnter = useCallback(() => {
+    if (leaveTimer.current) { clearTimeout(leaveTimer.current); leaveTimer.current = null }
+    openPanel()
+  }, [openPanel])
+
+  const handleLeave = useCallback(() => {
+    leaveTimer.current = setTimeout(() => closePanel(), 300)
+  }, [closePanel])
+
+  const showPanel = expanded || closing
 
   return (
     <div
       data-emoji-btn
       style={{
         position: 'fixed',
-        bottom: 20,
+        bottom: 58,
         left: 12,
         zIndex: 50,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
       }}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      onTouchStart={handleTouchOutside}
     >
-      {/* Expanded emoji list */}
-      {expanded && (
+      {/* Emoji list — connected to button */}
+      {showPanel && (
         <div style={{
-          position: 'absolute',
-          bottom: 46,
-          left: 0,
           display: 'flex',
-          flexDirection: 'column-reverse',
+          flexDirection: 'column',
           gap: 4,
           padding: 4,
           borderRadius: 12,
           background: 'rgba(17,31,51,0.92)',
           border: '1px solid rgba(197,163,90,0.15)',
+          borderBottom: 'none',
           backdropFilter: 'blur(8px)',
           boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-          transformOrigin: 'bottom left',
-          animation: 'emojiPanelOpen 0.2s ease-out',
+          transformOrigin: 'bottom center',
+          animation: closing ? 'emojiPanelClose 0.2s ease-in forwards' : 'emojiPanelOpen 0.2s ease-out',
         }}>
           {EMOJIS.map((emoji, i) => (
             <button
@@ -94,7 +119,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
                 opacity: cooldown ? 0.4 : 1,
                 transition: 'background 0.15s ease',
                 padding: 0,
-                animation: `emojiItemIn 0.15s ease-out ${i * 0.03}s both`,
+                animation: closing ? 'none' : `emojiItemIn 0.15s ease-out ${i * 0.03}s both`,
               }}
               onMouseEnter={(e) => {
                 if (!cooldown) e.currentTarget.style.background = 'rgba(197,163,90,0.12)'
@@ -109,16 +134,16 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
         </div>
       )}
 
-      {/* Main toggle button */}
+      {/* Toggle button */}
       <button
         onClick={handleToggle}
         onTouchEnd={(e) => { e.preventDefault(); handleToggle() }}
         style={{
           width: 38,
           height: 38,
-          borderRadius: '50%',
-          border: '2px solid rgba(197,163,90,0.25)',
-          background: expanded ? 'rgba(197,163,90,0.12)' : 'rgba(17,31,51,0.9)',
+          borderRadius: 12,
+          border: '1px solid rgba(197,163,90,0.15)',
+          background: expanded ? 'rgba(197,163,90,0.12)' : 'rgba(17,31,51,0.92)',
           cursor: 'pointer',
           fontSize: 18,
           display: 'flex',
@@ -127,6 +152,7 @@ export function EmojiButton({ onSend }: EmojiButtonProps) {
           transition: 'background 0.2s ease, border-color 0.2s ease',
           padding: 0,
           backdropFilter: 'blur(8px)',
+          boxShadow: '0 2px 12px rgba(0,0,0,0.25)',
         }}
       >
         😊

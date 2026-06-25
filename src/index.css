@@ -208,6 +208,11 @@ button, input {
   to { opacity: 1; transform: scaleY(1); }
 }
 
+@keyframes emojiPanelClose {
+  from { opacity: 1; transform: scaleY(1); }
+  to { opacity: 0; transform: scaleY(0.3); }
+}
+
 @keyframes emojiItemIn {
   from { opacity: 0; transform: translateX(-8px); }
   to { opacity: 1; transform: translateX(0); }
