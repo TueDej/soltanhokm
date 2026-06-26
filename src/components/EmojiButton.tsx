@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 
-const EMOJIS = ['👍', '😂', '🔥', '💪', '🖕', '💩']
+const EMOJIS = ['👍', '😂', '🔥', '🔪', '💪', '🖕', '💩']
 
 interface EmojiButtonProps {
   onSend: (emoji: string) => void
