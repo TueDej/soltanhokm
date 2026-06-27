@@ -527,7 +527,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
                   ...posStyle,
                   position: 'absolute',
                   zIndex: 20,
-                  fontSize: 28,
+                  fontSize: 42,
                   animation: 'emojiPopIn 0.3s ease-out forwards, emojiPopOut 0.3s ease-in 2s forwards',
                   pointerEvents: 'none',
                   filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
