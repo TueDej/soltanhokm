@@ -270,8 +270,17 @@ func (r *Room) GameLoop() {
 			time.Sleep(1500 * time.Millisecond)
 			r.mu.Lock()
 			r.Game.ResolveTrick()
+			handWinner := r.Game.HandWinner
 			r.mu.Unlock()
 			r.BroadcastGameState()
+
+			if handWinner != nil {
+				time.Sleep(3500 * time.Millisecond)
+				r.mu.Lock()
+				r.Game.StartNewRound(r.Game.NextHokmPlayer)
+				r.mu.Unlock()
+				r.BroadcastGameState()
+			}
 			continue
 		}
 

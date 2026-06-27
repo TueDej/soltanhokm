@@ -28,6 +28,8 @@ type GameState struct {
 	MatchWinner     *string
 	RemainingDeck   []Card
 	HandsToWin      int
+	HandWinner      *string
+	NextHokmPlayer  PlayerPosition
 }
 
 var RANK_ORDER = map[Rank]int{
@@ -255,10 +257,25 @@ func (g *GameState) ResolveTrick() {
 	if g.NorthSouthScore >= 7 || g.EastWestScore >= 7 {
 		nsWinsRound := g.NorthSouthScore >= 7
 
+		// Determine shutout bonus: 7-0 means opponent got zero tricks
+		isShutout := (nsWinsRound && g.EastWestScore == 0) || (!nsWinsRound && g.NorthSouthScore == 0)
+		points := 1
+		if isShutout {
+			// Check if winning team is the hakem's team
+			hakemPlayer := g.FindPlayer(g.HokmPlayer)
+			winningTeamIsHakem := hakemPlayer != nil &&
+				((hakemPlayer.Team == "ns" && nsWinsRound) || (hakemPlayer.Team == "ew" && !nsWinsRound))
+			if winningTeamIsHakem {
+				points = 2
+			} else {
+				points = 3
+			}
+		}
+
 		if nsWinsRound {
-			g.NsGamesWon++
+			g.NsGamesWon += points
 		} else {
-			g.EwGamesWon++
+			g.EwGamesWon += points
 		}
 
 		// Check if match over (first to HandsToWin games wins the match)
@@ -282,8 +299,19 @@ func (g *GameState) ResolveTrick() {
 			}
 		}
 
-		// New round
-		g.startNewRound(nextHokmPlayer)
+		// Set hand winner and next hakem — GameLoop will call StartNewRound after a delay
+		winningTeam := "ns"
+		if !nsWinsRound {
+			winningTeam = "ew"
+		}
+		g.HandWinner = &winningTeam
+		g.NextHokmPlayer = nextHokmPlayer
+
+		// Clear trick so IsTrickComplete returns false
+		g.CurrentTrick = Trick{
+			Cards:  make(map[PlayerPosition]*Card),
+			Leader: g.HokmPlayer,
+		}
 		return
 	}
 
@@ -295,7 +323,7 @@ func (g *GameState) ResolveTrick() {
 	g.Turn = trickWinner
 }
 
-func (g *GameState) startNewRound(nextHokmPlayer PlayerPosition) {
+func (g *GameState) StartNewRound(nextHokmPlayer PlayerPosition) {
 	deck := ShuffleDeck(CreateDeck())
 	hands := Deal(deck[:20])
 
@@ -316,6 +344,7 @@ func (g *GameState) startNewRound(nextHokmPlayer PlayerPosition) {
 		Cards:  make(map[PlayerPosition]*Card),
 		Leader: nextHokmPlayer,
 	}
+	g.HandWinner = nil
 }
 
 // --- Helpers ---
@@ -371,6 +400,7 @@ func (g *GameState) GetPublicState(forPos PlayerPosition) GameStatePayload {
 		RoundNumber:     g.RoundNumber,
 		MatchWinner:     g.MatchWinner,
 		HandsToWin:      g.HandsToWin,
+		HandWinner:      g.HandWinner,
 	}
 }
 

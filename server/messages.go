@@ -156,6 +156,7 @@ type GameStatePayload struct {
 	RoundNumber     int                `json:"roundNumber"`
 	MatchWinner     *string            `json:"matchWinner,omitempty"`
 	HandsToWin      int                `json:"handsToWin"`
+	HandWinner      *string            `json:"handWinner,omitempty"`
 }
 
 type ErrorPayload struct {

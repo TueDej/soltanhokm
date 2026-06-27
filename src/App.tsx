@@ -42,7 +42,10 @@ const titleStyle: React.CSSProperties = {
 export default function App() {
   const [mode, setMode] = useState<Mode>(null)
   const [hokmReveal, setHokmReveal] = useState<Suit | null>(null)
+  const [handWinnerReveal, setHandWinnerReveal] = useState<'ns' | 'ew' | null>(null)
   const prevHokmRef = useRef<Suit | undefined>(undefined)
+  const prevHandWinnerRef = useRef<'ns' | 'ew' | undefined>(undefined)
+  const handWinnerTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const onlineGame = useOnlineGame()
 
@@ -61,6 +64,23 @@ export default function App() {
     }
     prevHokmRef.current = currentHokm
   }, [onlineGame.game?.hokmSuit])
+
+  useEffect(() => {
+    const currentWinner = onlineGame.game?.handWinner
+    if (currentWinner && !prevHandWinnerRef.current) {
+      if (handWinnerTimerRef.current) clearTimeout(handWinnerTimerRef.current)
+      const showTimer = setTimeout(() => {
+        setHandWinnerReveal(currentWinner)
+        const dismissTimer = setTimeout(() => setHandWinnerReveal(null), 2000)
+        handWinnerTimerRef.current = dismissTimer
+      }, 600)
+      handWinnerTimerRef.current = showTimer
+      return () => {
+        if (handWinnerTimerRef.current) clearTimeout(handWinnerTimerRef.current)
+      }
+    }
+    prevHandWinnerRef.current = currentWinner
+  }, [onlineGame.game?.handWinner])
 
   function handleSelectMode(selectedMode: string, name: string, roomCode?: string, handsToWin?: number) {
     if (selectedMode === 'online_create') {
@@ -211,6 +231,64 @@ export default function App() {
               </div>
             </div>
           )}
+          {handWinnerReveal && onlineGame.game && (() => {
+            const winners = onlineGame.game.players
+              .filter(p => p.team === handWinnerReveal)
+              .map(p => p.name)
+            const teamColor = handWinnerReveal === 'ns' ? '#4a907e' : '#b44646'
+            const teamGlow = handWinnerReveal === 'ns'
+              ? '0 4px 20px rgba(74,144,126,0.3), 0 0 40px rgba(74,144,126,0.15)'
+              : '0 4px 20px rgba(180,70,70,0.3), 0 0 40px rgba(180,70,70,0.15)'
+            const teamLabel = handWinnerReveal === 'ns' ? 'GREEN' : 'RED'
+            return (
+              <div style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 1000,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'rgba(15,27,45,0.94)',
+                animation: 'handWinnerFade 2.2s ease-in-out forwards',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: 12,
+                  animation: 'hokmRevealPop 0.3s ease-out',
+                }}>
+                  <span style={{
+                    fontSize: '1rem',
+                    fontFamily: "'Science Gothic', cursive",
+                    color: '#c5a35a',
+                    textShadow: '0 2px 8px rgba(197,163,90,0.25)',
+                    letterSpacing: 3,
+                  }}>
+                    HAND WON
+                  </span>
+                  <span style={{
+                    fontSize: '2.5rem',
+                    fontFamily: "'Science Gothic', cursive",
+                    color: teamColor,
+                    textShadow: teamGlow,
+                    lineHeight: 1,
+                  }}>
+                    {teamLabel} WINS THE HAND
+                  </span>
+                  <span style={{
+                    fontSize: '1rem',
+                    fontFamily: "'Science Gothic', cursive",
+                    color: '#e8e4da',
+                    opacity: 0.8,
+                    marginTop: 4,
+                  }}>
+                    {winners.join(' & ')}
+                  </span>
+                </div>
+              </div>
+            )
+          })()}
         </>
       )
     }

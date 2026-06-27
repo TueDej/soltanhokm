@@ -193,6 +193,13 @@ button, input {
   100% { opacity: 0; pointer-events: none; }
 }
 
+@keyframes handWinnerFade {
+  0% { opacity: 0; }
+  5% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
 @keyframes trickWinFlash {
   0% { box-shadow: 0 0 24px rgba(197,163,90,0.5), 0 0 48px rgba(197,163,90,0.2); }
   100% { box-shadow: none; }

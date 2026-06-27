@@ -131,6 +131,7 @@ export interface OnlineGameState {
   roundNumber: number
   matchWinner?: 'ns' | 'ew'
   handsToWin: number
+  handWinner?: 'ns' | 'ew'
 }
 
 export interface ServerMessage {
