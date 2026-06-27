@@ -112,10 +112,10 @@ const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
 }
 
 const EMOJI_POSITIONS: Record<string, React.CSSProperties> = {
-  top: { top: -8, left: '50%', transform: 'translateX(-50%)' },
-  bottom: { bottom: -8, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: -8, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: -8, top: '50%', transform: 'translateY(-50%)' },
+  top: { top: -50, left: '50%', transform: 'translateX(-50%)' },
+  bottom: { bottom: -50, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: -50, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: -50, top: '50%', transform: 'translateY(-50%)' },
 }
 
 export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoji, incomingEmojis, reconnecting }: GameBoardProps) {
