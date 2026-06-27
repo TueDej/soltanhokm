@@ -111,13 +111,6 @@ const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
   right: { right: 0, top: '50%', transform: 'translate(50%, -50%)' },
 }
 
-const EMOJI_POSITIONS: Record<string, React.CSSProperties> = {
-  top: { top: -50, left: '50%', transform: 'translateX(-50%)' },
-  bottom: { bottom: -50, left: '50%', transform: 'translateX(-50%)' },
-  left: { left: -50, top: '50%', transform: 'translateY(-50%)' },
-  right: { right: -50, top: '50%', transform: 'translateY(-50%)' },
-}
-
 export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoji, incomingEmojis, reconnecting }: GameBoardProps) {
   const me = game.players.find((p) => p.id === playerId)
   const myPos = getMyPosition(game, playerId)
@@ -525,7 +518,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
             } else {
               screenPos = getRelativePosition(myPos, ie.position)
             }
-            const posStyle = EMOJI_POSITIONS[screenPos]
+            const posStyle = SCREEN_POSITIONS[screenPos]
             if (!posStyle) return null
             return (
               <div
@@ -534,13 +527,16 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
                   ...posStyle,
                   position: 'absolute',
                   zIndex: 20,
-                  fontSize: 42,
-                  animation: 'emojiPopIn 0.3s ease-out forwards, emojiPopOut 0.3s ease-in 2s forwards',
                   pointerEvents: 'none',
-                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
                 }}
               >
-                {ie.emoji}
+                <div style={{
+                  fontSize: 42,
+                  animation: 'emojiPopIn 0.3s ease-out forwards, emojiPopOut 0.3s ease-in 2s forwards',
+                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.4))',
+                }}>
+                  {ie.emoji}
+                </div>
               </div>
             )
           })}
