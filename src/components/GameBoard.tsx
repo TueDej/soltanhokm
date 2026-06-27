@@ -111,6 +111,13 @@ const SCREEN_POSITIONS: Record<string, React.CSSProperties> = {
   right: { right: 0, top: '50%', transform: 'translate(50%, -50%)' },
 }
 
+const EMOJI_POSITIONS: Record<string, React.CSSProperties> = {
+  top: { top: -8, left: '50%', transform: 'translateX(-50%)' },
+  bottom: { bottom: -8, left: '50%', transform: 'translateX(-50%)' },
+  left: { left: -8, top: '50%', transform: 'translateY(-50%)' },
+  right: { right: -8, top: '50%', transform: 'translateY(-50%)' },
+}
+
 export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoji, incomingEmojis, reconnecting }: GameBoardProps) {
   const me = game.players.find((p) => p.id === playerId)
   const myPos = getMyPosition(game, playerId)
@@ -518,7 +525,7 @@ export function GameBoard({ game, playerId, onPlayCard, onChooseHokm, onSendEmoj
             } else {
               screenPos = getRelativePosition(myPos, ie.position)
             }
-            const posStyle = SCREEN_POSITIONS[screenPos]
+            const posStyle = EMOJI_POSITIONS[screenPos]
             if (!posStyle) return null
             return (
               <div
